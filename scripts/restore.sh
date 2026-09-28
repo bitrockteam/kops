@@ -39,12 +39,12 @@ docker compose exec -T db createdb -U postgres kops
 docker compose exec -T db pg_restore -U postgres -d kops --exit-on-error <"$backup_path/database.dump"
 docker compose exec -T db psql -v ON_ERROR_STOP=1 -U postgres -d kops -f /checks/schema.sql >/dev/null
 
-docker compose run --rm --no-deps --user 0 api sh -c 'find /var/lib/kops/content/sources /var/lib/kops/content/answers -mindepth 1 -delete'
-docker compose run --rm --no-deps --user 0 worker sh -c 'find /var/lib/kops/content/candidates -mindepth 1 -delete'
-docker compose run --rm --no-deps --user 0 publisher sh -c 'find /var/lib/kops/content/pages -mindepth 1 -delete'
-docker compose run --rm --no-deps --user 0 api tar --no-same-owner --no-same-permissions --touch -C /var/lib/kops/content/sources -xf - <"$backup_path/sources.tar"
-docker compose run --rm --no-deps --user 0 worker tar --no-same-owner --no-same-permissions --touch -C /var/lib/kops/content/candidates -xf - <"$backup_path/candidates.tar"
-docker compose run --rm --no-deps --user 0 publisher tar --no-same-owner --no-same-permissions --touch -C /var/lib/kops/content/pages -xf - <"$backup_path/pages.tar"
-docker compose run --rm --no-deps --user 0 api tar --no-same-owner --no-same-permissions --touch -C /var/lib/kops/content/answers -xf - <"$backup_path/answers.tar"
+docker compose run --rm --no-deps api sh -c 'find /var/lib/kops/content/sources /var/lib/kops/content/answers -mindepth 1 -delete'
+docker compose run --rm --no-deps worker sh -c 'find /var/lib/kops/content/candidates -mindepth 1 -delete'
+docker compose run --rm --no-deps publisher sh -c 'find /var/lib/kops/content/pages -mindepth 1 -delete'
+docker compose run --rm --no-deps api tar --no-same-owner --no-same-permissions --touch -C /var/lib/kops/content/sources -xf - <"$backup_path/sources.tar"
+docker compose run --rm --no-deps worker tar --no-same-owner --no-same-permissions --touch -C /var/lib/kops/content/candidates -xf - <"$backup_path/candidates.tar"
+docker compose run --rm --no-deps publisher tar --no-same-owner --no-same-permissions --touch -C /var/lib/kops/content/pages -xf - <"$backup_path/pages.tar"
+docker compose run --rm --no-deps api tar --no-same-owner --no-same-permissions --touch -C /var/lib/kops/content/answers -xf - <"$backup_path/answers.tar"
 docker compose up -d
 printf '%s\n' "Restore completed from $backup_path. The trusted local host operation is outside the in-app audit boundary."
