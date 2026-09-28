@@ -11,3 +11,12 @@ The screenshots in this directory were taken from the running application at the
 identified in `../docs/evidence/implementation.md`. The inference service used to prepare
 the synthetic story is a labeled deterministic test fixture. The images show GUI behavior,
 not live-model quality or independent human review.
+
+| File | View |
+| --- | --- |
+| [01-publication.png](01-publication.png) | Committed Engineering and joint publication operations. |
+| [02-authorized-catalog.png](02-authorized-catalog.png) | Operator's authorized catalog. |
+| [03-access-changes.png](03-access-changes.png) | Finance membership revocation controls for the dual-access persona. |
+| [04-protected-audit.png](04-protected-audit.png) | Durable audit outcomes. |
+| [05-revoked-catalog.png](05-revoked-catalog.png) | Revoked persona's Engineering-only catalog. |
+| [06-revoked-page-denial.png](06-revoked-page-denial.png) | Guided 404 response for a former joint page. |

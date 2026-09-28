@@ -156,8 +156,8 @@ def main() -> None:
 
         browser.navigate(joint_page)
         denied = browser.execute("return document.body.innerText")
-        if "page not available" not in denied:
-            raise SystemExit("Revoked persona did not receive the expected page denial")
+        if "page not available" not in denied.lower():
+            raise SystemExit(f"Revoked persona did not receive the expected page denial: {denied[:300]!r}")
         browser.capture("06-revoked-page-denial.png")
 
 

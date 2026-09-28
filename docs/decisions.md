@@ -16,3 +16,4 @@
 | Keep deterministic inference behind a test-only Compose profile. | Repeatable lifecycle tests are valuable but must never become a normal-runtime or live-model fallback. | Automated tests only. |
 | Invalidate through database-owned bounded triggers. | Source and audience changes must block or stale dependents even though the API has no write privilege on published records. | Source revisions and policy revisions. |
 | Back up database and each private content class together. | Page references, policies, dependencies and audit linkage must restore consistently. | Checksummed local archives below ignored runtime state. |
+| Protect `main` with pull-request review and the observed GitHub Actions acceptance check. | Shared-branch integration must require a fresh independent approval and a check tied to the proposed commit. | GitHub repository branch protection; administrators retain authority to edit the rule, and merge remains human-owned. |

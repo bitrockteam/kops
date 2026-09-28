@@ -48,4 +48,4 @@ Mocked identity tests prove local contract behavior only. A single presenter swi
 | Verified by scoped manual command | A23 | Checksummed database and four private-content archives restored into the local demo; record counts and API health matched. |
 | Not verified with live inference | A03, A10, A12, A25 | No operator-supplied local model was available. Fixture inference is not accepted as live evidence. |
 
-Independent human verification, actual-GUI screenshots and the live model-quality set remain delivery gates rather than inferred successes.
+Actual GUI evidence covers publication and the revocation denial in [six Firefox screenshots](../screenshots/README.md). Independent human verification and the live model-quality set remain delivery gates rather than inferred successes.

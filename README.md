@@ -168,6 +168,7 @@ The demo must show real error states and remain unpublished after failed admissi
 | [Implementation handoff](HANDOFF.md) | Concrete assignment and implementation workflow. |
 | [Status](docs/status.md) | Completed work, remaining work and the next action. |
 | [Decisions](docs/decisions.md) | Scope decisions and their reasons. |
+| [GUI screenshots](screenshots/README.md) | Firefox evidence from publication and access revocation. |
 | [Project instructions](AGENTS.md) | Repository rules and publication boundaries. |
 
 Implementation uses `feat/local-demo` and a pull request for independent review and human merge. See [implementation evidence](docs/evidence/implementation.md) for exact tested revisions and remaining gates.
