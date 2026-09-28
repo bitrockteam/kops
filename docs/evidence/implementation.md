@@ -4,7 +4,7 @@
 
 | Field | Value |
 | --- | --- |
-| Tested implementation commit | `1b79f82c67b36a261bfebf6683a905653de07a7b` |
+| Tested implementation commit | `1b79f82dc762180ea4202a1aa94a2b2fd1aa1a28` |
 | Date and host | 28 September 2026, `voloire-XPS`, Ubuntu 26.04 LTS |
 | Automated configuration | Docker Compose project `kops-test`, Python 3.13 runtime image, PostgreSQL 18.0 Alpine, fresh disposable volumes |
 | Identity boundary | Labeled mock identity with signed server-issued sessions and seven synthetic personas |
