@@ -1,6 +1,6 @@
 # Acceptance matrix
 
-**Current result for every scenario: Not run.** Replace this statement with linked evidence as implementation proceeds. Model choice happens at runtime. A live-model acceptance run requires an operator-supplied endpoint and must remain unverified if none is available. The model and GUI must run for real; mocked identity and repeatable test fixtures must be labeled.
+**Current result:** deterministic local acceptance has run against PostgreSQL and all application processes. The exact tested commit and observations are recorded in the [implementation evidence report](evidence/implementation.md). A live-model acceptance run remains unverified because no operator-supplied endpoint was available. Mock identity and the test-only inference fixture are labeled and do not prove their real integrations.
 
 | ID | Scenario | Expected outcome |
 | --- | --- | --- |
@@ -38,3 +38,14 @@ For each material test record: scenario, requirements, commit and configuration,
 Map acceptance evidence to all v4 controls: C01 complexity and measured resources; C02 writer ownership; C03 independent verification; C04 authority; C05 proposal/commit separation; C06 bounded execution; C07 identity/delegation; C08 token recipients; C09 credential isolation; C10 content boundaries; C11 limits/stop; C12 protected audit.
 
 Mocked identity tests prove local contract behavior only. A single presenter switching reviewer personas does not establish independent human review. Keep those limitations explicit in the final evidence matrix and PR.
+
+## Current scenario status
+
+| Status | Scenarios | Evidence boundary |
+| --- | --- | --- |
+| Verified in repeatable automated tests | A01, A02, A04, A05, A06, A09, A11, A12, A13, A20, A21, A24 | Fresh disposable Compose project, real PostgreSQL and service roles, test-only inference where generation was required. |
+| Partially verified | A03, A07, A08, A10, A14, A15, A16, A17, A18, A19, A22, A25, A26 | Applicable success/refusal paths or static boundaries passed, but one or more fault variants, live-model behavior or process-level probes remain open. |
+| Verified by scoped manual command | A23 | Checksummed database and four private-content archives restored into the local demo; record counts and API health matched. |
+| Not verified with live inference | A03, A10, A12, A25 | No operator-supplied local model was available. Fixture inference is not accepted as live evidence. |
+
+Independent human verification, actual-GUI screenshots and the live model-quality set remain delivery gates rather than inferred successes.

@@ -1,0 +1,234 @@
+name: kops-local-demo
+
+x-app-base: &app-base
+  build:
+    context: .
+    target: ${KOPS_BUILD_TARGET:-runtime}
+  restart: unless-stopped
+  environment: &common-environment
+    KOPS_DB_HOST: db
+    KOPS_DB_NAME: kops
+    KOPS_CONTENT_ROOT: /var/lib/kops/content
+    KOPS_DEMO_MODE: "true"
+    KOPS_ALLOWED_MODEL_HOSTS: ${KOPS_ALLOWED_MODEL_HOSTS:-host.docker.internal}
+  extra_hosts:
+    - "host.docker.internal:host-gateway"
+  networks:
+    - frontend
+    - backend
+  read_only: true
+  tmpfs:
+    - /tmp:size=64m,noexec,nosuid,nodev
+  security_opt:
+    - no-new-privileges:true
+  cap_drop:
+    - ALL
+
+services:
+  db:
+    image: postgres:18.0-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: kops
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_admin_password
+    secrets:
+      - db_admin_password
+      - db_api_password
+      - db_worker_password
+      - db_publisher_password
+      - db_audit_password
+      - db_content_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/db/init.sh:/docker-entrypoint-initdb.d/00-init.sh:ro
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
+      - ./db:/checks:ro
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d kops"]
+      interval: 2s
+      timeout: 3s
+      retries: 20
+    security_opt:
+      - no-new-privileges:true
+
+  audit:
+    <<: *app-base
+    command: ["uvicorn", "app.audit_service:app", "--host", "0.0.0.0", "--port", "8083"]
+    environment:
+      <<: *common-environment
+      KOPS_SERVICE: audit
+      KOPS_DB_ROLE: kops_audit
+      KOPS_DB_PASSWORD_FILE: /run/secrets/db_audit_password
+      KOPS_AUDIT_API_TOKEN_FILE: /run/secrets/audit_api_token
+      KOPS_AUDIT_WORKER_TOKEN_FILE: /run/secrets/audit_worker_token
+      KOPS_AUDIT_PUBLISHER_TOKEN_FILE: /run/secrets/audit_publisher_token
+    secrets:
+      - db_audit_password
+      - audit_api_token
+      - audit_worker_token
+      - audit_publisher_token
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - backend
+
+  content:
+    <<: *app-base
+    command: ["uvicorn", "app.content_service:app", "--host", "0.0.0.0", "--port", "8084"]
+    environment:
+      <<: *common-environment
+      KOPS_SERVICE: content
+      KOPS_DB_ROLE: kops_content
+      KOPS_DB_PASSWORD_FILE: /run/secrets/db_content_password
+      KOPS_INTERNAL_TOKEN_FILE: /run/secrets/internal_worker_token
+    secrets:
+      - db_content_password
+      - internal_worker_token
+    volumes:
+      - source_data:/var/lib/kops/content/sources:ro
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - backend
+
+  publisher:
+    <<: *app-base
+    command: ["uvicorn", "app.publisher:app", "--host", "0.0.0.0", "--port", "8082"]
+    environment:
+      <<: *common-environment
+      KOPS_SERVICE: publisher
+      KOPS_DB_ROLE: kops_publisher
+      KOPS_DB_PASSWORD_FILE: /run/secrets/db_publisher_password
+      KOPS_AUDIT_URL: http://audit:8083
+      KOPS_INTERNAL_TOKEN_FILE: /run/secrets/internal_api_token
+      KOPS_AUDIT_TOKEN_FILE: /run/secrets/audit_publisher_token
+    secrets:
+      - db_publisher_password
+      - internal_api_token
+      - audit_publisher_token
+    volumes:
+      - candidate_data:/var/lib/kops/content/candidates:ro
+      - page_data:/var/lib/kops/content/pages
+      - answer_data:/var/lib/kops/content/answers:ro
+    depends_on:
+      audit:
+        condition: service_started
+    networks:
+      - backend
+
+  worker:
+    <<: *app-base
+    command: ["python", "-m", "app.worker"]
+    environment:
+      <<: *common-environment
+      KOPS_SERVICE: worker
+      KOPS_DB_ROLE: kops_worker
+      KOPS_DB_PASSWORD_FILE: /run/secrets/db_worker_password
+      KOPS_AUDIT_URL: http://audit:8083
+      KOPS_CONTENT_URL: http://content:8084
+      KOPS_INTERNAL_TOKEN_FILE: /run/secrets/internal_worker_token
+      KOPS_AUDIT_TOKEN_FILE: /run/secrets/audit_worker_token
+    secrets:
+      - db_worker_password
+      - internal_worker_token
+      - audit_worker_token
+    volumes:
+      - candidate_data:/var/lib/kops/content/candidates
+    depends_on:
+      audit:
+        condition: service_started
+      content:
+        condition: service_started
+    networks:
+      - model-egress
+      - backend
+
+  api:
+    <<: *app-base
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080", "--proxy-headers", "--forwarded-allow-ips", "127.0.0.1"]
+    environment:
+      <<: *common-environment
+      KOPS_SERVICE: api
+      KOPS_DB_ROLE: kops_api
+      KOPS_DB_PASSWORD_FILE: /run/secrets/db_api_password
+      KOPS_SESSION_SECRET_FILE: /run/secrets/session_secret
+      KOPS_AUDIT_URL: http://audit:8083
+      KOPS_PUBLISHER_URL: http://publisher:8082
+      KOPS_INTERNAL_TOKEN_FILE: /run/secrets/internal_api_token
+      KOPS_AUDIT_TOKEN_FILE: /run/secrets/audit_api_token
+    secrets:
+      - db_api_password
+      - session_secret
+      - internal_api_token
+      - audit_api_token
+    volumes:
+      - source_data:/var/lib/kops/content/sources
+      - candidate_data:/var/lib/kops/content/candidates:ro
+      - page_data:/var/lib/kops/content/pages:ro
+      - answer_data:/var/lib/kops/content/answers
+    depends_on:
+      publisher:
+        condition: service_started
+      worker:
+        condition: service_started
+      content:
+        condition: service_started
+    ports:
+      - "127.0.0.1:${KOPS_PORT:-8080}:8080"
+    networks:
+      - frontend
+      - backend
+      - model-egress
+
+  fixture-model:
+    <<: *app-base
+    profiles: ["test"]
+    command: ["uvicorn", "app.fixture_model:app", "--host", "0.0.0.0", "--port", "8090"]
+    environment:
+      KOPS_SERVICE: fixture-model
+    networks:
+      - model-egress
+
+volumes:
+  postgres_data:
+  source_data:
+  candidate_data:
+  page_data:
+  answer_data:
+
+networks:
+  frontend:
+  backend:
+    internal: true
+  model-egress:
+
+secrets:
+  db_admin_password:
+    file: .runtime/secrets/db_admin_password
+  db_api_password:
+    file: .runtime/secrets/db_api_password
+  db_worker_password:
+    file: .runtime/secrets/db_worker_password
+  db_publisher_password:
+    file: .runtime/secrets/db_publisher_password
+  db_audit_password:
+    file: .runtime/secrets/db_audit_password
+  db_content_password:
+    file: .runtime/secrets/db_content_password
+  session_secret:
+    file: .runtime/secrets/session_secret
+  internal_api_token:
+    file: .runtime/secrets/internal_api_token
+  internal_worker_token:
+    file: .runtime/secrets/internal_worker_token
+  audit_api_token:
+    file: .runtime/secrets/audit_api_token
+  audit_worker_token:
+    file: .runtime/secrets/audit_worker_token
+  audit_publisher_token:
+    file: .runtime/secrets/audit_publisher_token

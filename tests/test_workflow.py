@@ -1,0 +1,241 @@
+from __future__ import annotations
+
+import os
+import re
+import time
+
+import httpx
+import pytest
+
+
+BASE_URL = os.getenv("KOPS_TEST_BASE_URL", "http://127.0.0.1:8080")
+
+
+def _csrf(client: httpx.Client, path: str = "/") -> str:
+    response = client.get(path)
+    response.raise_for_status()
+    match = re.search(r'name="csrf" value="([^"]+)"', response.text)
+    assert match, response.text[:500]
+    return match.group(1)
+
+
+def _post(client: httpx.Client, path: str, data: dict | list[tuple[str, str]]) -> httpx.Response:
+    if isinstance(data, dict):
+        data = {**data, "csrf": _csrf(client)}
+    else:
+        data = [*data, ("csrf", _csrf(client))]
+    return client.post(path, data=data, follow_redirects=True)
+
+
+def _switch(client: httpx.Client, subject_id: str) -> None:
+    response = _post(client, "/session/persona", {"subject_id": subject_id})
+    assert response.status_code == 200
+    assert subject_id.replace("_", " ").split()[0].lower() in response.text.lower() or "persona changed" in response.text.lower()
+
+
+def _source_id(html: str, title: str) -> str:
+    pattern = rf'<article class="card">\s*<h3>{re.escape(title)}</h3>.*?href="/sources/([0-9a-f-]+)"'
+    match = re.search(pattern, html, re.DOTALL)
+    assert match, f"source not found: {title}"
+    return match.group(1)
+
+
+def _wait_for_candidate(client: httpx.Client, timeout: float = 30) -> str:
+    deadline = time.monotonic() + timeout
+    last_state = None
+    while time.monotonic() < deadline:
+        response = client.get("/api/state")
+        response.raise_for_status()
+        state = response.json()
+        if state["jobs"]:
+            last_state = state["jobs"][0]
+            if last_state["status"] == "ready":
+                assert last_state["candidate_id"]
+                return last_state["candidate_id"]
+            if last_state["status"] in {"failed", "blocked", "cancelled"}:
+                pytest.fail(f"job ended as {last_state}")
+        time.sleep(0.5)
+    pytest.fail(f"job did not complete: {last_state}")
+
+
+def _authorize_and_publish(client: httpx.Client, candidate_id: str) -> str:
+    _switch(client, "reviewer")
+    review = client.get(f"/?stage=review&candidate={candidate_id}")
+    review.raise_for_status()
+    assert "Complete admitted manifest" in review.text
+    verified = _post(
+        client,
+        f"/candidates/{candidate_id}/verify",
+        {"decision": "verified", "findings": "Independent fixture acceptance checked the exact hash and manifest."},
+    )
+    assert "Candidate verified" in verified.text
+
+    _switch(client, "publisher")
+    authorized = _post(client, f"/candidates/{candidate_id}/authorize", {})
+    assert "created separately from verification" in authorized.text
+    match = re.search(r'action="/operations/([0-9a-f-]+)/publish"', authorized.text)
+    assert match, authorized.text[:1000]
+    operation_id = match.group(1)
+    published = _post(client, f"/operations/{operation_id}/publish", {})
+    assert "page revisions are visible" in published.text
+    return operation_id
+
+
+@pytest.mark.integration
+def test_governed_workflow_is_persistent_authorized_and_revocable():
+    with httpx.Client(base_url=BASE_URL, timeout=10) as client:
+        deadline = time.monotonic() + 30
+        while True:
+            try:
+                if client.get("/health").status_code == 200:
+                    break
+            except httpx.HTTPError:
+                pass
+            if time.monotonic() >= deadline:
+                pytest.fail("API did not become ready")
+            time.sleep(0.5)
+
+        unknown_persona = _post(client, "/session/persona", {"subject_id": "attacker_supplied_admin"})
+        assert unknown_persona.status_code == 400
+        assert "unknown synthetic persona" in unknown_persona.text
+
+        configured = _post(
+            client,
+            "/model/save",
+            {
+                "adapter": "ollama",
+                "endpoint": "http://fixture-model:8090",
+                "model_name": "fixture-governed-model",
+                "max_input_bytes": "60000",
+                "max_output_bytes": "30000",
+                "max_output_tokens": "1000",
+                "wall_time_seconds": "30",
+                "max_retries": "1",
+            },
+        )
+        assert "Reachable" in configured.text
+        fixtures = _post(client, "/fixtures/load", {})
+        assert "Synthetic corpus is ready" in fixtures.text
+
+        _switch(client, "dual_compiler")
+        sources_page = client.get("/?stage=sources")
+        engineering_id = _source_id(sources_page.text, "Engineering expansion plan")
+        finance_id = _source_id(sources_page.text, "Finance budget")
+
+        preview = _post(
+            client,
+            "/admission/preview",
+            {"audience_id": "engineering", "source_ids": [engineering_id, finance_id]},
+        )
+        assert "Refused hidden or incompatible inputs: 1" in preview.text
+        assert "FIN-CANARY-7391" not in preview.text
+
+        queued = _post(
+            client,
+            "/jobs/create",
+            {"audience_id": "engineering", "source_ids": [engineering_id], "task_text": "Compile the Engineering expansion knowledge."},
+        )
+        assert "queued" in queued.text
+        engineering_candidate = _wait_for_candidate(client)
+        engineering_operation = _authorize_and_publish(client, engineering_candidate)
+
+        read_page = client.get("/?stage=read")
+        document_match = re.search(r'href="/documents/([0-9a-f-]+)">Read current page', read_page.text)
+        assert document_match
+        engineering_document = document_match.group(1)
+        delivered = client.get(f"/documents/{engineering_document}")
+        delivered.raise_for_status()
+        assert "FIN-CANARY-7391" not in delivered.text
+        assert "Read audit receipt" in delivered.text
+
+        _switch(client, "operator_admin")
+        replay = _post(client, "/demo/replay-publication", {})
+        assert engineering_operation in replay.text
+        assert "without a duplicate revision" in replay.text
+
+        _switch(client, "dual_compiler")
+        joint_job = _post(
+            client,
+            "/jobs/create",
+            {"audience_id": "joint", "source_ids": [engineering_id, finance_id], "task_text": "Compile the joint schedule and budget assessment."},
+        )
+        assert "queued" in joint_job.text
+        joint_candidate = _wait_for_candidate(client)
+        _authorize_and_publish(client, joint_candidate)
+        _switch(client, "dual_compiler")
+        joint_catalog = client.get("/?stage=read")
+        joint_cards = re.findall(r'<article class="card"><h3>.*?</article>', joint_catalog.text, re.DOTALL)
+        joint_document = None
+        for card in joint_cards:
+            if "joint" in card:
+                match = re.search(r'/documents/([0-9a-f-]+)', card)
+                if match:
+                    joint_document = match.group(1)
+                    break
+        assert joint_document
+        assert client.get(f"/documents/{joint_document}").status_code == 200
+
+        answered = _post(
+            client,
+            "/query",
+            {"audience_id": "joint", "question": "Which schedule estimates conflict?"},
+        )
+        response_match = re.search(r'href="/responses/([0-9a-f-]+)">Inspect answer artifact', answered.text)
+        assert response_match
+        response_id = response_match.group(1)
+        assert "contradictory" in answered.text
+        promoted = _post(client, f"/responses/{response_id}/save-candidate", {})
+        assert "it is not published" in promoted.text
+        supported = _post(
+            client,
+            "/query",
+            {"audience_id": "joint", "question": "What equipment does the expansion use?"},
+        )
+        assert "supported" in supported.text
+        unsupported = _post(
+            client,
+            "/query",
+            {"audience_id": "joint", "question": "This is an unanswerable question about lunar offices."},
+        )
+        assert "unsupported" in unsupported.text
+
+        revised = _post(client, "/fixtures/revise-budget", {})
+        assert "dependent pages are stale" in revised.text
+        stale_page = client.get(f"/documents/{joint_document}")
+        assert stale_page.status_code == 200
+        assert "State: stale" in stale_page.text
+
+        _switch(client, "operator_admin")
+        revoked = _post(
+            client,
+            "/access/membership",
+            {"subject_id": "dual_compiler", "group_id": "finance"},
+        )
+        assert "revoked" in revoked.text
+        _switch(client, "dual_compiler")
+        assert client.get(f"/documents/{joint_document}").status_code == 404
+        assert client.get(f"/documents/{joint_document}?version=1").status_code == 404
+
+        _switch(client, "operator_admin")
+        disabled = _post(client, "/demo/audit-availability", {})
+        assert "deliberately unavailable" in disabled.text
+        assert client.get(f"/documents/{engineering_document}").status_code == 503
+        restored = _post(client, "/demo/audit-availability", {"enabled": "true"})
+        assert "available" in restored.text
+        assert client.get(f"/documents/{engineering_document}").status_code == 200
+
+        unreachable = _post(
+            client,
+            "/model/save",
+            {
+                "adapter": "ollama",
+                "endpoint": "http://127.0.0.1:9",
+                "model_name": "missing-local-model",
+                "max_input_bytes": "60000",
+                "max_output_bytes": "30000",
+                "max_output_tokens": "1000",
+                "wall_time_seconds": "5",
+                "max_retries": "0",
+            },
+        )
+        assert "local model connection failed" in unreachable.text

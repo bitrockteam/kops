@@ -2,9 +2,9 @@
 
 **Governed knowledge compilation and publishing for KnowledgeOps Platform.**
 
-kops is a planned local demo that turns approved source material into maintained, linked knowledge pages. A guided GUI will show how source permissions, evidence, review and publication govern each change, and how access changes affect previously generated knowledge.
+kops is a working local demo that turns approved source material into maintained, linked knowledge pages. Its guided GUI shows how source permissions, evidence, review and publication govern each change, and how access changes affect previously generated knowledge.
 
-> **Repository status: planning bootstrap.** The implementation plan and handoff are committed here. The application, Make targets, containers and screenshots described below have not been implemented yet. The commands are the required delivery interface for the implementing session, not commands you can run successfully from this bootstrap commit.
+> **Repository status: implemented for local review.** Mock identity and deterministic fixture-inference tests are verified. A live-model acceptance run and independent human review remain operator-owned gates; no fixture result is presented as live model evidence.
 
 ## What the demo will let you do
 
@@ -16,7 +16,7 @@ kops is a planned local demo that turns approved source material into maintained
 - Update a source, inspect maintenance findings and regenerate affected pages.
 - Revoke access and inspect the actual resulting denials and audit events.
 
-Keycloak is mocked. Source storage, audience checks, provenance, review records, publication, revocation and audit are backend behaviors to implement and test. Compilation and questions use a real local model. No OpenSearch, embeddings, corporate connectors, real SSO, unattended refresh, MCP/A2A or cloud deployment is included.
+Keycloak is mocked. Source storage, audience checks, provenance, review records, publication, revocation and audit are backend-enforced and persisted. Compilation and questions require a real operator-selected local model in normal use. No OpenSearch, embeddings, corporate connectors, real SSO, unattended refresh, MCP/A2A or cloud deployment is included.
 
 ## How it fits into KnowledgeOps Platform
 
@@ -50,9 +50,7 @@ flowchart TB
 
 The worker proposes content. The application decides what may be read, who may authorize the result and whether publication can commit. A source document or generated page cannot grant permissions.
 
-## Required local run interface
-
-**These targets must be implemented before the runnable demo is delivered.**
+## Local run interface
 
 Prerequisites for that delivery are Git, Make, Docker with Compose, and an operator-supplied local inference runtime for actual compilation and questions. Python is the application language; exact supported versions will be pinned and documented by the implementation. Model installation and weight downloads remain under operator control.
 
@@ -67,12 +65,14 @@ The intended default GUI URL is **http://127.0.0.1:8080**. The implementation mu
 
 | Command | Required behavior |
 | --- | --- |
-| `make setup` | Validate local prerequisites, prepare local configuration and synthetic fixtures. Do not download models or install a real identity provider. |
-| `make up` | Start the demo-managed processes and report the GUI URL and readiness. |
+| `make setup` | Validate Docker and Compose, generate ignored per-service local secrets and validate configuration. It does not download models or install an identity provider. |
+| `make up` | Build and start PostgreSQL, the API, admitted-content broker, restricted worker, bounded publisher and protected audit collector; report the loopback GUI URL. |
 | `make logs` | Display useful local service/job diagnostics without secrets. |
-| `make test` | Run repeatable automated contract and integration tests. Report live-model tests separately. |
+| `make test` | Run unit and full HTTP lifecycle tests in a separate disposable Compose project, then assert database privilege boundaries. The bundled inference double is test-only and is never a normal-runtime fallback. |
 | `make down` | Stop all demo-managed processes. Leave persisted demo state intact. |
-| `make demo-reset` | Ask for explicit confirmation, then reset only the synthetic demo dataset. Preserve independent acceptance evidence. |
+| `make demo-reset` | Ask for explicit confirmation, then remove only the synthetic demo's Compose volumes. Preserve independent acceptance evidence. |
+
+`make backup` creates checksummed database and private-content archives below ignored `.runtime/backups`. `make restore BACKUP=.runtime/backups/<timestamp>` verifies checksums, asks for explicit confirmation and restores only the demo-managed database and content volumes.
 
 Before the first model-backed run, open **Model Setup**. The rest of the interface should remain usable for fixture inspection and deterministic lifecycle checks if a model is unavailable.
 
@@ -168,4 +168,4 @@ The demo must show real error states and remain unpublished after failed admissi
 | [Decisions](docs/decisions.md) | Scope decisions and their reasons. |
 | [Project instructions](AGENTS.md) | Repository rules and publication boundaries. |
 
-Implementation uses `feat/local-demo`, commits and pushes its work, and prepares a PR for independent review and human merge. The README must be updated from this planned run contract to verified commands and actual screenshots before delivery is declared complete.
+Implementation uses `feat/local-demo` and a pull request for independent review and human merge. See [implementation evidence](docs/evidence/implementation.md) for exact tested revisions and remaining gates.
