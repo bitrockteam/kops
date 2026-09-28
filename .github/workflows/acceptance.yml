@@ -1,0 +1,21 @@
+name: Local demo acceptance
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  kops-test:
+    name: kops-test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare local configuration
+        run: make setup
+      - name: Verify workflow and database privileges
+        run: make test
