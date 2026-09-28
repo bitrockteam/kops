@@ -1,0 +1,27 @@
+# Local runtime, credentials and private implementation notes
+.env
+.env.*
+!.env.example
+.local/
+.runtime/
+.private/
+secrets/
+artifacts/local/
+*.sqlite
+*.sqlite3
+*.db
+*.pem
+*.key
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
