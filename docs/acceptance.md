@@ -44,8 +44,8 @@ Mocked identity tests prove local contract behavior only. A single presenter swi
 | Status | Scenarios | Evidence boundary |
 | --- | --- | --- |
 | Verified for tested paths in repeatable automated tests | A01, A02, A04, A05, A06, A11, A12, A13, A20, A21 | Fresh disposable Compose project, real PostgreSQL and service roles, test-only inference where generation was required. |
-| Partially verified | A03, A07, A08, A09, A10, A14, A15, A16, A17, A18, A19, A22, A23, A24, A25, A26 | Additional source-policy, audit-outage, streamed-limit, worker-restart and persistence variants passed, but complete metadata/fault coverage, current restore migration, normal reset or live-model behavior remain open. |
-| Current synthetic restore observed at storage level | A23 | A confirmed restore recovered the database, four private-content archives and healthy API on the current PostgreSQL mount. A protected page read after restore and migration from real prior data remain unverified. |
+| Partially verified | A03, A07, A08, A09, A10, A14, A15, A16, A17, A18, A19, A22, A24, A25, A26 | Additional source-policy, audit-outage, streamed-limit, worker-restart and persistence variants passed, but complete metadata/fault coverage, older-data migration, normal reset or live-model behavior remain open. |
+| Verified manually on the current synthetic backup path | A23 | A confirmed restore recovered the database and four private-content archives; an authorized page read returned content with an audit receipt and an unauthorized read returned 404. Migration from real prior data remains unverified. |
 | Not verified with live inference | A03, A10, A12, A25 | No operator-supplied local model was available. Fixture inference is not accepted as live evidence. |
 
 Actual GUI evidence covers publication and the revocation denial in [six Firefox screenshots](../screenshots/README.md). Independent human verification and the live model-quality set remain delivery gates rather than inferred successes.

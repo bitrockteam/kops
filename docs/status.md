@@ -17,7 +17,7 @@
 - Actual Firefox screenshots of publication, authorized and revoked catalogs, access administration, audit, and a denied direct read.
 - Post-review hardening: PostgreSQL 18 mount and upgrade preflight, complete query input manifests, current dependency checks on candidate/page/answer/catalog delivery, audience-scoped audit views, bounded streaming model responses, serialized publication, and interrupted-worker recovery.
 
-## Validation observed on 28 September 2026
+## Validation observed on 28–29 September 2026
 
 - `make setup`: passed after Docker was started; no model or identity server was installed.
 - `make test` on the hardened worktree: 12 tests passed from fresh isolated volumes, followed by PostgreSQL privilege assertions, worker-interruption recovery, and successful PostgreSQL job and query-manifest reads after container recreation. The exact tested commit is recorded in the implementation evidence report after commit.
@@ -28,7 +28,7 @@
 - GitHub Actions `kops-test` passed on pull-request commit `289115f`; the feature branch was not merged into `main`.
 - Headless Firefox captured six actual GUI views from a disposable fixture-backed stack at `30ccfb0`; that stack and its synthetic volumes were removed after capture.
 - The PostgreSQL upgrade preflight refused a deliberately created empty named volume, instead of initializing a replacement database. The empty probe volume was removed immediately. This is not a migration test of real prior data.
-- The current backup/restore path was checked in disposable Compose project `kops-restorecheck` after a fixture-backed workflow. The first restore attempt exposed a content-permission failure. Commit `4f942dd` removed the root-user override, and `5277c46` added a bounded API readiness check. Fresh restores recovered 5 sources, 3 candidates, 4 page versions and 165 audit events, matched all four archived content-file counts, and returned a healthy API. The disposable volumes were removed. A protected page read after restore was not exercised.
+- The current backup/restore path was checked in disposable Compose project `kops-restorecheck` after a fixture-backed workflow. The first restore attempt exposed a content-permission failure. Commit `4f942dd` removed the root-user override, and `5277c46` added a bounded API readiness check. Fresh restores recovered 5 sources, 3 candidates, 4 page versions and 165 audit events, matched all four archived content-file counts, and returned a healthy API. A further fresh snapshot published an Engineering page before backup; after restore, an authorized persona read that page with an audit receipt and a Finance-only persona was refused with 404. All disposable volumes were removed. Migration from real prior PostgreSQL data remains unverified.
 - Pull request 1 was closed without merge or independent approval on 28 September 2026. Franco instructed that it remain closed. The feature branch remains pushed and separate from `main`.
 
 The deterministic inference service is a test double and does not satisfy live-model acceptance. No local Ollama, llama.cpp server or LM Studio endpoint was available on this machine, so live compilation, live questions and model-quality assessment remain unverified.
