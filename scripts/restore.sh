@@ -47,4 +47,18 @@ docker compose run --rm --no-deps worker tar --no-same-owner --no-same-permissio
 docker compose run --rm --no-deps publisher tar --no-same-owner --no-same-permissions --touch -C /var/lib/kops/content/pages -xf - <"$backup_path/pages.tar"
 docker compose run --rm --no-deps api tar --no-same-owner --no-same-permissions --touch -C /var/lib/kops/content/answers -xf - <"$backup_path/answers.tar"
 docker compose up -d
+ready=false
+attempt=0
+while [ "$attempt" -lt 30 ]; do
+  if docker compose exec -T api python -c 'import urllib.request; urllib.request.urlopen("http://127.0.0.1:8080/health", timeout=2).read()' >/dev/null 2>&1; then
+    ready=true
+    break
+  fi
+  attempt=$((attempt + 1))
+  sleep 1
+done
+if [ "$ready" != true ]; then
+  printf '%s\n' 'Restore loaded the backup, but the API did not become healthy within 30 checks. Inspect make logs before using the restored data.' >&2
+  exit 1
+fi
 printf '%s\n' "Restore completed from $backup_path. The trusted local host operation is outside the in-app audit boundary."
