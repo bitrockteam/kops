@@ -30,6 +30,8 @@
 - The PostgreSQL upgrade preflight refused a deliberately created empty named volume, instead of initializing a replacement database. The empty probe volume was removed immediately. This is not a migration test of real prior data.
 - The current backup/restore path was checked in disposable Compose project `kops-restorecheck` after a fixture-backed workflow. The first restore attempt exposed a content-permission failure. Commit `4f942dd` removed the root-user override, and `5277c46` added a bounded API readiness check. Fresh restores recovered 5 sources, 3 candidates, 4 page versions and 165 audit events, matched all four archived content-file counts, and returned a healthy API. A further fresh snapshot published an Engineering page before backup; after restore, an authorized persona read that page with an audit receipt and a Finance-only persona was refused with 404. All disposable volumes were removed. Migration from real prior PostgreSQL data remains unverified.
 - Pull request 1 was closed without merge or independent approval on 28 September 2026. Franco instructed that it remain closed. The feature branch remains pushed and separate from `main`.
+- `make test` passed again on exact head `5ac25db` on 29 September 2026: 12 tests, database privilege assertions, worker interruption recovery and state persistence after container recreation. The disposable test project and volumes were removed.
+- Pull request 2 is open against `main` for the current branch. Its required check and independent human review are tracked on the PR; no merge has occurred.
 
 The deterministic inference service is a test double and does not satisfy live-model acceptance. No local Ollama, llama.cpp server or LM Studio endpoint was available on this machine, so live compilation, live questions and model-quality assessment remain unverified.
 
@@ -39,4 +41,4 @@ Implementation and repeatable evidence verify covered local-demo behavior for C0
 
 ## Next action
 
-Run a user-selected local model through Model Setup and complete the live-model quality set. Independent review and a new authorized pull-request path are needed before shared-branch integration. Leave pull request 1 closed and do not merge automatically.
+Run a user-selected local model through Model Setup and complete the live-model quality set. Obtain the required check and independent human approval on pull request 2 before shared-branch integration. Pull request 1 remains closed.

@@ -20,6 +20,7 @@
 | `make setup` | Passed; validated Docker and Compose and prepared ignored per-service secrets without installing a model or identity provider. |
 | `make test` at the initial commit | Passed: 10 tests in 9.75 seconds, followed by `database privilege boundaries verified`. The target created fresh volumes and removed its containers, networks and volumes on exit. |
 | Current application checks | `make test` on exact commit `934d663` passed 12 tests in 19.20 seconds, database privilege assertions, worker-interruption recovery, and PostgreSQL job and query-manifest reads after Compose container recreation. The disposable `kops-test` project and volumes were removed on exit. |
+| Current branch repeat | `make test` on exact head `5ac25db` passed 12 tests on 29 September 2026, database privilege assertions, worker-interruption recovery, and persisted job and query-manifest reads after container recreation. The disposable `kops-test` project and volumes were removed on exit. |
 | Latest observed CI check | [GitHub Actions `kops-test`](https://github.com/bitrockteam/kops/actions/runs/36485380846/job/109140911686) passed on pull-request commit `289115f`. No CI result is claimed for the later restore-script commit because the pull request was closed. |
 | `python3 -m compileall -q app tests` | Passed. |
 | `sh -n scripts/*.sh docker/db/init.sh` | Passed. |
@@ -67,7 +68,7 @@ These images prove what Firefox rendered in the fixture-backed local demo. They 
 
 ## Shared-branch protection
 
-GitHub reported `main` as unprotected before this work. The repository administrator enabled branch protection with one required approval, dismissal of stale approvals, approval by someone other than the last pusher, resolved conversations, strict `kops-test` status from GitHub Actions app ID 15368, linear history, administrator enforcement, and force-push/deletion denial. A follow-up GitHub API read reported `protected: true` and the configured fields. Pull request 1 reported `BLOCKED` and `REVIEW_REQUIRED` while the check on `289115f` succeeded. It was closed without merge on 28 September 2026 and Franco instructed that it remain closed. No merge or deliberately rejected push was attempted, so this is observed configuration and pull-request gating, not a proof that every possible privileged bypass is impossible. Repository administrators can still edit protection settings. Any future integration needs its own current check and independent human approval.
+GitHub reported `main` as unprotected before this work. The repository administrator enabled branch protection with one required approval, dismissal of stale approvals, approval by someone other than the last pusher, resolved conversations, strict `kops-test` status from GitHub Actions app ID 15368, linear history, administrator enforcement, and force-push/deletion denial. A follow-up GitHub API read reported `protected: true` and the configured fields. Pull request 1 reported `BLOCKED` and `REVIEW_REQUIRED` while the check on `289115f` succeeded. It was closed without merge on 28 September 2026 and Franco instructed that it remain closed. Pull request 2 opened against `main` on 29 September local time; at initial observation it was `BLOCKED` and `REVIEW_REQUIRED` while its `kops-test` check was in progress. No merge or deliberately rejected push was attempted, so this is observed configuration and pull-request gating, not a proof that every possible privileged bypass is impossible. Repository administrators can still edit protection settings. Integration needs a current check and independent human approval on pull request 2.
 
 ## Baseline conformity
 
@@ -91,4 +92,4 @@ Profile C applies to the implementation workflow. The product demonstrates a loc
 ## Remaining delivery gates
 
 1. Select an operator-controlled local model in Model Setup and run the live compilation, question and quality scenarios.
-2. Arrange independent review through a newly authorized pull-request path if integration is resumed. Pull request 1 remains closed; do not merge automatically.
+2. Obtain the required check and independent human review on pull request 2. Pull request 1 remains closed; do not merge before the gates are met.
