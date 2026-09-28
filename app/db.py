@@ -10,6 +10,9 @@ from psycopg_pool import ConnectionPool
 from app.config import Settings
 
 
+PUBLICATION_POLICY_LOCK_KEY = 19760616
+
+
 class Database:
     def __init__(self, settings: Settings, min_size: int = 1, max_size: int = 5) -> None:
         self.pool = ConnectionPool(

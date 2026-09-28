@@ -4,6 +4,7 @@ import hashlib
 import html
 import json
 import os
+import time
 import uuid
 from contextlib import asynccontextmanager
 from datetime import UTC, datetime, timedelta
@@ -20,8 +21,9 @@ from itsdangerous import BadSignature, URLSafeTimedSerializer
 from app.audit import AuditClient, AuditUnavailable
 from app.config import Settings
 from app.content import LocalContentStore
-from app.db import Database
+from app.db import PUBLICATION_POLICY_LOCK_KEY, Database
 from app.model import LocalModelClient, ModelError
+from app.provenance import MixedSourceVersions, inherit_dependency
 from app.rendering import render_markdown
 from app.security import (
     AuthenticationError,
@@ -67,6 +69,11 @@ templates = Jinja2Templates(directory=Path(__file__).parent / "templates")
 @app.exception_handler(DestinationError)
 def destination_error_handler(_: Request, error: DestinationError) -> JSONResponse:
     return JSONResponse(status_code=400, content={"detail": str(error)})
+
+
+@app.exception_handler(AuditUnavailable)
+def audit_unavailable_handler(_: Request, __: AuditUnavailable) -> JSONResponse:
+    return JSONResponse(status_code=503, content={"detail": "protected action blocked because durable audit is unavailable"})
 
 
 def _principal(session: str | None) -> Principal:
@@ -199,6 +206,65 @@ def _source_for_read(principal: Principal, source_id: str) -> dict[str, Any]:
     return dict(row)
 
 
+def _dependencies_allowed(principal: Principal, audience_id: str, rows: list[Any]) -> bool:
+    if not rows:
+        return False
+    target_groups, _ = _groups_for_audience(audience_id)
+    return all(
+        item["source_active"] and item["source_audience_active"]
+        and item["source_policy_revision"] == item["current_policy_revision"]
+        and set(item["source_required_groups"]).issubset(target_groups)
+        and set(item["source_required_groups"]).issubset(principal.groups)
+        for item in rows
+    )
+
+
+def _page_dependencies(connection: Any, document_id: str, version: int) -> list[Any]:
+    return connection.execute(
+        """
+        SELECT d.*, s.title, s.policy_revision AS current_policy_revision,
+               s.current_revision, s.active AS source_active,
+               a.active AS source_audience_active, a.required_groups AS source_required_groups
+        FROM kops.dependencies d JOIN kops.sources s ON s.source_id = d.source_id
+        JOIN kops.audiences a ON a.audience_id = s.audience_id
+        WHERE d.document_id = %s AND d.document_version = %s
+        """,
+        (document_id, version),
+    ).fetchall()
+
+
+def _job_dependencies(connection: Any, job_id: str) -> list[Any]:
+    return connection.execute(
+        """
+        SELECT ji.source_id, ji.source_revision, ji.source_policy_revision,
+               s.policy_revision AS current_policy_revision, s.active AS source_active,
+               sa.active AS source_audience_active, sa.required_groups AS source_required_groups
+        FROM kops.job_inputs ji JOIN kops.sources s ON s.source_id = ji.source_id
+        JOIN kops.audiences sa ON sa.audience_id = s.audience_id
+        WHERE ji.job_id = %s
+        """,
+        (job_id,),
+    ).fetchall()
+
+
+def _response_inputs_allowed(principal: Principal, response: Any) -> bool:
+    if not policy.authorize(principal, "read", response["audience_id"]).allowed:
+        return False
+    with database.connection() as connection:
+        inputs = connection.execute(
+            "SELECT document_id, document_version FROM kops.query_response_inputs WHERE response_id = %s",
+            (response["response_id"],),
+        ).fetchall()
+        allowed = bool(inputs) and all(
+            _dependencies_allowed(
+                principal, response["audience_id"],
+                _page_dependencies(connection, page["document_id"], page["document_version"]),
+            )
+            for page in inputs
+        )
+    return allowed
+
+
 def _candidate_for(principal: Principal, candidate_id: str, action: str = "read") -> dict[str, Any]:
     with database.connection() as connection:
         row = connection.execute(
@@ -214,8 +280,11 @@ def _candidate_for(principal: Principal, candidate_id: str, action: str = "read"
             inputs = connection.execute(
                 """
                 SELECT ji.source_id, ji.source_revision, ji.source_policy_revision, ji.content_hash,
-                       s.title, s.audience_id
+                       s.title, s.audience_id, s.policy_revision AS current_policy_revision,
+                       s.active AS source_active, a.active AS source_audience_active,
+                       a.required_groups AS source_required_groups
                 FROM kops.job_inputs ji JOIN kops.sources s ON s.source_id = ji.source_id
+                JOIN kops.audiences a ON a.audience_id = s.audience_id
                 WHERE ji.job_id = %s ORDER BY s.title
                 """,
                 (row["job_id"],),
@@ -225,8 +294,14 @@ def _candidate_for(principal: Principal, candidate_id: str, action: str = "read"
     required, _ = _groups_for_audience(row["audience_id"])
     if not required.issubset(principal.groups):
         raise HTTPException(status_code=404, detail="candidate not available")
+    if row["state"] == "blocked" or not _dependencies_allowed(principal, row["audience_id"], inputs):
+        raise HTTPException(status_code=404, detail="candidate not available")
     if action != "read" and action not in principal.action_grants and "*" not in principal.action_grants:
         raise HTTPException(status_code=403, detail="action is not granted")
+    try:
+        _event(principal, f"candidate.{action}", "candidate", candidate_id, row["audience_id"], "allowed", "current_dependencies_allowed", "delivery_attempt")
+    except AuditUnavailable as error:
+        raise HTTPException(status_code=503, detail="candidate delivery blocked because durable audit is unavailable") from error
     result = dict(row)
     result["inputs"] = [dict(item) for item in inputs]
     result["rendered_pages"] = [
@@ -248,15 +323,7 @@ def _document_for_read(principal: Principal, document_id: str, version: int | No
             "SELECT * FROM kops.page_versions WHERE document_id = %s AND version = %s",
             (document_id, selected_version),
         ).fetchone()
-        dependencies = connection.execute(
-            """
-            SELECT d.*, s.title, s.policy_revision AS current_policy_revision,
-                   s.current_revision
-            FROM kops.dependencies d JOIN kops.sources s ON s.source_id = d.source_id
-            WHERE d.document_id = %s AND d.document_version = %s
-            """,
-            (document_id, selected_version),
-        ).fetchall()
+        dependencies = _page_dependencies(connection, document_id, selected_version)
     if not page:
         raise HTTPException(status_code=404, detail="page version not available")
     decision = policy.authorize(principal, "read", document["audience_id"])
@@ -266,7 +333,7 @@ def _document_for_read(principal: Principal, document_id: str, version: int | No
         except AuditUnavailable:
             pass
         raise HTTPException(status_code=404, detail="page not available")
-    if document["publication_state"] == "blocked":
+    if document["publication_state"] == "blocked" or not _dependencies_allowed(principal, document["audience_id"], dependencies):
         raise HTTPException(status_code=409, detail="page is blocked pending policy re-evaluation")
     try:
         receipt = _event(
@@ -314,7 +381,11 @@ def _active_model_config() -> dict[str, Any] | None:
     }
 
 
-def _dashboard_state(principal: Principal) -> dict[str, Any]:
+def _dashboard_state(principal: Principal, action: str = "dashboard.read") -> dict[str, Any]:
+    try:
+        _event(principal, action, "catalog", None, None, "allowed", "session_policy_checked", "delivery_attempt")
+    except AuditUnavailable as error:
+        raise HTTPException(status_code=503, detail="protected catalog delivery blocked because durable audit is unavailable") from error
     with database.connection() as connection:
         personas = connection.execute(
             "SELECT subject_id, display_name, action_grants FROM kops.personas WHERE active ORDER BY display_name"
@@ -371,15 +442,25 @@ def _dashboard_state(principal: Principal) -> dict[str, Any]:
         for row in audiences
         if set(row["required_groups"]).issubset(principal.groups)
     }
-    visible_jobs = [
-        dict(row)
-        for row in jobs
-        if row["audience_id"] in visible_audiences
-        and (row["requested_by"] == principal.subject_id or {"review", "authorize", "publish"} & principal.action_grants or "*" in principal.action_grants)
-    ]
-    visible_documents = [dict(row) for row in documents if row["audience_id"] in visible_audiences]
-    visible_operations = [dict(row) for row in operations if row["audience_id"] in visible_audiences]
+    with database.connection() as connection:
+        visible_jobs = [
+            dict(row) for row in jobs
+            if row["audience_id"] in visible_audiences
+            and (row["requested_by"] == principal.subject_id or {"review", "authorize", "publish"} & principal.action_grants or "*" in principal.action_grants)
+            and _dependencies_allowed(principal, row["audience_id"], _job_dependencies(connection, row["job_id"]))
+        ]
+        visible_documents = [
+            dict(row) for row in documents
+            if row["audience_id"] in visible_audiences
+            and row["publication_state"] != "blocked"
+            and _dependencies_allowed(
+                principal, row["audience_id"],
+                _page_dependencies(connection, row["document_id"], row["current_version"]),
+            )
+        ]
     visible_job_ids = {row["job_id"] for row in visible_jobs}
+    visible_candidate_ids = {row["candidate_id"] for row in visible_jobs if row["candidate_id"]}
+    visible_operations = [dict(row) for row in operations if row["candidate_id"] in visible_candidate_ids]
     return {
         "personas": [dict(row) for row in personas],
         "audiences": [dict(row) for row in audiences if row["audience_id"] in visible_audiences],
@@ -388,11 +469,11 @@ def _dashboard_state(principal: Principal) -> dict[str, Any]:
         "jobs": visible_jobs,
         "documents": visible_documents,
         "operations": visible_operations,
-        "verifications": [dict(row) for row in verifications if row["audience_id"] in visible_audiences],
-        "authorizations": [dict(row) for row in authorizations if row["audience_id"] in visible_audiences],
-        "responses": [dict(row) for row in responses],
+        "verifications": [dict(row) for row in verifications if row["candidate_id"] in visible_candidate_ids],
+        "authorizations": [dict(row) for row in authorizations if row["candidate_id"] in visible_candidate_ids],
+        "responses": [dict(row) for row in responses if _response_inputs_allowed(principal, row)],
         "job_events": [dict(row) for row in job_events if row["job_id"] in visible_job_ids],
-        "audit_events": [dict(row) for row in audit_events],
+        "audit_events": [dict(row) for row in audit_events if row["audience_id"] in visible_audiences],
         "model": _active_model_config(),
         "is_operator": _is_operator(principal),
     }
@@ -417,6 +498,23 @@ def index(
     kops_session: str | None = Cookie(default=None),
 ) -> HTMLResponse:
     principal = _principal(kops_session)
+    try:
+        state = _dashboard_state(principal)
+    except HTTPException as error:
+        if error.status_code != 503:
+            raise
+        if settings.demo_mode and _is_operator(principal):
+            token = html.escape(_csrf_for(principal), quote=True)
+            return HTMLResponse(
+                "<main><h1>Protected dashboard unavailable</h1>"
+                "<p>Durable audit is unavailable. No protected catalog or candidate content was delivered.</p>"
+                "<form method='post' action='/demo/audit-availability'>"
+                f"<input type='hidden' name='csrf' value='{token}'>"
+                "<input type='hidden' name='enabled' value='true'>"
+                "<button type='submit'>Restore demo audit collector</button></form></main>",
+                status_code=503,
+            )
+        raise
     candidate_detail = _candidate_for(principal, candidate) if candidate else None
     document_detail = _document_for_read(principal, document, version) if document else None
     return templates.TemplateResponse(
@@ -428,7 +526,7 @@ def index(
             "stage": stage,
             "message": message,
             "level": level,
-            "state": _dashboard_state(principal),
+            "state": state,
             "candidate_detail": candidate_detail,
             "document_detail": document_detail,
             "mock_identity": True,
@@ -959,26 +1057,33 @@ def query_pages(
             """,
             (audience_id,),
         ).fetchall()
+        pages = [
+            page for page in pages
+            if _dependencies_allowed(
+                principal, audience_id,
+                _page_dependencies(connection, page["document_id"], page["current_version"]),
+            )
+        ]
         run = connection.execute("SELECT run_id FROM kops.runs ORDER BY created_at DESC LIMIT 1").fetchone()
     if not pages:
         raise HTTPException(status_code=409, detail="no authorized published pages are available for this audience")
     _event(principal, "query.execute", "audience", audience_id, audience_id, "allowed", "authorized_compiled_pages_only", "attempt", details={"page_count": len(pages)})
     allowed_citations: set[tuple[str, int]] = set()
     page_blocks: list[str] = []
-    total_bytes = 0
     for page in pages:
         body = store.read(page["object_key"])
-        total_bytes += len(body.encode())
         allowed_citations.add((str(page["document_id"]), page["current_version"]))
         page_blocks.append(
             f"<page document_id=\"{page['document_id']}\" version=\"{page['current_version']}\" title=\"{page['title']}\">\n{body}\n</page>"
         )
-    if total_bytes > model["limits"]["max_input_bytes"]:
-        raise HTTPException(status_code=413, detail="authorized page set exceeds the configured model input limit")
     prompt = f"Question: {question.strip()}\n\n" + "\n\n".join(page_blocks)
+    if len(prompt.encode()) > int(model["limits"]["max_input_bytes"]):
+        raise HTTPException(status_code=413, detail="question and authorized page set exceed the configured model input limit")
     response_id = str(uuid.uuid4())
     try:
-        result = model_client.answer(model, prompt)
+        result = model_client.answer(model, prompt, deadline=time.monotonic() + int(model["limits"]["wall_time_seconds"]))
+        if len(canonical_json(result).encode()) > int(model["limits"]["max_output_bytes"]):
+            raise ModelError("local model answer exceeds the configured output byte limit")
         answer = str(result.get("answer", "")).strip()
         raw_citations = result.get("citations", [])
         citations: list[dict[str, Any]] = []
@@ -998,6 +1103,17 @@ def query_pages(
             evaluation = "unsupported"
         if evaluation == "supported" and not citations:
             evaluation = "unsupported"
+        fresh_principal = _principal(kops_session)
+        _require(fresh_principal, "query", audience_id)
+        with database.connection() as connection:
+            if not all(
+                _dependencies_allowed(
+                    fresh_principal, audience_id,
+                    _page_dependencies(connection, page["document_id"], page["current_version"]),
+                )
+                for page in pages
+            ):
+                raise HTTPException(status_code=409, detail="query inputs changed policy during local inference")
         object_key, digest = store.put_immutable("answers", response_id, "1", answer)
         with database.connection() as connection:
             connection.execute(
@@ -1009,6 +1125,11 @@ def query_pages(
                 """,
                 (response_id, run["run_id"], principal.subject_id, audience_id, question.strip(), object_key, digest, json.dumps(citations), evaluation, model["revision"]),
             )
+            for page in pages:
+                connection.execute(
+                    "INSERT INTO kops.query_response_inputs(response_id, document_id, document_version) VALUES (%s, %s, %s)",
+                    (response_id, page["document_id"], page["current_version"]),
+                )
             connection.commit()
         _event(principal, "query.execute", "query_response", response_id, audience_id, "allowed", "grounded_answer_recorded", "completed", details={"evaluation": evaluation, "citation_count": len(citations), "model_config_revision": model["revision"]})
         return _redirect("read", f"Answer {response_id} recorded as {evaluation}; inspect it below")
@@ -1037,6 +1158,8 @@ def read_response(response_id: str, kops_session: str | None = Cookie(default=No
     if not response or response["subject_id"] != principal.subject_id:
         raise HTTPException(status_code=404, detail="answer not available")
     _require(principal, "read", response["audience_id"])
+    if not _response_inputs_allowed(principal, response):
+        raise HTTPException(status_code=409, detail="answer dependencies require policy re-evaluation")
     _event(principal, "answer.read", "query_response", response_id, response["audience_id"], "allowed", "response_owner_and_audience", "delivery_attempt")
     answer = store.read(response["answer_object_key"]) if response["answer_object_key"] else response["error_sanitized"]
     citations = html.escape(json.dumps(response["citations"], indent=2))
@@ -1058,6 +1181,8 @@ def save_answer_candidate(
         if not response or response["subject_id"] != principal.subject_id:
             raise HTTPException(status_code=404, detail="answer not available")
         _require(principal, "save_answer", response["audience_id"])
+        if not _response_inputs_allowed(principal, response):
+            raise HTTPException(status_code=409, detail="answer dependencies require policy re-evaluation")
         if response["evaluation"] == "failed" or not response["answer_object_key"]:
             raise HTTPException(status_code=409, detail="failed answers cannot become candidates")
         run = connection.execute("SELECT run_id FROM kops.runs ORDER BY created_at DESC LIMIT 1").fetchone()
@@ -1075,7 +1200,11 @@ def save_answer_candidate(
             (job_id, run["run_id"], principal.subject_id, response["audience_id"], f"Promote query response {response_id} to a private candidate", json.dumps(snapshot) if snapshot else None, response["model_config_revision"], json.dumps(limits)),
         )
         dependency_rows: dict[str, dict[str, Any]] = {}
-        for citation in response["citations"]:
+        input_pages = connection.execute(
+            "SELECT document_id, document_version FROM kops.query_response_inputs WHERE response_id = %s",
+            (response_id,),
+        ).fetchall()
+        for citation in input_pages:
             rows = connection.execute(
                 """
                 SELECT d.source_id, d.source_revision, d.source_policy_revision,
@@ -1084,10 +1213,13 @@ def save_answer_candidate(
                   ON sv.source_id = d.source_id AND sv.revision = d.source_revision
                 WHERE d.document_id = %s AND d.document_version = %s
                 """,
-                (citation["document_id"], citation["version"]),
+                (citation["document_id"], citation["document_version"]),
             ).fetchall()
             for item in rows:
-                dependency_rows[str(item["source_id"])] = dict(item)
+                try:
+                    inherit_dependency(dependency_rows, item)
+                except MixedSourceVersions as error:
+                    raise HTTPException(status_code=409, detail=str(error)) from error
         for source_id, item in dependency_rows.items():
             connection.execute(
                 """
@@ -1110,7 +1242,14 @@ def save_answer_candidate(
             "contradictions": [],
             "quality_notes": ["Promoted from a query response; publication still requires verification and authorization."],
         }
-        manifest = {"page_citations": response["citations"], "source_dependencies": sorted(dependency_rows)}
+        manifest = {
+            "page_inputs": [
+                {"document_id": str(item["document_id"]), "version": item["document_version"]}
+                for item in input_pages
+            ],
+            "page_citations": response["citations"],
+            "source_dependencies": sorted(dependency_rows),
+        }
         candidate_hash = hashlib.sha256(canonical_json(payload).encode()).hexdigest()
         candidate_id = str(uuid.uuid4())
         connection.execute(
@@ -1140,6 +1279,7 @@ def _commit_source_revision(
     new_revision = source["current_revision"] + 1
     object_key, digest = store.put_immutable("sources", source_id, str(new_revision), content)
     with database.connection() as connection:
+        connection.execute("SELECT pg_advisory_xact_lock(%s)", (PUBLICATION_POLICY_LOCK_KEY,))
         connection.execute(
             """
             INSERT INTO kops.source_versions(source_id, revision, object_key, content_hash, origin, created_by)
@@ -1222,6 +1362,7 @@ def change_membership(
         raise HTTPException(status_code=400, detail="unsupported fixture group")
     _event(principal, "membership.change", "membership", f"{subject_id}:{group_id}", None, "allowed", "policy_admin_grant", "attempt", details={"active": active})
     with database.connection() as connection:
+        connection.execute("SELECT pg_advisory_xact_lock(%s)", (PUBLICATION_POLICY_LOCK_KEY,))
         updated = connection.execute(
             """
             INSERT INTO kops.memberships(subject_id, group_id, active, revision)
@@ -1260,6 +1401,7 @@ def change_source_policy(
     _groups_for_audience(audience_id)
     _event(principal, "source.policy_change", "source", source_id, audience_id, "allowed", "policy_admin_grant", "attempt")
     with database.connection() as connection:
+        connection.execute("SELECT pg_advisory_xact_lock(%s)", (PUBLICATION_POLICY_LOCK_KEY,))
         source = connection.execute(
             "UPDATE kops.sources SET audience_id = %s, policy_revision = policy_revision + 1 WHERE source_id = %s RETURNING policy_revision",
             (audience_id, source_id),
@@ -1431,7 +1573,7 @@ def policy_change_during_job(
 @app.get("/api/state")
 def api_state(kops_session: str | None = Cookie(default=None)) -> dict[str, Any]:
     principal = _principal(kops_session)
-    state = _dashboard_state(principal)
+    state = _dashboard_state(principal, "job_state.read")
     return {
         "run_id": str(state["run"]["run_id"]) if state["run"] else None,
         "jobs": [

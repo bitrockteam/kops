@@ -5,6 +5,7 @@ import socket
 import pytest
 
 from app.content import LocalContentStore
+from app.provenance import MixedSourceVersions, inherit_dependency
 from app.rendering import render_markdown
 from app.security import DestinationError, validate_model_endpoint
 
@@ -59,3 +60,10 @@ def test_hostile_markdown_does_not_render_active_content_or_remote_images():
     assert "<img" not in rendered
     assert 'href="javascript:' not in rendered
     assert "https://example.invalid/page" in rendered
+
+
+def test_answer_promotion_rejects_mixed_source_versions():
+    inherited = {}
+    inherit_dependency(inherited, {"source_id": "source-1", "source_revision": 1, "source_policy_revision": 2})
+    with pytest.raises(MixedSourceVersions, match="multiple versions"):
+        inherit_dependency(inherited, {"source_id": "source-1", "source_revision": 2, "source_policy_revision": 2})

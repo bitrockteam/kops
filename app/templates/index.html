@@ -57,7 +57,7 @@
       <section class="panel">
         <div class="panel-heading"><div><p class="step">Stage 0</p><h2>Model Setup</h2></div><span class="badge {{ 'good' if state.model and state.model.connection_status == 'reachable' else 'warn' }}">{{ state.model.connection_status if state.model else 'required' }}</span></div>
         <p>Only the local operator can choose a destination. No runtime, model weights, identity server, or hosted fallback is installed automatically.</p>
-        {% if state.model %}
+        {% if state.model and state.is_operator %}
         <dl class="evidence-grid">
           <div><dt>Adapter</dt><dd>{{ state.model.adapter }}</dd></div>
           <div><dt>Endpoint</dt><dd>{{ state.model.endpoint }}</dd></div>

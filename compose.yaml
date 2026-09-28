@@ -40,7 +40,7 @@ services:
       - db_audit_password
       - db_content_password
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql
       - ./docker/db/init.sh:/docker-entrypoint-initdb.d/00-init.sh:ro
       - ./db/schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
       - ./db:/checks:ro

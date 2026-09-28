@@ -4,9 +4,11 @@ from __future__ import annotations
 
 import json
 import re
+import asyncio
 from typing import Any
 
 from fastapi import FastAPI
+from fastapi.responses import StreamingResponse
 
 
 app = FastAPI(title="kops test-only fixture inference", docs_url=None, redoc_url=None)
@@ -59,7 +61,9 @@ def _response(messages: list[dict[str, str]]) -> str:
             "quality_notes": ["Deterministic fixture output for repeatable tests only."],
         }
     else:
-        citations = [{"document_id": document_id, "version": version} for document_id, version in _page_ids(prompt)]
+        # Deliberately cite only one supplied page so tests distinguish citations
+        # from the complete input set that could influence the answer.
+        citations = [{"document_id": document_id, "version": version} for document_id, version in _page_ids(prompt)[:1]]
         question = prompt.lower()
         if "unanswerable" in question:
             result = {"answer": "The authorized pages do not support an answer.", "citations": [], "evaluation": "unsupported"}
@@ -71,7 +75,15 @@ def _response(messages: list[dict[str, str]]) -> str:
 
 
 @app.post("/api/chat")
-def ollama_chat(payload: dict[str, Any]) -> dict[str, Any]:
+async def ollama_chat(payload: dict[str, Any]) -> Any:
+    if payload.get("model") == "fixture-trickle":
+        async def trickle():
+            for _ in range(40):
+                yield b" "
+                await asyncio.sleep(0.1)
+        return StreamingResponse(trickle(), media_type="application/json")
+    if payload.get("model") == "fixture-oversize":
+        return {"message": {"role": "assistant", "content": "x" * 10000}, "done": True}
     return {"message": {"role": "assistant", "content": _response(payload["messages"])}, "done": True}
 
 

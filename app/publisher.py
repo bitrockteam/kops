@@ -12,7 +12,7 @@ from fastapi import FastAPI, Header, HTTPException
 from app.audit import AuditClient, AuditUnavailable, internal_token_valid
 from app.config import Settings
 from app.content import LocalContentStore
-from app.db import Database
+from app.db import PUBLICATION_POLICY_LOCK_KEY, Database
 
 
 settings = Settings.load("publisher")
@@ -38,9 +38,9 @@ def _require_internal(authorization: str | None) -> None:
         raise HTTPException(status_code=401, detail="internal authentication required")
 
 
-def _fresh_operation(operation_id: str) -> dict[str, Any]:
-    with database.connection() as connection:
-        row = connection.execute(
+def _fresh_operation(operation_id: str, connection: Any | None = None) -> dict[str, Any]:
+    def fetch(active_connection: Any) -> Any:
+        return active_connection.execute(
             """
             SELECT o.*, pa.candidate_id, pa.candidate_hash AS authorized_hash,
                    pa.audience_id, pa.authorized_by, pa.expected_versions,
@@ -55,6 +55,11 @@ def _fresh_operation(operation_id: str) -> dict[str, Any]:
             """,
             (operation_id,),
         ).fetchone()
+    if connection is None:
+        with database.connection() as active_connection:
+            row = fetch(active_connection)
+    else:
+        row = fetch(connection)
     if not row:
         raise HTTPException(status_code=404, detail="operation not found")
     return dict(row)
@@ -72,7 +77,7 @@ def _mark_refused(operation_id: str, code: str) -> None:
         connection.commit()
 
 
-def _validate_freshness(operation: dict[str, Any]) -> None:
+def _validate_freshness(operation: dict[str, Any], connection: Any) -> None:
     if operation["operation_type"] != "publish_document":
         raise ValueError("unsupported typed operation")
     if operation["authorization_status"] != "active":
@@ -86,24 +91,25 @@ def _validate_freshness(operation: dict[str, Any]) -> None:
         raise ValueError("candidate hash changed after authorization")
     if operation["cancel_requested"] or operation["job_status"] == "cancelled":
         raise ValueError("job was stopped")
-    with database.connection() as connection:
-        persona = connection.execute(
+    persona = connection.execute(
             "SELECT action_grants FROM kops.personas WHERE subject_id = %s AND active",
             (operation["authorized_by"],),
         ).fetchone()
-        memberships = connection.execute(
+    memberships = connection.execute(
             "SELECT group_id FROM kops.memberships WHERE subject_id = %s AND active",
             (operation["authorized_by"],),
         ).fetchall()
-        audience = connection.execute(
+    audience = connection.execute(
             "SELECT required_groups, policy_revision FROM kops.audiences WHERE audience_id = %s AND active",
             (operation["audience_id"],),
         ).fetchone()
-        dependencies = connection.execute(
+    dependencies = connection.execute(
             """
             SELECT ji.source_id, ji.source_revision, ji.source_policy_revision,
-                   s.current_revision, s.policy_revision
+                   s.current_revision, s.policy_revision, s.active AS source_active,
+                   sa.active AS source_audience_active, sa.required_groups AS source_required_groups
             FROM kops.job_inputs ji JOIN kops.sources s ON s.source_id = ji.source_id
+            JOIN kops.audiences sa ON sa.audience_id = s.audience_id
             WHERE ji.job_id = %s
             """,
             (operation["job_id"],),
@@ -127,6 +133,9 @@ def _validate_freshness(operation: dict[str, Any]) -> None:
     for item in dependencies:
         if item["source_revision"] != item["current_revision"] or item["source_policy_revision"] != item["policy_revision"]:
             raise ValueError("source revision or policy changed after authorization")
+        source_groups = set(item["source_required_groups"])
+        if not item["source_active"] or not item["source_audience_active"] or not source_groups.issubset(set(audience["required_groups"])) or not source_groups.issubset({row["group_id"] for row in memberships}):
+            raise ValueError("source is no longer admissible for publisher and destination")
 
 
 def _deliver_outbox(operation_id: str) -> dict[str, Any] | None:
@@ -175,7 +184,8 @@ def publish(operation_id: str) -> dict[str, Any]:
     if operation["status"] == "refused":
         raise HTTPException(status_code=409, detail=f"operation refused: {operation['error_code']}")
     try:
-        _validate_freshness(operation)
+        with database.connection() as connection:
+            _validate_freshness(operation, connection)
         audit.append(
             {
                 "correlation_id": f"operation:{operation_id}",
@@ -205,10 +215,16 @@ def publish(operation_id: str) -> dict[str, Any]:
     outbox_id = str(uuid.uuid4())
     try:
         with database.connection() as connection:
-            connection.execute(
-                "UPDATE kops.operations SET status = 'executing' WHERE operation_id = %s AND status = 'pending'",
+            connection.execute("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE")
+            connection.execute("SELECT pg_advisory_xact_lock(%s)", (PUBLICATION_POLICY_LOCK_KEY,))
+            locked = connection.execute(
+                "UPDATE kops.operations SET status = 'executing' WHERE operation_id = %s AND status = 'pending' RETURNING operation_id",
                 (operation_id,),
-            )
+            ).fetchone()
+            if not locked:
+                raise ValueError("operation is no longer pending")
+            operation = _fresh_operation(operation_id, connection)
+            _validate_freshness(operation, connection)
             inputs = connection.execute(
                 "SELECT source_id, source_revision, source_policy_revision FROM kops.job_inputs WHERE job_id = %s",
                 (operation["job_id"],),

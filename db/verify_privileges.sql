@@ -19,6 +19,11 @@ BEGIN
     IF has_table_privilege('kops_api', 'kops.page_versions', 'INSERT') THEN
         RAISE EXCEPTION 'API unexpectedly bypasses the sole publication writer';
     END IF;
+    IF NOT has_table_privilege('kops_api', 'kops.query_response_inputs', 'INSERT')
+       OR has_table_privilege('kops_worker', 'kops.query_response_inputs', 'INSERT')
+       OR has_table_privilege('kops_publisher', 'kops.query_response_inputs', 'UPDATE') THEN
+        RAISE EXCEPTION 'answer input manifest authority is not isolated';
+    END IF;
     IF has_table_privilege('kops_content', 'kops.sources', 'UPDATE')
        OR has_table_privilege('kops_content', 'kops.page_versions', 'SELECT') THEN
         RAISE EXCEPTION 'content broker has authority beyond admitted source reads';

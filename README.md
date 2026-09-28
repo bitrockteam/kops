@@ -76,6 +76,8 @@ The intended default GUI URL is **http://127.0.0.1:8080**. The implementation mu
 
 `make backup` creates checksummed database and private-content archives below ignored `.runtime/backups`. `make restore BACKUP=.runtime/backups/<timestamp>` verifies checksums, asks for explicit confirmation and restores only the demo-managed database and content volumes.
 
+PostgreSQL 18 now stores its database under the named volume mounted at `/var/lib/postgresql`. `make up` refuses to recreate an older container that mounted the named volume at `/var/lib/postgresql/data`, because the actual database may be in a separate anonymous volume. For an existing installation, keep the old container and code running long enough to run `make backup` and verify the archive checksums. Then, with that backup safely retained, use the confirmed `make demo-reset`, start the corrected stack with `make up`, and run the confirmed `make restore BACKUP=<backup-directory>`. Do not reset or remove the old container before obtaining a verified backup. The startup preflight also refuses a pre-existing named volume without the expected PostgreSQL 18 data directory, rather than silently initializing an empty database. Fresh installations need no migration.
+
 Before the first model-backed run, open **Model Setup**. The rest of the interface should remain usable for fixture inspection and deterministic lifecycle checks if a model is unavailable.
 
 ## Configure the model at runtime

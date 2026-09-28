@@ -37,6 +37,7 @@ docker compose stop api worker publisher audit content
 docker compose exec -T db dropdb -U postgres --force --if-exists kops
 docker compose exec -T db createdb -U postgres kops
 docker compose exec -T db pg_restore -U postgres -d kops --exit-on-error <"$backup_path/database.dump"
+docker compose exec -T db psql -v ON_ERROR_STOP=1 -U postgres -d kops -f /checks/schema.sql >/dev/null
 
 docker compose run --rm --no-deps --user 0 api sh -c 'find /var/lib/kops/content/sources /var/lib/kops/content/answers -mindepth 1 -delete'
 docker compose run --rm --no-deps --user 0 worker sh -c 'find /var/lib/kops/content/candidates -mindepth 1 -delete'

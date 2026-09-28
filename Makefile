@@ -6,6 +6,9 @@ setup:
 	@sh scripts/setup.sh
 
 up:
+	@sh scripts/check-postgres-mount.sh
+	@docker compose up -d --wait db
+	@docker compose exec -T db psql -v ON_ERROR_STOP=1 -U postgres -d kops -f /checks/schema.sql >/dev/null
 	@docker compose up -d --build
 	@printf '%s\n' "kops is starting at http://127.0.0.1:$(KOPS_PORT)"
 	@printf '%s\n' "Open Model Setup before compilation. No hosted fallback is configured."
@@ -24,7 +27,8 @@ test:
 	trap 'docker compose -p kops-test --profile test down --volumes --remove-orphans >/dev/null 2>&1 || true' EXIT INT TERM; \
 	KOPS_PORT=18080 KOPS_BUILD_TARGET=test KOPS_ALLOWED_MODEL_HOSTS=host.docker.internal,fixture-model docker compose -p kops-test --profile test up -d --build; \
 	docker compose -p kops-test exec -T -e PYTHONDONTWRITEBYTECODE=1 api pytest -p no:cacheprovider -m "not live_model"; \
-	docker compose -p kops-test exec -T db psql -v ON_ERROR_STOP=1 -U postgres -d kops -f /checks/verify_privileges.sql
+	docker compose -p kops-test exec -T db psql -v ON_ERROR_STOP=1 -U postgres -d kops -f /checks/verify_privileges.sql; \
+	sh scripts/verify-restart.sh
 
 demo-reset:
 	@sh scripts/demo-reset.sh

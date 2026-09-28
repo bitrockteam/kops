@@ -5,7 +5,11 @@ import re
 import time
 
 import httpx
+import psycopg
 import pytest
+
+from app.config import Settings
+from app.model import LocalModelClient, ModelError
 
 
 BASE_URL = os.getenv("KOPS_TEST_BASE_URL", "http://127.0.0.1:8080")
@@ -79,6 +83,32 @@ def _authorize_and_publish(client: httpx.Client, candidate_id: str) -> str:
     published = _post(client, f"/operations/{operation_id}/publish", {})
     assert "page revisions are visible" in published.text
     return operation_id
+
+
+@pytest.mark.integration
+def test_local_model_receive_is_deadline_and_byte_bounded():
+    model = LocalModelClient(frozenset({"fixture-model"}))
+    config = {
+        "adapter": "ollama",
+        "endpoint": "http://fixture-model:8090",
+        "model_name": "fixture-trickle",
+        "limits": {"wall_time_seconds": 1, "max_output_bytes": 1024, "max_output_tokens": 100},
+    }
+    started = time.monotonic()
+    with pytest.raises(ModelError, match="wall-time limit"):
+        model.answer(config, "test")
+    assert time.monotonic() - started < 3
+
+    config["model_name"] = "fixture-oversize"
+    with pytest.raises(ModelError, match="output byte limit"):
+        model.answer(config, "test")
+
+    config["model_name"] = "fixture-trickle"
+    config["limits"]["wall_time_seconds"] = 10
+    started = time.monotonic()
+    with pytest.raises(ModelError, match="cancelled"):
+        model.compile(config, "test", cancelled=lambda: time.monotonic() - started > 0.5)
+    assert time.monotonic() - started < 2
 
 
 @pytest.mark.integration
@@ -184,8 +214,29 @@ def test_governed_workflow_is_persistent_authorized_and_revocable():
         assert response_match
         response_id = response_match.group(1)
         assert "contradictory" in answered.text
+        with psycopg.connect(Settings.load("api").database_url) as connection:
+            citation_count, input_count = connection.execute(
+                """
+                SELECT jsonb_array_length(q.citations), count(qi.document_id)
+                FROM kops.query_responses q
+                JOIN kops.query_response_inputs qi ON qi.response_id = q.response_id
+                WHERE q.response_id = %s GROUP BY q.response_id
+                """,
+                (response_id,),
+            ).fetchone()
+        assert citation_count == 1
+        assert input_count > citation_count
         promoted = _post(client, f"/responses/{response_id}/save-candidate", {})
         assert "it is not published" in promoted.text
+        promoted_match = re.search(r"private candidate ([0-9a-f-]+)", promoted.text)
+        assert promoted_match
+        promoted_candidate = promoted_match.group(1)
+        promoted_review = client.get(f"/?stage=review&candidate={promoted_candidate}")
+        assert promoted_review.status_code == 200
+        admitted_table = re.search(r"Complete admitted manifest</h3>(.*?)</table>", promoted_review.text, re.DOTALL)
+        assert admitted_table
+        assert "Engineering expansion plan" in admitted_table.group(1)
+        assert "Finance budget" in admitted_table.group(1)
         supported = _post(
             client,
             "/query",
@@ -218,12 +269,31 @@ def test_governed_workflow_is_persistent_authorized_and_revocable():
         assert "Page not available for this session or current access" in denied_current.text
         assert f'href="/documents/{joint_document}"' not in denied_current.text
         assert client.get(f"/documents/{joint_document}?version=1").status_code == 404
+        assert client.get(f"/responses/{response_id}").status_code == 403
+        assert response_id not in client.get("/?stage=read").text
 
+        with psycopg.connect(Settings.load("api").database_url) as connection:
+            joint_audit_correlation = connection.execute(
+                "SELECT correlation_id FROM kops.audit_events WHERE resource_id = %s AND audience_id = 'joint' LIMIT 1",
+                (response_id,),
+            ).fetchone()[0]
+        _switch(client, "auditor")
+        assert joint_audit_correlation in client.get("/?stage=audit").text
         _switch(client, "operator_admin")
-        disabled = _post(client, "/demo/audit-availability", {})
-        assert "deliberately unavailable" in disabled.text
+        revoke_auditor = _post(client, "/access/membership", {"subject_id": "auditor", "group_id": "finance"})
+        assert "revoked" in revoke_auditor.text
+        _switch(client, "auditor")
+        assert joint_audit_correlation not in client.get("/?stage=audit").text
+        _switch(client, "operator_admin")
+        recovery_csrf = _csrf(client)
+        disabled = client.post("/demo/audit-availability", data={"csrf": recovery_csrf}, follow_redirects=False)
+        assert disabled.status_code == 303
+        assert "deliberately+unavailable" in disabled.headers["location"]
+        assert client.get("/").status_code == 503
+        assert client.get("/api/state").status_code == 503
+        assert client.get("/documents/00000000-0000-0000-0000-000000000000").status_code == 503
         assert client.get(f"/documents/{engineering_document}").status_code == 503
-        restored = _post(client, "/demo/audit-availability", {"enabled": "true"})
+        restored = client.post("/demo/audit-availability", data={"enabled": "true", "csrf": recovery_csrf}, follow_redirects=True)
         assert "available" in restored.text
         assert client.get(f"/documents/{engineering_document}").status_code == 200
 
@@ -266,3 +336,24 @@ def test_governed_workflow_is_persistent_authorized_and_revocable():
         assert source_detail.status_code == 200
         assert "<script>" not in source_detail.text
         assert "&lt;script&gt;alert(1)&lt;/script&gt;" in source_detail.text
+
+        restored_membership = _post(
+            client,
+            "/access/membership",
+            {"subject_id": "dual_compiler", "group_id": "finance", "active": "true"},
+        )
+        assert "active" in restored_membership.text
+        _switch(client, "dual_compiler")
+        assert client.get(f"/responses/{response_id}").status_code == 200
+        _switch(client, "operator_admin")
+        changed_policy = _post(
+            client,
+            "/access/source-policy",
+            {"source_id": engineering_id, "audience_id": "finance"},
+        )
+        assert "Source policy revision" in changed_policy.text
+        assert client.get(f"/documents/{engineering_document}?version=1").status_code == 409
+        assert client.get(f"/?stage=review&candidate={engineering_candidate}").status_code == 404
+        _switch(client, "dual_compiler")
+        assert client.get(f"/responses/{response_id}").status_code == 409
+        assert f'href="/documents/{engineering_document}"' not in client.get("/?stage=read").text

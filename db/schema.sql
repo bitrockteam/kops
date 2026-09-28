@@ -222,6 +222,14 @@ CREATE TABLE IF NOT EXISTS query_responses (
     created_at timestamptz NOT NULL DEFAULT now()
 );
 
+CREATE TABLE IF NOT EXISTS query_response_inputs (
+    response_id uuid NOT NULL REFERENCES query_responses(response_id) ON DELETE CASCADE,
+    document_id uuid NOT NULL,
+    document_version bigint NOT NULL,
+    PRIMARY KEY (response_id, document_id, document_version),
+    FOREIGN KEY (document_id, document_version) REFERENCES page_versions(document_id, version)
+);
+
 CREATE TABLE IF NOT EXISTS demo_controls (
     control_name text PRIMARY KEY,
     enabled boolean NOT NULL,
@@ -341,7 +349,7 @@ GRANT USAGE ON SCHEMA kops TO kops_api, kops_worker, kops_publisher, kops_audit,
 
 GRANT SELECT, INSERT, UPDATE ON personas, memberships, audiences, model_configs, sources,
     source_versions, runs, jobs, job_inputs, job_events, candidates, verifications,
-    publication_authorizations, operations, query_responses, demo_controls TO kops_api;
+    publication_authorizations, operations, query_responses, query_response_inputs, demo_controls TO kops_api;
 GRANT SELECT ON documents, page_versions, dependencies, audit_events, audit_outbox TO kops_api;
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA kops TO kops_api;
 

@@ -1,6 +1,6 @@
 # Acceptance matrix
 
-**Current result:** deterministic local acceptance has run against PostgreSQL and all application processes. The exact tested commit and observations are recorded in the [implementation evidence report](evidence/implementation.md). A live-model acceptance run remains unverified because no operator-supplied endpoint was available. Mock identity and the test-only inference fixture are labeled and do not prove their real integrations.
+**Current result:** deterministic local acceptance has run against PostgreSQL and all application processes, including post-review security and persistence regressions. The exact tested commit and observations are recorded in the [implementation evidence report](evidence/implementation.md). A live-model acceptance run remains unverified because no operator-supplied endpoint was available. Mock identity and the test-only inference fixture are labeled and do not prove their real integrations.
 
 | ID | Scenario | Expected outcome |
 | --- | --- | --- |
@@ -44,7 +44,7 @@ Mocked identity tests prove local contract behavior only. A single presenter swi
 | Status | Scenarios | Evidence boundary |
 | --- | --- | --- |
 | Verified in repeatable automated tests | A01, A02, A04, A05, A06, A09, A11, A12, A13, A20, A21, A24 | Fresh disposable Compose project, real PostgreSQL and service roles, test-only inference where generation was required. |
-| Partially verified | A03, A07, A08, A10, A14, A15, A16, A17, A18, A19, A22, A25, A26 | Applicable success/refusal paths or static boundaries passed, but one or more fault variants, live-model behavior or process-level probes remain open. |
+| Partially verified | A03, A07, A08, A10, A14, A15, A16, A17, A18, A19, A22, A25, A26 | Additional source-policy, audit-outage, streamed-limit, worker-restart and persistence variants passed, but one or more fault variants, live-model behavior or process-level probes remain open. |
 | Verified by scoped manual command | A23 | Checksummed database and four private-content archives restored into the local demo; record counts and API health matched. |
 | Not verified with live inference | A03, A10, A12, A25 | No operator-supplied local model was available. Fixture inference is not accepted as live evidence. |
 

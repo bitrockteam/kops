@@ -77,9 +77,11 @@ def _load_inputs(database: Database, settings: Settings, job: dict[str, Any]) ->
         rows = connection.execute(
             """
             SELECT ji.*, s.title, s.audience_id, s.policy_revision AS current_policy_revision,
-                   s.current_revision
+                   s.current_revision, s.active AS source_active,
+                   sa.active AS source_audience_active, sa.required_groups AS source_required_groups
             FROM kops.job_inputs ji
             JOIN kops.sources s ON s.source_id = ji.source_id
+            JOIN kops.audiences sa ON sa.audience_id = s.audience_id
             WHERE ji.job_id = %s ORDER BY s.title
             """,
             (job["job_id"],),
@@ -92,11 +94,15 @@ def _load_inputs(database: Database, settings: Settings, job: dict[str, Any]) ->
             "SELECT group_id FROM kops.memberships WHERE subject_id = %s AND active",
             (job["requested_by"],),
         ).fetchall()
-    if not audience or not set(audience["required_groups"]).issubset({row["group_id"] for row in memberships}):
+    member_groups = {row["group_id"] for row in memberships}
+    if not audience or not set(audience["required_groups"]).issubset(member_groups):
         raise PermissionError("requester audience membership changed before execution")
     for row in rows:
         if row["source_policy_revision"] != row["current_policy_revision"] or row["source_revision"] != row["current_revision"]:
             raise PermissionError("source revision or policy changed before execution")
+        source_groups = set(row["source_required_groups"])
+        if not row["source_active"] or not row["source_audience_active"] or not source_groups.issubset(member_groups) or not source_groups.issubset(set(audience["required_groups"])):
+            raise PermissionError("source is no longer admissible for requester and destination")
     try:
         response = httpx.get(
             f"{settings.content_url}/internal/jobs/{job['job_id']}/inputs",
@@ -118,6 +124,31 @@ def _load_inputs(database: Database, settings: Settings, job: dict[str, Any]) ->
         for item in inputs
     ]
     return inputs, hashlib.sha256(canonical_json(manifest).encode()).hexdigest(), total_bytes
+
+
+def _cancelled(database: Database, job_id: str) -> bool:
+    with database.connection() as connection:
+        current = connection.execute(
+            "SELECT cancel_requested, status FROM kops.jobs WHERE job_id = %s", (job_id,)
+        ).fetchone()
+    return not current or current["cancel_requested"] or current["status"] != "running"
+
+
+def _recover_interrupted_jobs(database: Database) -> None:
+    with database.connection() as connection:
+        interrupted = connection.execute(
+            """
+            UPDATE kops.jobs SET status = 'blocked', error_code = 'worker_interrupted',
+                error_sanitized = 'Worker stopped before completing the job', completed_at = now()
+            WHERE status = 'running' RETURNING job_id
+            """
+        ).fetchall()
+        for job in interrupted:
+            connection.execute(
+                "INSERT INTO kops.job_events(job_id, state, detail) VALUES (%s, 'blocked', 'Worker restart recovered an interrupted job')",
+                (job["job_id"],),
+            )
+        connection.commit()
 
 
 def _prompt(job: dict[str, Any], inputs: list[dict[str, Any]]) -> str:
@@ -207,6 +238,7 @@ def _finish_failure(database: Database, job_id: str, status: str, code: str, det
 def process_job(database: Database, store: LocalContentStore, model: LocalModelClient, audit: AuditClient, settings: Settings, job: dict[str, Any]) -> None:
     job_id = str(job["job_id"])
     correlation_id = f"job:{job_id}"
+    deadline = time.monotonic() + int(job["limits"]["wall_time_seconds"])
     try:
         audit.append(
             {
@@ -228,26 +260,45 @@ def process_job(database: Database, store: LocalContentStore, model: LocalModelC
         config = job["model_config_snapshot"]
         if not config:
             raise ModelError("no usable local model configuration is pinned to this job")
+        prompt = _prompt(job, inputs)
+        input_bytes = len(prompt.encode())
+        if input_bytes > int(job["limits"]["max_input_bytes"]):
+            raise ValueError("full model prompt exceeds the configured input byte limit")
         attempts = 1 + min(int(job["limits"].get("max_retries", 0)), 1)
         raw: dict[str, Any] | None = None
         last_error: Exception | None = None
         for attempt in range(attempts):
+            if _cancelled(database, job_id):
+                _finish_failure(database, job_id, "cancelled", "cancelled", "Cancelled before a local-model call")
+                return
+            _load_inputs(database, settings, job)
+            remaining = deadline - time.monotonic()
+            if remaining < 1:
+                raise ModelError("compilation wall-time limit expired")
+            bounded_config = {**config, "limits": {**config["limits"], "wall_time_seconds": int(remaining)}}
             try:
-                raw = model.compile(config, _prompt(job, inputs))
+                raw = model.compile(
+                    bounded_config, prompt, deadline=deadline,
+                    cancelled=lambda: _cancelled(database, job_id),
+                )
                 break
             except ModelError as error:
+                if _cancelled(database, job_id):
+                    _finish_failure(database, job_id, "cancelled", "cancelled", "Local-model request stopped after cancellation")
+                    return
                 last_error = error
                 if attempt + 1 < attempts:
                     _event(database, job_id, "running", "Transient local-model failure; using the single permitted retry")
         if raw is None:
             raise last_error or ModelError("local model failed")
-        with database.connection() as connection:
-            current = connection.execute(
-                "SELECT cancel_requested FROM kops.jobs WHERE job_id = %s", (job_id,)
-            ).fetchone()
-        if current["cancel_requested"]:
+        if _cancelled(database, job_id):
             _finish_failure(database, job_id, "cancelled", "cancelled", "Output discarded after cancellation")
             return
+        if time.monotonic() >= deadline:
+            raise ModelError("compilation wall-time limit expired")
+        _load_inputs(database, settings, job)
+        if len(canonical_json(raw).encode()) > int(job["limits"]["max_output_bytes"]):
+            raise ValueError("complete model output exceeds the configured byte limit")
         admitted = {(item["source_id"], item["revision"]) for item in inputs}
         payload, findings, output_bytes = _validate_candidate(raw, admitted, store, job_id)
         if output_bytes > int(job["limits"]["max_output_bytes"]):
@@ -270,6 +321,11 @@ def process_job(database: Database, store: LocalContentStore, model: LocalModelC
             }
         )
         candidate_id = str(uuid.uuid4())
+        if _cancelled(database, job_id):
+            _finish_failure(database, job_id, "cancelled", "cancelled", "Candidate discarded before persistence after cancellation")
+            return
+        if time.monotonic() >= deadline:
+            raise ModelError("compilation wall-time limit expired")
         with database.connection() as connection:
             connection.execute(
                 """
@@ -328,12 +384,18 @@ def main() -> None:
     signal.signal(signal.SIGINT, _stop)
     database.open()
     try:
-        while not stopping:
-            job = _claim_job(database)
-            if job:
-                process_job(database, store, model, audit, settings, job)
-            else:
-                time.sleep(1)
+        with database.connection() as leader:
+            acquired = leader.execute("SELECT pg_try_advisory_lock(19760615) AS acquired").fetchone()["acquired"]
+            leader.commit()
+            if not acquired:
+                raise RuntimeError("another compilation worker already holds the singleton lease")
+            _recover_interrupted_jobs(database)
+            while not stopping:
+                job = _claim_job(database)
+                if job:
+                    process_job(database, store, model, audit, settings, job)
+                else:
+                    time.sleep(1)
     finally:
         database.close()
 
