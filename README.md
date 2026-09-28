@@ -50,6 +50,8 @@ flowchart TB
 
 The worker proposes content. The application decides what may be read, who may authorize the result and whether publication can commit. A source document or generated page cannot grant permissions.
 
+The implementation follows the C01-C12 governance rules defined in [The Agentic Pact](https://github.com/bitrockteam/the-agentic-pact). The [implementation evidence](docs/evidence/implementation.md) records which controls were verified in this local demo and which remain partial or outside its scope.
+
 ## Local run interface
 
 Prerequisites for that delivery are Git, Make, Docker with Compose, and an operator-supplied local inference runtime for actual compilation and questions. Python is the application language; exact supported versions will be pinned and documented by the implementation. Model installation and weight downloads remain under operator control.

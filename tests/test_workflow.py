@@ -213,7 +213,10 @@ def test_governed_workflow_is_persistent_authorized_and_revocable():
         )
         assert "revoked" in revoked.text
         _switch(client, "dual_compiler")
-        assert client.get(f"/documents/{joint_document}").status_code == 404
+        denied_current = client.get(f"/documents/{joint_document}")
+        assert denied_current.status_code == 404
+        assert "Page not available for this session or current access" in denied_current.text
+        assert f'href="/documents/{joint_document}"' not in denied_current.text
         assert client.get(f"/documents/{joint_document}?version=1").status_code == 404
 
         _switch(client, "operator_admin")
@@ -239,3 +242,27 @@ def test_governed_workflow_is_persistent_authorized_and_revocable():
             },
         )
         assert "local model connection failed" in unreachable.text
+        blocked_read = client.get("/?stage=read")
+        assert "Questions are blocked" in blocked_read.text
+        assert "<button disabled>Ask local model</button>" in blocked_read.text
+        blocked_compile = client.get("/?stage=compile")
+        assert "Compilation is blocked" in blocked_compile.text
+
+        injected_title = "<script>alert(1)</script>"
+        imported = _post(
+            client,
+            "/sources/import",
+            {"title": injected_title, "audience_id": "engineering", "content": "Synthetic markup boundary check."},
+        )
+        assert "Source revision 1 imported" in imported.text
+        sources = client.get("/?stage=sources")
+        match = re.search(
+            r"&lt;script&gt;alert\(1\)&lt;/script&gt;.*?href=\"/sources/([0-9a-f-]+)\"",
+            sources.text,
+            re.DOTALL,
+        )
+        assert match
+        source_detail = client.get(f"/sources/{match.group(1)}")
+        assert source_detail.status_code == 200
+        assert "<script>" not in source_detail.text
+        assert "&lt;script&gt;alert(1)&lt;/script&gt;" in source_detail.text

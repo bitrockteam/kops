@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import html
 import json
 import os
 import uuid
@@ -567,7 +568,7 @@ def read_source(source_id: str, kops_session: str | None = Cookie(default=None))
     except AuditUnavailable as error:
         raise HTTPException(status_code=503, detail="source read blocked because durable audit is unavailable") from error
     body = store.read(source["object_key"])
-    return HTMLResponse(f"<main><h1>{source['title']}</h1>{render_markdown(body)}<p><a href='/'>Return to kops</a></p></main>")
+    return HTMLResponse(f"<main><h1>{html.escape(source['title'])}</h1>{render_markdown(body)}<p><a href='/'>Return to kops</a></p></main>")
 
 
 @app.post("/sources/import")
@@ -895,20 +896,41 @@ def publish_operation(
 
 @app.get("/documents/{document_id}", response_class=HTMLResponse)
 def document_page(
+    request: Request,
     document_id: str,
     version: int | None = Query(default=None),
     kops_session: str | None = Cookie(default=None),
 ) -> HTMLResponse:
     principal = _principal(kops_session)
-    document = _document_for_read(principal, document_id, version)
+    try:
+        document = _document_for_read(principal, document_id, version)
+    except HTTPException as error:
+        if error.status_code != 404:
+            raise
+        return templates.TemplateResponse(
+            request,
+            "index.html",
+            {
+                "principal": principal,
+                "csrf": _csrf_for(principal),
+                "stage": "read",
+                "message": "Page not available for this session or current access",
+                "level": "error",
+                "state": _dashboard_state(principal),
+                "candidate_detail": None,
+                "document_detail": None,
+                "mock_identity": True,
+            },
+            status_code=404,
+        )
     dependency_rows = "".join(
-        f"<li>{item['title']} revision {item['source_revision']} (policy {item['source_policy_revision']})</li>"
+        f"<li>{html.escape(item['title'])} revision {item['source_revision']} (policy {item['source_policy_revision']})</li>"
         for item in document["dependencies"]
     )
     return HTMLResponse(
-        f"<main><h1>{document['title']}</h1><p>Audience: {document['audience_id']} | Version: {document['version']} | State: {document['publication_state']}</p>"
+        f"<main><h1>{html.escape(document['title'])}</h1><p>Audience: {html.escape(document['audience_id'])} | Version: {document['version']} | State: {html.escape(document['publication_state'])}</p>"
         f"{document['rendered']}<h2>Dependencies</h2><ul>{dependency_rows}</ul>"
-        f"<p>Read audit receipt: {document['read_receipt']}</p><p><a href='/?stage=read'>Return to kops</a></p></main>"
+        f"<p>Read audit receipt: {html.escape(document['read_receipt'])}</p><p><a href='/?stage=read'>Return to kops</a></p></main>"
     )
 
 
@@ -1017,7 +1039,8 @@ def read_response(response_id: str, kops_session: str | None = Cookie(default=No
     _require(principal, "read", response["audience_id"])
     _event(principal, "answer.read", "query_response", response_id, response["audience_id"], "allowed", "response_owner_and_audience", "delivery_attempt")
     answer = store.read(response["answer_object_key"]) if response["answer_object_key"] else response["error_sanitized"]
-    return HTMLResponse(f"<main><h1>Grounded answer</h1><p>Evaluation: {response['evaluation']}</p>{render_markdown(answer or '')}<pre>{json.dumps(response['citations'], indent=2)}</pre><p><a href='/?stage=read'>Return</a></p></main>")
+    citations = html.escape(json.dumps(response["citations"], indent=2))
+    return HTMLResponse(f"<main><h1>Grounded answer</h1><p>Evaluation: {html.escape(response['evaluation'])}</p>{render_markdown(answer or '')}<pre>{citations}</pre><p><a href='/?stage=read'>Return</a></p></main>")
 
 
 @app.post("/responses/{response_id}/save-candidate")

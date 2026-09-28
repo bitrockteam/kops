@@ -1,4 +1,4 @@
-.PHONY: setup up down logs test demo-reset status backup restore
+.PHONY: setup up down logs test demo-reset status backup restore screenshots
 
 KOPS_PORT ?= 8080
 
@@ -34,3 +34,6 @@ backup:
 
 restore:
 	@sh scripts/restore.sh "$(BACKUP)"
+
+screenshots:
+	@python3 scripts/screenshots.py

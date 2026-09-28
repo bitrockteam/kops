@@ -6,6 +6,7 @@ button, input, select, textarea { font:inherit; }
 button { border:0; border-radius:7px; padding:.62rem .9rem; background:var(--blue); color:#fff; font-weight:700; cursor:pointer; }
 button.secondary { background:#e7edf5; color:var(--ink); }
 button.danger { background:var(--red); }
+button:disabled { background:#8b98a7; cursor:not-allowed; }
 .topbar { min-height:92px; padding:16px 24px; display:flex; align-items:center; gap:24px; background:#fff; border-bottom:1px solid var(--line); position:sticky; top:0; z-index:5; }
 .topbar h1 { margin:0; font-size:1.8rem; letter-spacing:-.04em; }.eyebrow,.step { margin:0; color:var(--muted); font-size:.72rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }
 .header-facts { display:flex; flex:1; flex-wrap:wrap; gap:8px 18px; font-size:.84rem; }.header-facts span { white-space:nowrap; }
