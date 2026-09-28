@@ -25,9 +25,11 @@
 - `make up`: all six normal services started; `GET /health` and the GUI returned successfully on `127.0.0.1:8080`.
 - `make backup` and confirmed `make restore`: all archive checksums passed; seven personas and one run were recovered; the API became healthy.
 - `make down` and confirmed `make demo-reset`: normal processes stopped and only `kops-local-demo` volumes were removed.
-- GitHub Actions `kops-test` passed on application commit `30ccfb0`; pull request 1 is blocked pending review as required by `main` protection.
+- GitHub Actions `kops-test` passed on pull-request commit `289115f`; the feature branch was not merged into `main`.
 - Headless Firefox captured six actual GUI views from a disposable fixture-backed stack at `30ccfb0`; that stack and its synthetic volumes were removed after capture.
 - The PostgreSQL upgrade preflight refused a deliberately created empty named volume, instead of initializing a replacement database. The empty probe volume was removed immediately. This is not a migration test of real prior data.
+- The current backup/restore path was checked in disposable Compose project `kops-restorecheck` after a fixture-backed workflow. The first restore attempt exposed a content-permission failure. Commit `4f942dd` removed the root-user override, and `5277c46` added a bounded API readiness check. Fresh restores recovered 5 sources, 3 candidates, 4 page versions and 165 audit events, matched all four archived content-file counts, and returned a healthy API. The disposable volumes were removed. A protected page read after restore was not exercised.
+- Pull request 1 was closed without merge or independent approval on 28 September 2026. Franco instructed that it remain closed. The feature branch remains pushed and separate from `main`.
 
 The deterministic inference service is a test double and does not satisfy live-model acceptance. No local Ollama, llama.cpp server or LM Studio endpoint was available on this machine, so live compilation, live questions and model-quality assessment remain unverified.
 
@@ -37,4 +39,4 @@ Implementation and repeatable evidence verify covered local-demo behavior for C0
 
 ## Next action
 
-Run a user-selected local model through Model Setup, complete the live-model quality set, and obtain independent pull request review. Do not merge automatically.
+Run a user-selected local model through Model Setup and complete the live-model quality set. Independent review and a new authorized pull-request path are needed before shared-branch integration. Leave pull request 1 closed and do not merge automatically.

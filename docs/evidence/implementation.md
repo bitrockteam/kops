@@ -6,6 +6,7 @@
 | --- | --- |
 | Initial tested implementation commit | `1b79f82dc762180ea4202a1aa94a2b2fd1aa1a28` |
 | Current tested application commit | `934d6636a5935784ef4d5adeeede15c1e028f306` |
+| Current tested restore-script commit | `5277c46` (the script was tested on the immediately preceding worktree and committed without further script changes) |
 | Date and host | 28 September 2026, `voloire-XPS`, Ubuntu 26.04 LTS |
 | Automated configuration | Docker Compose project `kops-test`, Python 3.13 runtime image, PostgreSQL 18.0 Alpine, fresh disposable volumes |
 | Identity boundary | Labeled mock identity with signed server-issued sessions and seven synthetic personas |
@@ -19,7 +20,7 @@
 | `make setup` | Passed; validated Docker and Compose and prepared ignored per-service secrets without installing a model or identity provider. |
 | `make test` at the initial commit | Passed: 10 tests in 9.75 seconds, followed by `database privilege boundaries verified`. The target created fresh volumes and removed its containers, networks and volumes on exit. |
 | Current application checks | `make test` on exact commit `934d663` passed 12 tests in 19.20 seconds, database privilege assertions, worker-interruption recovery, and PostgreSQL job and query-manifest reads after Compose container recreation. The disposable `kops-test` project and volumes were removed on exit. |
-| Prior CI check | [GitHub Actions `kops-test`](https://github.com/bitrockteam/kops/actions/runs/36481721801/job/109128716190) passed on prior commit `30ccfb0`. A check for the new pull-request head must be observed separately after push. |
+| Latest observed CI check | [GitHub Actions `kops-test`](https://github.com/bitrockteam/kops/actions/runs/36485380846/job/109140911686) passed on pull-request commit `289115f`. No CI result is claimed for the later restore-script commit because the pull request was closed. |
 | `python3 -m compileall -q app tests` | Passed. |
 | `sh -n scripts/*.sh docker/db/init.sh` | Passed. |
 | `docker compose config --quiet` | Passed. |
@@ -38,13 +39,14 @@ The normal six-service stack started successfully with `make up`; the API health
 
 The current startup preflight refused a deliberately created empty `kops-local-demo_postgres_data` volume with the full warning that an old anonymous volume might contain the real database. That empty probe volume was removed. This proves the refusal path for an empty named volume, not successful migration of prior data or detection of every legacy state.
 
+On 28 September 2026, `kops-restorecheck` ran the fixture-backed HTTP workflow against a fresh PostgreSQL 18 volume; the workflow passed. `scripts/backup.sh` produced five checksummed archives. The first confirmed restore failed while clearing app-owned private content because `scripts/restore.sh` forced root in containers with all capabilities dropped. The script was changed to use each service's configured user. A second workflow and backup passed, followed by a confirmed restore with matching database counts before and after: 5 sources, 3 candidates, 4 page versions and 165 audit events. A separate fresh-volume restore from that backup returned `{"status":"ok"}` after readiness wait; the restored source, candidate, page and answer file counts matched their respective archives at 6, 4, 4 and 3. The first immediate health request after restore raced startup, so the script gained a bounded API readiness check. A final fresh-volume restore with that check completed, retained the same database counts and returned a healthy API. All disposable project runs and their volumes were removed. This verifies the current backup/restore path for synthetic state, but a protected page read after restore and migration from a real prior PostgreSQL mount remain unverified.
+
 ## Acceptance status
 
 | Result | Scenarios | Evidence and limitation |
 | --- | --- | --- |
 | Verified for tested paths | A01, A02, A04, A05, A06, A11, A12, A13, A20, A21 | Repeatable tests against real processes, PostgreSQL, private volumes and service roles. Generation used the labeled test fixture. |
-| Historically observed, not retested on current commit | A23 | Earlier checksummed restore recovered all four content classes. The changed current restore path was not rerun. |
-| Partial | A03, A07, A08, A09, A10, A14, A15, A16, A17, A18, A19, A22, A23, A24, A25, A26 | Additional negative and process-restart variants passed, but the complete metadata/fault matrix, current restore and normal reset path, or live-model result remains open. |
+| Partial | A03, A07, A08, A09, A10, A14, A15, A16, A17, A18, A19, A22, A23, A24, A25, A26 | Additional negative and process-restart variants passed. Current synthetic backup/restore and API health were observed; the post-restore protected read, full metadata/fault matrix, and live-model result remain open. |
 | Not verified with live inference | A03, A10, A12, A25 | No operator-supplied Ollama, llama.cpp or LM Studio endpoint was available. Fixture output is deliberately excluded from live evidence. |
 
 ## Actual GUI evidence
@@ -64,7 +66,7 @@ These images prove what Firefox rendered in the fixture-backed local demo. They 
 
 ## Shared-branch protection
 
-GitHub reported `main` as unprotected before this work. The repository administrator enabled branch protection with one required approval, dismissal of stale approvals, approval by someone other than the last pusher, resolved conversations, strict `kops-test` status from GitHub Actions app ID 15368, linear history, administrator enforcement, and force-push/deletion denial. A follow-up GitHub API read reported `protected: true` and the configured fields. Pull request 1 reported `BLOCKED` and `REVIEW_REQUIRED` while the check on `30ccfb0` succeeded. No merge or deliberately rejected push was attempted, so this is observed configuration and pull-request gating, not a proof that every possible privileged bypass is impossible. Repository administrators can still edit protection settings. The new pull-request head needs its own check and independent human approval.
+GitHub reported `main` as unprotected before this work. The repository administrator enabled branch protection with one required approval, dismissal of stale approvals, approval by someone other than the last pusher, resolved conversations, strict `kops-test` status from GitHub Actions app ID 15368, linear history, administrator enforcement, and force-push/deletion denial. A follow-up GitHub API read reported `protected: true` and the configured fields. Pull request 1 reported `BLOCKED` and `REVIEW_REQUIRED` while the check on `289115f` succeeded. It was closed without merge on 28 September 2026 and Franco instructed that it remain closed. No merge or deliberately rejected push was attempted, so this is observed configuration and pull-request gating, not a proof that every possible privileged bypass is impossible. Repository administrators can still edit protection settings. Any future integration needs its own current check and independent human approval.
 
 ## Baseline conformity
 
@@ -88,4 +90,4 @@ Profile C applies to the implementation workflow. The product demonstrates a loc
 ## Remaining delivery gates
 
 1. Select an operator-controlled local model in Model Setup and run the live compilation, question and quality scenarios.
-2. Obtain independent review of the exact pull request result. Do not merge automatically.
+2. Arrange independent review through a newly authorized pull-request path if integration is resumed. Pull request 1 remains closed; do not merge automatically.

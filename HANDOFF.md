@@ -1,6 +1,6 @@
 # Implementation handoff
 
-**Status:** The local implementation is on `feat/local-demo`. This document records the original assignment; current validation and remaining gates are in [project status](docs/status.md) and [implementation evidence](docs/evidence/implementation.md). Live operator-selected inference and independent human pull-request approval remain outstanding.
+**Status:** The local implementation is on `feat/local-demo`. Pull request 1 was closed without merge and remains closed at Franco's direction. This document records the original assignment; current validation and remaining gates are in [project status](docs/status.md) and [implementation evidence](docs/evidence/implementation.md). Live operator-selected inference and independent human pull-request approval remain outstanding.
 
 ## Assignment
 
