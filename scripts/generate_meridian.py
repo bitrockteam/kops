@@ -751,10 +751,13 @@ def gen_tickets(rng):
     start = datetime(2026, 8, 1, 8, 0)
     kinds = [k for k in TICKET_KINDS for _ in range(k[1])]
     l1 = ["giulia.ferrante", "marco.belli", "giulia.ferrante", "giulia.ferrante"]
+    reserved = {int(t["id"].rsplit("-", 1)[1]) for t in RICH_TICKETS}
     n = 0
     for i in range(112):
         k = rng.choice(kinds)
         n += 1
+        while n in reserved:
+            n += 1
         opened = start + timedelta(minutes=rng.randint(0, 58 * 24 * 60))
         d = dict(pnr="NB" + str(rng.randint(100000, 999999)), spnr="S-" + str(rng.randint(10000, 99999)),
                  cust=rng.choice(CUSTOMERS), route=rng.choice(ROUTES), port=rng.choice(PORTS),

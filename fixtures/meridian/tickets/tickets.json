@@ -1,6 +1,6 @@
 [
   {
-    "id": "HH-2026-0090",
+    "id": "HH-2026-0091",
     "kind": "account",
     "severity": "p3",
     "queue": "Care",
@@ -13,7 +13,7 @@
     "body": "Customer C. Galli did not receive the reset mail. Resent. Suggested checking spam."
   },
   {
-    "id": "HH-2026-0079",
+    "id": "HH-2026-0080",
     "kind": "refund",
     "severity": "p3",
     "queue": "Care",
@@ -26,7 +26,7 @@
     "body": "Customer J. Sanna asks a refund for Civitavecchia-Cagliari on 2026-08-29. Reason: change of plans. Fare Flex. Handled with the refund script."
   },
   {
-    "id": "HH-2026-0102",
+    "id": "HH-2026-0103",
     "kind": "pay502",
     "severity": "p2",
     "queue": "Platform",
@@ -39,7 +39,7 @@
     "body": "Customer A. Rossi tried to pay twice for Naples-Palermo on 2026-08-10 and got PAY-502 both times. Hold expired (BK-409). Escalated per matrix."
   },
   {
-    "id": "HH-2026-0077",
+    "id": "HH-2026-0078",
     "kind": "chk001",
     "severity": "p3",
     "queue": "Care",
@@ -78,7 +78,7 @@
     "body": "Customer A. Rossi declined by the bank at 3DS. Advised to retry with another card. Second attempt succeeded."
   },
   {
-    "id": "HH-2026-0078",
+    "id": "HH-2026-0079",
     "kind": "refund",
     "severity": "p3",
     "queue": "Care",
@@ -91,7 +91,7 @@
     "body": "Customer E. Marini asks a refund for Genoa-Olbia on 2026-08-30. Reason: wrong date selected. Fare Flex. Handled with the refund script."
   },
   {
-    "id": "HH-2026-0112",
+    "id": "HH-2026-0113",
     "kind": "visionx",
     "severity": "p2",
     "queue": "Port",
@@ -104,7 +104,7 @@
     "body": "Gate at Livorno reports vehicle of H. Piras not on the list. Red clock on the sync tab. Ops desk called."
   },
   {
-    "id": "HH-2026-0096",
+    "id": "HH-2026-0097",
     "kind": "checkin",
     "severity": "p3",
     "queue": "Care",
@@ -117,7 +117,7 @@
     "body": "Customer W. Caruso at Naples has no boarding pass mail. Resent from the back office. Confirmed receipt."
   },
   {
-    "id": "HH-2026-0097",
+    "id": "HH-2026-0098",
     "kind": "pay502",
     "severity": "p2",
     "queue": "Platform",
@@ -143,7 +143,7 @@
     "body": "Delay of 35 minutes announced by the gate for Genoa-Olbia. Customers informed with the same message."
   },
   {
-    "id": "HH-2026-0081",
+    "id": "HH-2026-0082",
     "kind": "pay431",
     "severity": "p3",
     "queue": "Care",
@@ -156,7 +156,7 @@
     "body": "Customer U. Monti declined by the bank at 3DS. Advised to retry with another card. Second attempt succeeded."
   },
   {
-    "id": "HH-2026-0104",
+    "id": "HH-2026-0105",
     "kind": "refund",
     "severity": "p3",
     "queue": "Care",
@@ -208,7 +208,7 @@
     "body": "Company customer U. Monti asks an invoice for Civitavecchia-Cagliari on 2026-08-15. Forwarded to Finance queue."
   },
   {
-    "id": "HH-2026-0088",
+    "id": "HH-2026-0089",
     "kind": "chk001",
     "severity": "p3",
     "queue": "Care",
@@ -247,7 +247,7 @@
     "body": "Customer P. Sala asks a refund for Livorno-Bastia on 2026-08-17. Reason: double booking. Fare Smart. Handled with the refund script."
   },
   {
-    "id": "HH-2026-0105",
+    "id": "HH-2026-0106",
     "kind": "bk404",
     "severity": "p3",
     "queue": "Care",
@@ -299,7 +299,7 @@
     "body": "Customer B. Neri typed the reference with a letter O instead of zero. Found by surname and date."
   },
   {
-    "id": "HH-2026-0098",
+    "id": "HH-2026-0099",
     "kind": "checkin",
     "severity": "p3",
     "queue": "Care",
@@ -325,7 +325,7 @@
     "body": "Customer J. Sanna did not receive the reset mail. Resent. Suggested checking spam."
   },
   {
-    "id": "HH-2026-0100",
+    "id": "HH-2026-0101",
     "kind": "pay431",
     "severity": "p3",
     "queue": "Care",
@@ -403,7 +403,7 @@
     "body": "Customer X. Leone asks a refund for Genoa-Olbia on 2026-08-24. Reason: vehicle sold. Fare Smart. Handled with the refund script."
   },
   {
-    "id": "HH-2026-0093",
+    "id": "HH-2026-0094",
     "kind": "chk001",
     "severity": "p3",
     "queue": "Care",
@@ -429,7 +429,7 @@
     "body": "Customer L. Costa asks a refund for Naples-Palermo on 2026-09-06. Reason: wrong date selected. Fare Basic. Handled with the refund script."
   },
   {
-    "id": "HH-2026-0091",
+    "id": "HH-2026-0092",
     "kind": "checkin",
     "severity": "p3",
     "queue": "Care",
@@ -494,7 +494,7 @@
     "body": "Customer E. Marini at Livorno has no boarding pass mail. Resent from the back office. Confirmed receipt."
   },
   {
-    "id": "HH-2026-0095",
+    "id": "HH-2026-0096",
     "kind": "bk404",
     "severity": "p3",
     "queue": "Care",
@@ -546,7 +546,7 @@
     "body": "Customer T. Grassi at Palermo has no boarding pass mail. Resent from the back office. Confirmed receipt."
   },
   {
-    "id": "HH-2026-0107",
+    "id": "HH-2026-0108",
     "kind": "pay431",
     "severity": "p3",
     "queue": "Care",
@@ -611,7 +611,7 @@
     "body": "Customer J. Sanna asks a refund for Livorno-Bastia on 2026-09-08. Reason: change of plans. Fare Flex. Handled with the refund script."
   },
   {
-    "id": "HH-2026-0101",
+    "id": "HH-2026-0102",
     "kind": "checkin",
     "severity": "p3",
     "queue": "Care",
@@ -624,7 +624,7 @@
     "body": "Customer W. Caruso at Palermo has no boarding pass mail. Resent from the back office. Confirmed receipt."
   },
   {
-    "id": "HH-2026-0083",
+    "id": "HH-2026-0084",
     "kind": "chk001",
     "severity": "p3",
     "queue": "Care",
@@ -715,7 +715,7 @@
     "body": "Please create the QA back office user for the new tester. Temporary password: Qa!2026-ferry-Xk9pL, same as the admin one on the QA page. She will change it."
   },
   {
-    "id": "HH-2026-0094",
+    "id": "HH-2026-0095",
     "kind": "chk001",
     "severity": "p3",
     "queue": "Care",
@@ -728,7 +728,7 @@
     "body": "Customer W. Caruso sees CHK-001 on the app at Palermo. Sent to the ticket desk per script."
   },
   {
-    "id": "HH-2026-0086",
+    "id": "HH-2026-0087",
     "kind": "refund",
     "severity": "p3",
     "queue": "Care",
@@ -767,7 +767,7 @@
     "body": "Customer G. Serra sees CHK-001 on the app at Livorno. Sent to the ticket desk per script."
   },
   {
-    "id": "HH-2026-0110",
+    "id": "HH-2026-0111",
     "kind": "chk001",
     "severity": "p3",
     "queue": "Care",
@@ -793,7 +793,7 @@
     "body": "Customer V. Pellegrini asks a refund for Genoa-Olbia on 2026-09-03. Reason: vehicle sold. Fare Basic. Handled with the refund script."
   },
   {
-    "id": "HH-2026-0099",
+    "id": "HH-2026-0100",
     "kind": "chk001",
     "severity": "p3",
     "queue": "Care",
@@ -819,7 +819,7 @@
     "body": "Gate at Naples reports vehicle of J. Sanna not on the list. Red clock on the sync tab. Ops desk called."
   },
   {
-    "id": "HH-2026-0092",
+    "id": "HH-2026-0093",
     "kind": "visionx",
     "severity": "p2",
     "queue": "Port",
@@ -884,7 +884,7 @@
     "body": "Customer F. Colombo asks a refund for Genoa-Olbia on 2026-09-21. Reason: double booking. Fare Smart. Handled with the refund script."
   },
   {
-    "id": "HH-2026-0084",
+    "id": "HH-2026-0085",
     "kind": "chk001",
     "severity": "p3",
     "queue": "Care",
@@ -1027,7 +1027,7 @@
     "body": "Customer M. Riva at Civitavecchia has no boarding pass mail. Resent from the back office. Confirmed receipt."
   },
   {
-    "id": "HH-2026-0106",
+    "id": "HH-2026-0107",
     "kind": "port",
     "severity": "p3",
     "queue": "Port",
@@ -1066,7 +1066,7 @@
     "body": "Customer F. Colombo did not receive the reset mail. Resent. Suggested checking spam."
   },
   {
-    "id": "HH-2026-0089",
+    "id": "HH-2026-0090",
     "kind": "bk404",
     "severity": "p3",
     "queue": "Care",
@@ -1105,7 +1105,7 @@
     "body": "Customer A. Rossi declined by the bank at 3DS. Advised to retry with another card. Second attempt succeeded."
   },
   {
-    "id": "HH-2026-0109",
+    "id": "HH-2026-0110",
     "kind": "visionx",
     "severity": "p2",
     "queue": "Port",
@@ -1131,7 +1131,7 @@
     "body": "Customer V. Pellegrini at Cagliari has no boarding pass mail. Resent from the back office. Confirmed receipt."
   },
   {
-    "id": "HH-2026-0085",
+    "id": "HH-2026-0086",
     "kind": "chk001",
     "severity": "p3",
     "queue": "Care",
@@ -1183,7 +1183,7 @@
     "body": "Ops enabled deferred checkout. Tell customers: 'Your booking is held for 24 hours and you will receive a payment link by mail within a few minutes.' Do not ask them to retry the card now."
   },
   {
-    "id": "HH-2026-0080",
+    "id": "HH-2026-0081",
     "kind": "pay502",
     "severity": "p2",
     "queue": "Platform",
@@ -1261,7 +1261,7 @@
     "body": "Customer R. Testa did not receive the reset mail. Resent. Suggested checking spam."
   },
   {
-    "id": "HH-2026-0111",
+    "id": "HH-2026-0112",
     "kind": "bk404",
     "severity": "p3",
     "queue": "Care",
@@ -1430,7 +1430,7 @@
     "body": "Customer A. Rossi asks a refund for Civitavecchia-Cagliari on 2026-10-10. Reason: vehicle sold. Fare Basic. Handled with the refund script."
   },
   {
-    "id": "HH-2026-0108",
+    "id": "HH-2026-0109",
     "kind": "visionx",
     "severity": "p2",
     "queue": "Port",
@@ -1482,7 +1482,7 @@
     "body": "Delay of 35 minutes announced by the gate for Livorno-Bastia. Customers informed with the same message."
   },
   {
-    "id": "HH-2026-0087",
+    "id": "HH-2026-0088",
     "kind": "refund",
     "severity": "p3",
     "queue": "Care",
@@ -1521,7 +1521,7 @@
     "body": "Company customer G. Serra asks an invoice for Genoa-Olbia on 2026-10-08. Forwarded to Finance queue."
   },
   {
-    "id": "HH-2026-0103",
+    "id": "HH-2026-0104",
     "kind": "bk404",
     "severity": "p3",
     "queue": "Care",
@@ -1547,7 +1547,7 @@
     "body": "Customer E. Marini at Livorno has no boarding pass mail. Resent from the back office. Confirmed receipt."
   },
   {
-    "id": "HH-2026-0082",
+    "id": "HH-2026-0083",
     "kind": "account",
     "severity": "p3",
     "queue": "Care",
