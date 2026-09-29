@@ -1,8 +1,11 @@
 """Unit tests for the collector package: pure logic, no network, no Docker.
 
-Run with ``python -m pytest tests/test_collector.py`` from the repository root so that both
-``app`` and ``collector`` are importable (this file is not part of the ``docker compose
---profile test`` pytest run, which executes inside the ``app``-only image).
+Run with ``python -m pytest collector/tests/test_collector.py`` from the repository root so that
+both ``app`` and ``collector`` are importable. This file lives outside ``tests/`` (whose
+``testpaths`` default pytest collects with no explicit path, exactly how the ``docker compose
+--profile test`` run and the ``Makefile`` ``test`` target invoke it) because the ``collector``
+package is a separate build context (``collector/Dockerfile``) never installed into the
+``app``-only image those containers run.
 """
 
 from __future__ import annotations
@@ -16,7 +19,7 @@ from collector import prefilter, sources
 from collector.rawstore import RawStore, content_hash
 from collector.registry import check_registration, parse_registry, scope_fingerprint
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
 
 def test_cloud_key_rule_matches_aws_style_key():

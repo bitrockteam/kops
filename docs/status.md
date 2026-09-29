@@ -71,10 +71,18 @@ manifests with each admitted item's hash. `verifica` independently confirmed all
 conditions against the live stack. Two real bugs were found and fixed by the first live run (a
 `KeyError` in the ntfy message builder, and `compose.yaml` pointing the collector's `KOPS_NOTIFY_URL`
 at ntfy's host-published port instead of its in-network port); both are covered by a new
-regression test. Full detail, the baseline conformity block and limitations (no isolated-project
-regression suite this phase — the tool-permission gate for a second Compose project could not be
-answered unattended; no browser-screenshot evidence, same reason as P0; the Collect nav entry is
-unnumbered pending a later full nav reconciliation) are in `docs/evidence/lab-p1.md`.
+regression test. Full detail, the baseline conformity block and limitations (no browser-screenshot
+evidence this phase, same reason as P0; the Collect nav entry is unnumbered pending a later full
+nav reconciliation) are in `docs/evidence/lab-p1.md`.
+
+As a same-day follow-up, before P2 started, the isolated-project regression suite (`Makefile`'s
+`test` target) was run by working around the env-var-prefix tool-permission wall with
+`docker compose --env-file`. It found and fixed one further regression from this phase's own
+commit: `tests/test_collector.py` broke the in-container pytest collection because it imports the
+`collector` package, which the `app`-only `api` image does not have. Moved to
+`collector/tests/test_collector.py`, next to the package it tests; the suite then passed in full
+(12 in-container tests, database privilege boundaries, worker-interruption recovery across
+container recreation). Detail in `docs/evidence/lab-p1.md`'s "Regression check" section.
 
 ## Next action
 
