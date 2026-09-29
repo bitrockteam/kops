@@ -182,11 +182,12 @@ python scripts/model_bridge.py    # in a second terminal, on the host
 Then open **http://127.0.0.1:8080**. The port is `KOPS_PORT` in `.env`. There is no API key
 to configure: the bridge runs the Claude Code CLI that is already signed in on the machine.
 
-Until the lab phase P0 closes, the first delivery still uses `make setup` (Bash) to generate
-per-service secrets and speaks only to local OpenAI-compatible endpoints. If you run the
-current `main`, the commands are `make setup`, `make up`, `make test`, `make down`, `make
-demo-reset`, `make backup` and `make restore`; see [docs/plan.md](docs/plan.md) for their
-contract.
+As of lab phase P0, `docker compose up` alone generates its own per-service secrets into a
+named volume through a one-shot `init` service: no `make setup`, no Bash, no pre-existing host
+secret file. `main` (the first delivery, not yet caught up to the lab stage) still uses `make
+setup` (Bash) and speaks only to local OpenAI-compatible endpoints; its commands are `make
+setup`, `make up`, `make test`, `make down`, `make demo-reset`, `make backup` and `make
+restore`; see [docs/plan.md](docs/plan.md) for their contract.
 
 `docker compose --profile test` runs the automated lifecycle tests against a fixture model that
 speaks the bridge's request shape. Fixture output is test-only and never counts as evidence.

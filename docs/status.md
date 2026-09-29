@@ -8,7 +8,7 @@
 - Engineering, Finance and Engineering AND Finance audiences with bounded conjunction semantics.
 - Immutable source, candidate, published-page and answer content volumes behind an adapter.
 - Separate API, admitted-content broker, restricted worker, bounded publisher and protected audit collector processes and database roles.
-- Operator-selected Ollama and local OpenAI-compatible model adapters with local destination validation, redirect refusal, finite limits and pinned job configuration.
+- A fixed model bridge to the account's Claude (no adapter, endpoint or model name to choose) with destination validation, redirect refusal, finite limits and pinned job configuration.
 - Exact-candidate verification, expiring effect authorization, expected-version publication, idempotency, audit outbox and uncertain-result reconciliation.
 - Authorized catalog, current and historical reads, questions, answer promotion, source revision maintenance, membership revocation and source-policy invalidation.
 - Admin-only controls for stale approval, conflicting versions, duplicate publication, audit outage, mid-job policy change and cancellation.
@@ -33,12 +33,28 @@
 - `make test` passed again on exact head `5ac25db` on 29 September 2026: 12 tests, database privilege assertions, worker interruption recovery and state persistence after container recreation. The disposable test project and volumes were removed.
 - Pull request 2 is open against `main` for the current branch. Its required check and independent human review are tracked on the PR; no merge has occurred.
 
-The deterministic inference service is a test double and does not satisfy live-model acceptance. No local Ollama, llama.cpp server or LM Studio endpoint was available on this machine, so live compilation, live questions and model-quality assessment remain unverified.
+The deterministic inference fixture (`app/fixture_model.py`) is a test double used only by the `test` Compose profile and does not by itself satisfy live-model acceptance. As of P0 (`docs/evidence/lab-p0.md`), live compilation through the account's Claude (Sonnet 5, high effort) via `scripts/model_bridge.py` is verified for one compile-and-publish cycle; live questions and broader model-quality assessment remain unverified.
 
 ## Baseline status
 
 Implementation and repeatable evidence verify covered local-demo behavior for C01, C02, C04, C06, C10, C11 and C12. C05 product separation is tested, while its shared-branch gate remains partial until independent human approval. C03 is partial for the same review gap. C07-C09 are partial because identity is mocked and the trusted local administrator remains outside the container boundary. MCP/A2A-specific C08 requirements are not applicable because those adapters are absent; mock session recipient checks and per-service internal tokens are implemented. Configuration and source review are not substitutes for runtime fault evidence. No enterprise or production assurance is claimed.
 
+## Lab stage: P0 closed
+
+Commit `3eeb2ac` on `dev`. `docker compose up` (after `python scripts/model_bridge.py start`)
+brings up the stack with no pre-existing host secret file: a one-shot `init` service writes
+secrets into a named volume before `db` and the app services start. The model is fixed to the
+account's Claude through `scripts/model_bridge.py`; the Model Setup screen only tests and pins
+that bridge and shows the model id, effort, bridge and CLI version it reports, with no adapter,
+endpoint or model name left to choose. One page (Engineering expansion overview) compiled
+through the real bridge (`claude-sonnet-5`, `high` effort, 24882 ms), was reviewed, authorized
+and published, and read back with an audit receipt; `verifica` confirmed the gate independently.
+Full detail, the baseline conformity block and limitations (no browser-screenshot evidence this
+phase; a CRLF line-ending bug found and fixed on Windows checkouts) are in
+`docs/evidence/lab-p0.md`.
+
 ## Next action
 
-The first delivery is merged on `main` at `4050225`. The next action is phase P0 of `docs/lab.md` on `dev`, as assigned in `HANDOFF.md`: bootstrap without `make` or Bash, and the model bridge to the account's Claude (Sonnet 5, high effort), with one page compiled and published through it as the gate.
+Phase P1 of `docs/lab.md` on `dev`: raw store tables and volume, collector registry, four
+collectors over `fixtures/meridian/`, rule pre-filter, quarantine records, ntfy notification,
+run manifests, and the Collect screen. No model calls in this phase.
