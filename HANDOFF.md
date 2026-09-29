@@ -1,4 +1,4 @@
-# Implementation handoff: the lab stage
+﻿# Implementation handoff: the lab stage
 
 **Status:** the first delivery is merged on `main` at `4050225`. The next stage is planned in
 `docs/lab.md` and starts from `dev`. Nothing of it is implemented yet. This document is the
@@ -22,14 +22,17 @@ out unreachable, a control that conflicts with the baseline), and say so before 
 ## Read in this order
 
 1. `AGENTS.md`: the rules of this repository.
-2. `docs/lab.md`: what the demo demonstrates (D1 to D9), the classifier design, phases P0 to P7
+2. `docs/lab.md`: what the demo demonstrates (D1 to D10), the classifier design, phases P0 to P7
    with their gates, the run and runtime contract.
-3. `README.md`: the public description; keep it accurate as phases close.
-4. `docs/architecture-v4.md` and `docs/evidence/implementation.md`: what the first delivery
-   built and verified, so that nothing is rebuilt or weakened.
-5. `scripts/generate_meridian.py` and `fixtures/meridian/manifest.json`: the synthetic world and
+3. `docs/gui-lab.md`: the screen contract. The demo is driven entirely from the GUI: Franco
+   never types in a terminal, never calls the API by hand and never uses an agent session as
+   the interface. Every phase ships its screens.
+4. `README.md`: the public description; keep it accurate as phases close.
+5. `docs/architecture-v4.md`, `docs/gui-walkthrough.md` and `docs/evidence/implementation.md`:
+   what the first delivery built and verified, so that nothing is rebuilt or weakened.
+6. `scripts/generate_meridian.py` and `fixtures/meridian/manifest.json`: the synthetic world and
    its ground truth.
-6. The agentic baseline in the shared memory (`baseline-agenti/SCHEDA.md`), profile C while
+7. The agentic baseline in the shared memory (`baseline-agenti/SCHEDA.md`), profile C while
    building, profile A for the ops agent in P5.
 
 ## First actions
@@ -62,6 +65,8 @@ expected result, observed result, limitations. Then commit and push on `dev`.
 ## Rules that do not bend
 
 - The model is never hard-wired and never silently defaulted. No local inference, no Ollama.
+- Everything is operated from the GUI. A gate that can be observed only from a terminal, a
+  script or an agent session is not met; the screen that shows it is part of the phase.
 - Collectors, generators, rules and lint are deterministic standard-library Python with no
   model call. `fixtures/meridian/` is regenerated, never hand-edited.
 - Authorization, persistence, publication, provenance, review, revocation and audit are backend

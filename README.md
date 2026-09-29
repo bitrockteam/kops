@@ -46,6 +46,10 @@ purpose. Nothing here is a product, a certification or a claim of enterprise sec
 9. **Machine independence and the model as a runtime choice.** The Compose stack runs unchanged
    on Linux, Windows and macOS. Provider (Claude or OpenAI), model and reasoning effort are
    chosen per session, never hard-wired, and recorded on every output.
+10. **Everything is driven from the GUI.** Configuring the model, running collectors, deciding
+    an uncertain item as its owner, asking as a given person, watching the ops agent, reading a
+    lineage: all in the browser. No terminal, no API calls by hand, no agent session as the
+    interface.
 
 The first delivery (points 4, part of 5, and the governance around review, publication,
 revocation and audit) is implemented and documented in [docs/evidence](docs/evidence/). The
@@ -243,6 +247,7 @@ secrets and API keys stay private and ignored.
 | [First delivery plan](docs/plan.md) | Scope and milestones of the first delivery, merged at `4050225`. |
 | [Architecture v4](docs/architecture-v4.md) | Architecture snapshot of the governed compilation component. |
 | [GUI walkthrough](docs/gui-walkthrough.md) | Screens, actions and observable evidence of the first delivery. |
+| [GUI contract, lab stage](docs/gui-lab.md) | Settings, collect, classify, ask with the gate trace, live, lineage: the screens that drive the demo. |
 | [Acceptance matrix](docs/acceptance.md) | Positive, negative, fault and live-model scenarios. |
 | [Status](docs/status.md) | Completed work, remaining work and the next action. |
 | [Decisions](docs/decisions.md) | Scope decisions and their reasons. |

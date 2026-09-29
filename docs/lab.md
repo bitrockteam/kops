@@ -21,6 +21,7 @@ Each claim has an observable proof. A claim without its proof is not demonstrate
 | D7 | Live truth is read through a gateway with typed read-only operations, and an agent stays inside its budget | A mutating command is refused at both ends and both refusals are in the audit; the ops agent reports a failing health check within its call and time budget without trying to fix it |
 | D8 | Lineage answers who could have seen an item, who did, where it could have gone | The personal roster's lineage names every principal and agent that could have read it, with dates, including the ops agent |
 | D9 | The stack is machine independent and the model is a runtime choice | `git clone`, `.env`, `docker compose up` on Linux, Windows and macOS with only Docker; provider, model and reasoning are chosen per session and recorded on every output |
+| D10 | The whole demo is driven from the GUI | Every step, from configuring the model to reading a lineage, is done in the browser; no terminal, no API call by hand, no agent session as the interface. `docs/gui-lab.md` is the screen contract |
 
 Agreed limits, stated once: the personality adaptation is a structured profile, not a learned
 model of the person; the human review gate stays because a hosted model's judgment is not
@@ -90,6 +91,8 @@ regenerate, commit both; never hand-edit the output.
 
 Each phase ends with an entry in `docs/evidence/` naming the commit, the command, the provider
 and model, and the observed result. Phases are committed and pushed on `dev` as they close.
+Each phase also delivers its screens as written in `docs/gui-lab.md`: a phase whose gate can be
+observed only from a terminal is not closed.
 
 ## Run
 
