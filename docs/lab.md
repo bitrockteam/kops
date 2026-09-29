@@ -2,8 +2,10 @@
 
 The demo is the product. This file is the plan for its next stage, worked on `dev` and moved to
 `main` by Franco. Solo exploration: Franco and the implementing agent, no other committer, no
-reviewer, no branch protection. Everything a session needs to pick up the work is here and in
-`HANDOFF.md`; the first delivery (merged at `4050225`) is described by `docs/plan.md`,
+reviewer, no branch protection. Everything a session needs to pick up the work is here, in
+`docs/lab-design.md` (the components: Compose additions, collectors, data model, return,
+gateway, ops agent, lineage) and in `HANDOFF.md` (the unattended run, its models and
+orchestration, the stop conditions); the first delivery (merged at `4050225`) is described by `docs/plan.md`,
 `docs/architecture-v4.md` and `docs/evidence/implementation.md`.
 
 ## What the demo demonstrates
@@ -92,7 +94,10 @@ regenerate, commit both; never hand-edit the output.
 Each phase ends with an entry in `docs/evidence/` naming the commit, the command, the provider
 and model, and the observed result. Phases are committed and pushed on `dev` as they close.
 Each phase also delivers its screens as written in `docs/gui-lab.md`: a phase whose gate can be
-observed only from a terminal is not closed.
+observed only from a terminal is not closed. The phases run unattended, one after the other,
+in a single Sonnet 5 session that implements and commits, with a Haiku 4.5 verifier that
+re-runs every gate independently before the phase closes; `HANDOFF.md` fixes the models, the
+launch and the stop conditions.
 
 ## Run
 

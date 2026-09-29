@@ -243,7 +243,8 @@ secrets and API keys stay private and ignored.
 | File | Purpose |
 | --- | --- |
 | [Lab plan](docs/lab.md) | What the demo demonstrates, the classifier design, phases and gates, runtime contract. |
-| [Handoff](HANDOFF.md) | The assignment for the implementing session: read order, rules, first actions, deliverables. |
+| [Lab design](docs/lab-design.md) | The components behind the plan: Compose additions, collectors, data model, the return, gateway, ops agent, lineage. |
+| [Handoff](HANDOFF.md) | The assignment for the unattended implementing session: launch, models and orchestration, deliverables per phase, stop conditions. |
 | [First delivery plan](docs/plan.md) | Scope and milestones of the first delivery, merged at `4050225`. |
 | [Architecture v4](docs/architecture-v4.md) | Architecture snapshot of the governed compilation component. |
 | [GUI walkthrough](docs/gui-walkthrough.md) | Screens, actions and observable evidence of the first delivery. |
