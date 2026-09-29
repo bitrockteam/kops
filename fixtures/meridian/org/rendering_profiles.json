@@ -1,0 +1,204 @@
+{
+  "giulia.ferrante": {
+    "length": "short",
+    "leads_with": "what to say to the customer",
+    "format": "numbered steps",
+    "tone": "plain, reassuring",
+    "avoid": [
+      "acronyms",
+      "system names"
+    ],
+    "own_words": {
+      "the booking code": "PNR",
+      "the payment thing": "PayGate",
+      "the old system": "Sirius"
+    },
+    "notes": "Reads on a second monitor while talking. Wants the escalation condition in bold."
+  },
+  "marco.belli": {
+    "length": "short",
+    "leads_with": "whether to escalate now",
+    "format": "numbered steps",
+    "tone": "direct",
+    "avoid": [
+      "explanations"
+    ],
+    "own_words": {
+      "the code": "PNR",
+      "the pay page": "checkout"
+    },
+    "notes": "Alone at night. Wants to know when he is allowed to wake someone up."
+  },
+  "marta.esposito": {
+    "length": "medium",
+    "leads_with": "impact on the queue",
+    "format": "short paragraphs then a list",
+    "tone": "managerial",
+    "avoid": [
+      "commands"
+    ],
+    "own_words": {
+      "the floor": "the L1 team",
+      "AHT": "average handling time"
+    },
+    "notes": "Wants numbers: tickets affected, customers waiting."
+  },
+  "sara.conti": {
+    "length": "short",
+    "leads_with": "the first command to run",
+    "format": "checklist with code blocks",
+    "tone": "terse",
+    "avoid": [
+      "background",
+      "business framing"
+    ],
+    "own_words": {
+      "the adapter": "paygate-adapter",
+      "the pool": "pgbouncer"
+    },
+    "notes": "Copies commands from the page. Raw outputs, not summaries of outputs."
+  },
+  "davide.rinaldi": {
+    "length": "long",
+    "leads_with": "the hypothesis",
+    "format": "timeline then evidence",
+    "tone": "analytical",
+    "avoid": [
+      "step lists without a why"
+    ],
+    "own_words": {
+      "the storm": "the 12 September PAY-502 burst"
+    },
+    "notes": "Wants what changed in the last 48 hours before anything else."
+  },
+  "elena.moretti": {
+    "length": "medium",
+    "leads_with": "the file and function",
+    "format": "paths, then prose",
+    "tone": "precise",
+    "avoid": [
+      "customer wording"
+    ],
+    "own_words": {
+      "the retry thing": "ADR-007 retry with backoff"
+    },
+    "notes": "Asks for the commit that introduced a behavior, then reads the ADR."
+  },
+  "nadia.orlando": {
+    "length": "medium",
+    "leads_with": "the failing test",
+    "format": "bullets",
+    "tone": "practical",
+    "avoid": [],
+    "own_words": {
+      "the QA box": "the QA environment"
+    },
+    "notes": "Maintains the QA environment page. Pastes things she should not paste."
+  },
+  "simone.pace": {
+    "length": "short",
+    "leads_with": "what the user sees",
+    "format": "bullets with screenshots described",
+    "tone": "visual",
+    "avoid": [
+      "database detail"
+    ],
+    "own_words": {
+      "the spinner": "the checkout pending state"
+    },
+    "notes": "Cares about error messages as rendered."
+  },
+  "tommaso.greco": {
+    "length": "long",
+    "leads_with": "the business impact",
+    "format": "narrative with a dated decision list",
+    "tone": "explanatory",
+    "avoid": [
+      "commands",
+      "cluster names"
+    ],
+    "own_words": {
+      "the funnel": "search to confirm flow",
+      "drop": "abandoned holds"
+    },
+    "notes": "Writes for the steering committee. Wants numbers he can quote."
+  },
+  "paolo.ricci": {
+    "length": "short",
+    "leads_with": "the decision",
+    "format": "bullets with dates",
+    "tone": "decisive",
+    "avoid": [
+      "long background"
+    ],
+    "own_words": {
+      "the bridge": "sirius-bridge"
+    },
+    "notes": "Three bullets or he stops reading."
+  },
+  "federica.bruni": {
+    "length": "short",
+    "leads_with": "the departure affected",
+    "format": "by vessel and time",
+    "tone": "operational",
+    "avoid": [
+      "platform internals"
+    ],
+    "own_words": {
+      "the list": "the manifest",
+      "the gate": "the boarding gate"
+    },
+    "notes": "On a tablet in the port. Local time only."
+  },
+  "chiara.lombardi": {
+    "length": "medium",
+    "leads_with": "the total",
+    "format": "table then one line",
+    "tone": "exact",
+    "avoid": [
+      "technical detail"
+    ],
+    "own_words": {
+      "CP": "CardinalPay",
+      "MM": "monthly minimum"
+    },
+    "notes": "Euro amounts with two decimals. Dates in ISO."
+  },
+  "luca.santoro": {
+    "length": "short",
+    "leads_with": "the person concerned",
+    "format": "per person",
+    "tone": "careful",
+    "avoid": [
+      "copying personal data into answers when not asked"
+    ],
+    "own_words": {
+      "the rota": "the on-call roster"
+    },
+    "notes": "Expects the retention rule to be restated."
+  },
+  "anna.vitali": {
+    "length": "short",
+    "leads_with": "the event",
+    "format": "event list, lineage table",
+    "tone": "forensic",
+    "avoid": [
+      "prose readings"
+    ],
+    "own_words": {
+      "the lake": "the raw store"
+    },
+    "notes": "Timestamps in UTC, correlation ids visible."
+  },
+  "roberto.mancuso": {
+    "length": "short",
+    "leads_with": "the status and the risk",
+    "format": "three bullets",
+    "tone": "executive",
+    "avoid": [
+      "detail unless asked"
+    ],
+    "own_words": {},
+    "notes": "Has the widest rights and needs the least. The test case for need over rights."
+  }
+}

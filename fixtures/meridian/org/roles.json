@@ -1,0 +1,121 @@
+{
+  "helpdesk-l1": {
+    "description": "Answers the phone and the chat for customers, first level",
+    "domains": [
+      "customer-support"
+    ],
+    "audience_brief": {
+      "who": "An operator with a customer on the line. Average handling time is four minutes.",
+      "needs": "What to say to the customer, at most three checks in the tools they have (HelpHub, the NBS back office), and the one condition under which they escalate, to which queue.",
+      "must_not_get": "Architecture, commands, database or cluster names, supplier terms, names or phone numbers of engineers. Even where the operator is entitled to more, the L1 page is the script and nothing else.",
+      "form": "A numbered script under 120 words. Customer-facing sentences in quotes. Error codes spelled as the customer sees them.",
+      "glossary": {
+        "PNR": "booking reference",
+        "PayGate": "the payment step",
+        "PAY-502": "payment provider unavailable"
+      }
+    }
+  },
+  "ops-desk": {
+    "description": "Second and third level operations for the booking platform and Vision X",
+    "domains": [
+      "booking-platform",
+      "fleet-operations",
+      "customer-support"
+    ],
+    "audience_brief": {
+      "who": "An engineer with a ticket or an alert, at the desk or on call.",
+      "needs": "Symptoms, the checks in order with the exact commands, the decision points, who to escalate to, what changed recently.",
+      "must_not_get": "Supplier prices, personal data beyond the on-call name and phone, customer-facing wording.",
+      "form": "Checklist first, commands as code, then the reasoning. Live state next to the runbook when available.",
+      "glossary": {}
+    }
+  },
+  "developer": {
+    "description": "Builds and fixes NBS, PayGate and the bridges",
+    "domains": [
+      "booking-platform"
+    ],
+    "audience_brief": {
+      "who": "A developer with the code open.",
+      "needs": "The code path, the ADR that decided it, the commits that touched it, the incident that motivated it, the test that covers it.",
+      "must_not_get": "Customer scripts, prices, personal data.",
+      "form": "Paths, identifiers and links first; prose second.",
+      "glossary": {}
+    }
+  },
+  "functional-analyst": {
+    "description": "Owns the functional view of the platform and the customer processes",
+    "domains": [
+      "booking-platform",
+      "customer-support",
+      "fleet-operations"
+    ],
+    "audience_brief": {
+      "who": "Someone who has to explain to the business what happened, what it cost in bookings, and what will change.",
+      "needs": "Business impact, affected flows and routes, customer-visible behavior, decisions and dates, open questions.",
+      "must_not_get": "Commands, cluster names, code, prices.",
+      "form": "Narrative in business terms, under 300 words, with a dated decision list.",
+      "glossary": {
+        "PAY-502": "payment provider outage",
+        "hold": "the ten minute reservation before payment"
+      }
+    }
+  },
+  "fleet-ops": {
+    "description": "Port and vessel operations, boarding, manifests",
+    "domains": [
+      "fleet-operations",
+      "customer-support"
+    ],
+    "audience_brief": {
+      "who": "A port coordinator with a boarding in progress.",
+      "needs": "Manifest state, boarding blockers, who to call, the customer-facing line.",
+      "must_not_get": "Platform internals, prices, personal data of staff.",
+      "form": "Short, by vessel and departure, times in local time.",
+      "glossary": {
+        "manifest": "the passenger and vehicle list Vision X sends to the port"
+      }
+    }
+  },
+  "finance-controller": {
+    "description": "Costs, supplier terms, pricing, invoicing",
+    "domains": [
+      "finance"
+    ],
+    "audience_brief": {
+      "who": "A controller closing the month or checking a supplier.",
+      "needs": "Amounts, rates, volumes, contract terms, totals first.",
+      "must_not_get": "Operational detail beyond what changes an amount; personal data.",
+      "form": "Tables with euro amounts and dates; a one-line reading under each table.",
+      "glossary": {}
+    }
+  },
+  "hr-partner": {
+    "description": "People data, onboarding, on-call allowances, working time",
+    "domains": [
+      "people"
+    ],
+    "audience_brief": {
+      "who": "The HR partner for Platform and Customer Care.",
+      "needs": "Roster, contract type, allowances, onboarding steps, working-time notes.",
+      "must_not_get": "System internals, supplier terms.",
+      "form": "Per person, minimal, with the retention rule stated on every page.",
+      "glossary": {}
+    }
+  },
+  "security-monitor": {
+    "description": "Receives quarantine notifications and can read lineage for any item",
+    "domains": [
+      "security"
+    ],
+    "lineage": true,
+    "audience_brief": {
+      "who": "The person who gets the notification when a collector quarantines something, and who reconstructs a breach.",
+      "needs": "Events with timestamps, who could see what and when, where an item could have gone.",
+      "must_not_get": "Nothing is hidden from lineage; content itself is not shown unless the role also has the domain.",
+      "form": "Event lists and lineage tables. No prose reading.",
+      "glossary": {}
+    }
+  }
+}

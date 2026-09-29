@@ -1,0 +1,1811 @@
+[
+  {
+    "sha": "1a386b098377",
+    "component": "nbs-worker",
+    "message": "nbs-worker: pause refunds behind flag",
+    "author": "elena.moretti",
+    "date": "2026-05-04T15:00:00+02:00",
+    "files": 5,
+    "pr": 463
+  },
+  {
+    "sha": "ef7166a1ccdb",
+    "component": "paygate-adapter",
+    "message": "paygate-adapter: retry authorize on 502 with backoff (ADR-007)",
+    "author": "elena.moretti",
+    "date": "2026-05-05T18:00:00+02:00",
+    "files": 9,
+    "pr": 388
+  },
+  {
+    "sha": "f46da4c422e9",
+    "component": "nbs-web",
+    "message": "nbs-web: deferred checkout banner",
+    "author": "nadia.orlando",
+    "date": "2026-05-06T15:00:00+02:00",
+    "files": 2,
+    "pr": 321
+  },
+  {
+    "sha": "09298f29a887",
+    "component": "nbs-web",
+    "message": "nbs-web: checkout spinner timeout at 20 s",
+    "author": "roberto.mancuso",
+    "date": "2026-05-06T22:00:00+02:00",
+    "files": 5,
+    "pr": 302
+  },
+  {
+    "sha": "198549070239",
+    "component": "paygate-adapter",
+    "message": "paygate-adapter: retry authorize on 502 with backoff (ADR-007)",
+    "author": "davide.rinaldi",
+    "date": "2026-05-07T02:00:00+02:00",
+    "files": 7,
+    "pr": 360
+  },
+  {
+    "sha": "4911038177cb",
+    "component": "nbs-worker",
+    "message": "nbs-worker: pause refunds behind flag",
+    "author": "elena.moretti",
+    "date": "2026-05-07T06:00:00+02:00",
+    "files": 6,
+    "pr": 303
+  },
+  {
+    "sha": "0d29a04a4394",
+    "component": "nbs-worker",
+    "message": "nbs-worker: manifest sync: resend on red clock",
+    "author": "simone.pace",
+    "date": "2026-05-07T17:00:00+02:00",
+    "files": 4,
+    "pr": 304
+  },
+  {
+    "sha": "80fb23f256a4",
+    "component": "nbs-worker",
+    "message": "nbs-worker: cap pool size at 8",
+    "author": "elena.moretti",
+    "date": "2026-05-08T07:00:00+02:00",
+    "files": 9,
+    "pr": 507
+  },
+  {
+    "sha": "2049c5755035",
+    "component": "infra",
+    "message": "infra: view ClusterRole for onboarding",
+    "author": "nadia.orlando",
+    "date": "2026-05-08T21:00:00+02:00",
+    "files": 2,
+    "pr": 409
+  },
+  {
+    "sha": "8c0ecc3ff157",
+    "component": "nbs-api",
+    "message": "nbs-api: bump fastapi to 0.115.0",
+    "author": "roberto.mancuso",
+    "date": "2026-05-08T23:00:00+02:00",
+    "files": 8,
+    "pr": 455
+  },
+  {
+    "sha": "78e2f00980a5",
+    "component": "sirius-bridge",
+    "message": "sirius-bridge: archive export for 2027-03",
+    "author": "nadia.orlando",
+    "date": "2026-05-09T14:00:00+02:00",
+    "files": 1,
+    "pr": 353
+  },
+  {
+    "sha": "7e4bd339451e",
+    "component": "paygate-adapter",
+    "message": "paygate-adapter: map provider 429 to PAY-502",
+    "author": "nadia.orlando",
+    "date": "2026-05-09T18:00:00+02:00",
+    "files": 1,
+    "pr": 472
+  },
+  {
+    "sha": "0fe5ba4995b0",
+    "component": "nbs-worker",
+    "message": "nbs-worker: pause refunds behind flag",
+    "author": "elena.moretti",
+    "date": "2026-05-10T16:00:00+02:00",
+    "files": 8,
+    "pr": 384
+  },
+  {
+    "sha": "bdd112295e5f",
+    "component": "nbs-worker",
+    "message": "nbs-worker: cap pool size at 8",
+    "author": "roberto.mancuso",
+    "date": "2026-05-11T20:00:00+02:00",
+    "files": 3,
+    "pr": 327
+  },
+  {
+    "sha": "6cfdd2520759",
+    "component": "infra",
+    "message": "infra: view ClusterRole for onboarding",
+    "author": "elena.moretti",
+    "date": "2026-05-12T04:00:00+02:00",
+    "files": 3,
+    "pr": 420
+  },
+  {
+    "sha": "fb0035a0054a",
+    "component": "nbs-api",
+    "message": "nbs-api: validate PNR format before lookup",
+    "author": "roberto.mancuso",
+    "date": "2026-05-12T21:00:00+02:00",
+    "files": 9,
+    "pr": 404
+  },
+  {
+    "sha": "d5c618ad3977",
+    "component": "sirius-bridge",
+    "message": "sirius-bridge: archive export for 2027-03",
+    "author": "simone.pace",
+    "date": "2026-05-13T13:00:00+02:00",
+    "files": 1,
+    "pr": 356
+  },
+  {
+    "sha": "d46ac646b62b",
+    "component": "nbs-worker",
+    "message": "nbs-worker: cap pool size at 8",
+    "author": "davide.rinaldi",
+    "date": "2026-05-13T16:00:00+02:00",
+    "files": 3,
+    "pr": 506
+  },
+  {
+    "sha": "81f9cac12a54",
+    "component": "nbs-worker",
+    "message": "nbs-worker: refund batch: commit every 50 rows",
+    "author": "elena.moretti",
+    "date": "2026-05-13T22:00:00+02:00",
+    "files": 2,
+    "pr": 396
+  },
+  {
+    "sha": "1d6df4ff6554",
+    "component": "nbs-api",
+    "message": "nbs-api: log request_id on every 5xx",
+    "author": "davide.rinaldi",
+    "date": "2026-05-14T03:00:00+02:00",
+    "files": 3,
+    "pr": 445
+  },
+  {
+    "sha": "7fcad4d60f48",
+    "component": "paygate-adapter",
+    "message": "paygate-adapter: map provider 429 to PAY-502",
+    "author": "roberto.mancuso",
+    "date": "2026-05-15T07:00:00+02:00",
+    "files": 5,
+    "pr": 392
+  },
+  {
+    "sha": "f8830eb49dfa",
+    "component": "nbs-worker",
+    "message": "nbs-worker: refund batch: commit every 50 rows",
+    "author": "nadia.orlando",
+    "date": "2026-05-16T06:00:00+02:00",
+    "files": 5,
+    "pr": 305
+  },
+  {
+    "sha": "ef41037ac9b8",
+    "component": "paygate-adapter",
+    "message": "paygate-adapter: map provider 429 to PAY-502",
+    "author": "nadia.orlando",
+    "date": "2026-05-17T05:00:00+02:00",
+    "files": 1,
+    "pr": 341
+  },
+  {
+    "sha": "536968f25e7a",
+    "component": "infra",
+    "message": "infra: freeze window annotation",
+    "author": "simone.pace",
+    "date": "2026-05-18T10:00:00+02:00",
+    "files": 7,
+    "pr": 467
+  },
+  {
+    "sha": "1e0512c30e50",
+    "component": "nbs-web",
+    "message": "nbs-web: resend boarding pass button",
+    "author": "elena.moretti",
+    "date": "2026-05-18T15:00:00+02:00",
+    "files": 3,
+    "pr": 447
+  },
+  {
+    "sha": "d81fe7b7bd97",
+    "component": "nbs-worker",
+    "message": "nbs-worker: confirmation mail template for deferred checkout",
+    "author": "simone.pace",
+    "date": "2026-05-19T14:00:00+02:00",
+    "files": 9,
+    "pr": 413
+  },
+  {
+    "sha": "7f46d3c9e841",
+    "component": "sirius-bridge",
+    "message": "sirius-bridge: read-only guard on every endpoint",
+    "author": "davide.rinaldi",
+    "date": "2026-05-20T00:00:00+02:00",
+    "files": 9,
+    "pr": 371
+  },
+  {
+    "sha": "f771dd60c816",
+    "component": "nbs-api",
+    "message": "nbs-api: bump fastapi to 0.115.0",
+    "author": "roberto.mancuso",
+    "date": "2026-05-20T19:00:00+02:00",
+    "files": 6,
+    "pr": 420
+  },
+  {
+    "sha": "e6c209241d20",
+    "component": "paygate-adapter",
+    "message": "paygate-adapter: retry authorize on 502 with backoff (ADR-007)",
+    "author": "simone.pace",
+    "date": "2026-05-21T11:00:00+02:00",
+    "files": 3,
+    "pr": 419
+  },
+  {
+    "sha": "834ebfc83e76",
+    "component": "nbs-web",
+    "message": "nbs-web: checkout spinner timeout at 20 s",
+    "author": "nadia.orlando",
+    "date": "2026-05-21T14:00:00+02:00",
+    "files": 7,
+    "pr": 501
+  },
+  {
+    "sha": "fb527bc257f3",
+    "component": "infra",
+    "message": "infra: alert route to ops-desk pager",
+    "author": "nadia.orlando",
+    "date": "2026-05-22T00:00:00+02:00",
+    "files": 2,
+    "pr": 393
+  },
+  {
+    "sha": "56e6dd5e4ff0",
+    "component": "infra",
+    "message": "infra: alert route to ops-desk pager",
+    "author": "davide.rinaldi",
+    "date": "2026-05-22T10:00:00+02:00",
+    "files": 2,
+    "pr": 363
+  },
+  {
+    "sha": "fdc509a65a60",
+    "component": "paygate-adapter",
+    "message": "paygate-adapter: rotate client on credential reload",
+    "author": "elena.moretti",
+    "date": "2026-05-22T18:00:00+02:00",
+    "files": 4,
+    "pr": 388
+  },
+  {
+    "sha": "1500ad556aa9",
+    "component": "nbs-web",
+    "message": "nbs-web: deferred checkout banner",
+    "author": "simone.pace",
+    "date": "2026-05-23T11:00:00+02:00",
+    "files": 8,
+    "pr": 371
+  },
+  {
+    "sha": "e4f9f5d0ba1b",
+    "component": "nbs-worker",
+    "message": "nbs-worker: refund batch: commit every 50 rows",
+    "author": "roberto.mancuso",
+    "date": "2026-05-24T09:00:00+02:00",
+    "files": 3,
+    "pr": 415
+  },
+  {
+    "sha": "8f1fd82d186f",
+    "component": "paygate-adapter",
+    "message": "paygate-adapter: add metrics for authorize latency",
+    "author": "elena.moretti",
+    "date": "2026-05-25T06:00:00+02:00",
+    "files": 7,
+    "pr": 428
+  },
+  {
+    "sha": "f4f06ebcf294",
+    "component": "nbs-api",
+    "message": "nbs-api: add /health details for argo readiness",
+    "author": "elena.moretti",
+    "date": "2026-05-25T13:00:00+02:00",
+    "files": 5,
+    "pr": 510
+  },
+  {
+    "sha": "0de8b9987a1a",
+    "component": "infra",
+    "message": "infra: pgbouncer pool 40 (ADR-006)",
+    "author": "nadia.orlando",
+    "date": "2026-05-26T16:00:00+02:00",
+    "files": 7,
+    "pr": 498
+  },
+  {
+    "sha": "5b75f6a4fe54",
+    "component": "nbs-worker",
+    "message": "nbs-worker: confirmation mail template for deferred checkout",
+    "author": "nadia.orlando",
+    "date": "2026-05-27T11:00:00+02:00",
+    "files": 8,
+    "pr": 323
+  },
+  {
+    "sha": "a7a2072e7561",
+    "component": "nbs-web",
+    "message": "nbs-web: deferred checkout banner",
+    "author": "davide.rinaldi",
+    "date": "2026-05-28T02:00:00+02:00",
+    "files": 3,
+    "pr": 454
+  },
+  {
+    "sha": "c5776232fa7d",
+    "component": "nbs-worker",
+    "message": "nbs-worker: confirmation mail template for deferred checkout",
+    "author": "davide.rinaldi",
+    "date": "2026-05-28T15:00:00+02:00",
+    "files": 2,
+    "pr": 323
+  },
+  {
+    "sha": "d9e1ffafadaf",
+    "component": "paygate-adapter",
+    "message": "paygate-adapter: idempotency key from booking id and attempt",
+    "author": "roberto.mancuso",
+    "date": "2026-05-29T12:00:00+02:00",
+    "files": 9,
+    "pr": 507
+  },
+  {
+    "sha": "99458549fce3",
+    "component": "nbs-web",
+    "message": "nbs-web: checkout spinner timeout at 20 s",
+    "author": "roberto.mancuso",
+    "date": "2026-05-30T16:00:00+02:00",
+    "files": 4,
+    "pr": 364
+  },
+  {
+    "sha": "da1b03581063",
+    "component": "nbs-web",
+    "message": "nbs-web: deferred checkout banner",
+    "author": "simone.pace",
+    "date": "2026-05-31T22:00:00+02:00",
+    "files": 1,
+    "pr": 313
+  },
+  {
+    "sha": "b70cedeb5b05",
+    "component": "paygate-adapter",
+    "message": "paygate-adapter: add metrics for authorize latency",
+    "author": "roberto.mancuso",
+    "date": "2026-06-01T00:00:00+02:00",
+    "files": 1,
+    "pr": 452
+  },
+  {
+    "sha": "0fb72cde8aa3",
+    "component": "nbs-worker",
+    "message": "nbs-worker: pause refunds behind flag",
+    "author": "davide.rinaldi",
+    "date": "2026-06-01T14:00:00+02:00",
+    "files": 9,
+    "pr": 383
+  },
+  {
+    "sha": "7fdd5bcf7680",
+    "component": "paygate-adapter",
+    "message": "paygate-adapter: verify webhook signature",
+    "author": "simone.pace",
+    "date": "2026-06-02T03:00:00+02:00",
+    "files": 6,
+    "pr": 361
+  },
+  {
+    "sha": "ef63c8e19710",
+    "component": "infra",
+    "message": "infra: pgbouncer pool 40 (ADR-006)",
+    "author": "elena.moretti",
+    "date": "2026-06-02T12:00:00+02:00",
+    "files": 8,
+    "pr": 362
+  },
+  {
+    "sha": "db6d588732b1",
+    "component": "nbs-web",
+    "message": "nbs-web: checkout spinner timeout at 20 s",
+    "author": "davide.rinaldi",
+    "date": "2026-06-03T06:00:00+02:00",
+    "files": 2,
+    "pr": 407
+  },
+  {
+    "sha": "46e4c9071fa0",
+    "component": "paygate-adapter",
+    "message": "paygate-adapter: handle 3DS callback timeout",
+    "author": "nadia.orlando",
+    "date": "2026-06-03T16:00:00+02:00",
+    "files": 8,
+    "pr": 382
+  },
+  {
+    "sha": "05ed26c32786",
+    "component": "infra",
+    "message": "infra: freeze window annotation",
+    "author": "nadia.orlando",
+    "date": "2026-06-04T01:00:00+02:00",
+    "files": 4,
+    "pr": 479
+  },
+  {
+    "sha": "2376136338ba",
+    "component": "infra",
+    "message": "infra: alert route to ops-desk pager",
+    "author": "roberto.mancuso",
+    "date": "2026-06-04T06:00:00+02:00",
+    "files": 2,
+    "pr": 519
+  },
+  {
+    "sha": "9e7423fd2c2a",
+    "component": "infra",
+    "message": "infra: freeze window annotation",
+    "author": "nadia.orlando",
+    "date": "2026-06-04T23:00:00+02:00",
+    "files": 8,
+    "pr": 458
+  },
+  {
+    "sha": "3698e64939a3",
+    "component": "infra",
+    "message": "infra: view ClusterRole for onboarding",
+    "author": "elena.moretti",
+    "date": "2026-06-05T06:00:00+02:00",
+    "files": 3,
+    "pr": 494
+  },
+  {
+    "sha": "5ad3c5ba3af8",
+    "component": "infra",
+    "message": "infra: alert route to ops-desk pager",
+    "author": "roberto.mancuso",
+    "date": "2026-06-06T01:00:00+02:00",
+    "files": 6,
+    "pr": 464
+  },
+  {
+    "sha": "d48d5363b373",
+    "component": "nbs-web",
+    "message": "nbs-web: deferred checkout banner",
+    "author": "nadia.orlando",
+    "date": "2026-06-06T10:00:00+02:00",
+    "files": 4,
+    "pr": 431
+  },
+  {
+    "sha": "7b056519c965",
+    "component": "nbs-web",
+    "message": "nbs-web: legacy toggle in booking search",
+    "author": "davide.rinaldi",
+    "date": "2026-06-07T02:00:00+02:00",
+    "files": 1,
+    "pr": 469
+  },
+  {
+    "sha": "2d3bd10d596e",
+    "component": "sirius-bridge",
+    "message": "sirius-bridge: read-only guard on every endpoint",
+    "author": "roberto.mancuso",
+    "date": "2026-06-07T23:00:00+02:00",
+    "files": 7,
+    "pr": 362
+  },
+  {
+    "sha": "52adff9fd66d",
+    "component": "sirius-bridge",
+    "message": "sirius-bridge: archive export for 2027-03",
+    "author": "simone.pace",
+    "date": "2026-06-09T02:00:00+02:00",
+    "files": 2,
+    "pr": 357
+  },
+  {
+    "sha": "8381179e14bd",
+    "component": "sirius-bridge",
+    "message": "sirius-bridge: read-only guard on every endpoint",
+    "author": "roberto.mancuso",
+    "date": "2026-06-09T14:00:00+02:00",
+    "files": 2,
+    "pr": 439
+  },
+  {
+    "sha": "4af490236342",
+    "component": "nbs-worker",
+    "message": "nbs-worker: refund batch: commit every 50 rows",
+    "author": "simone.pace",
+    "date": "2026-06-10T13:00:00+02:00",
+    "files": 8,
+    "pr": 448
+  },
+  {
+    "sha": "642e76a392e5",
+    "component": "infra",
+    "message": "infra: pgbouncer pool 40 (ADR-006)",
+    "author": "simone.pace",
+    "date": "2026-06-10T20:00:00+02:00",
+    "files": 8,
+    "pr": 445
+  },
+  {
+    "sha": "5c808806ea17",
+    "component": "nbs-web",
+    "message": "nbs-web: show PAY-431 as a card problem, not an outage",
+    "author": "nadia.orlando",
+    "date": "2026-06-11T00:00:00+02:00",
+    "files": 1,
+    "pr": 369
+  },
+  {
+    "sha": "f74ac4b5289e",
+    "component": "paygate-adapter",
+    "message": "paygate-adapter: map provider 429 to PAY-502",
+    "author": "simone.pace",
+    "date": "2026-06-11T10:00:00+02:00",
+    "files": 8,
+    "pr": 520
+  },
+  {
+    "sha": "5a125fd06199",
+    "component": "paygate-adapter",
+    "message": "paygate-adapter: handle 3DS callback timeout",
+    "author": "elena.moretti",
+    "date": "2026-06-11T16:00:00+02:00",
+    "files": 9,
+    "pr": 334
+  },
+  {
+    "sha": "eabe98f60c5b",
+    "component": "nbs-web",
+    "message": "nbs-web: show PAY-431 as a card problem, not an outage",
+    "author": "simone.pace",
+    "date": "2026-06-12T05:00:00+02:00",
+    "files": 7,
+    "pr": 374
+  },
+  {
+    "sha": "ff8f918ad520",
+    "component": "sirius-bridge",
+    "message": "sirius-bridge: S- lookup by surname and date",
+    "author": "davide.rinaldi",
+    "date": "2026-06-12T17:00:00+02:00",
+    "files": 2,
+    "pr": 312
+  },
+  {
+    "sha": "6749101ad060",
+    "component": "sirius-bridge",
+    "message": "sirius-bridge: archive export for 2027-03",
+    "author": "nadia.orlando",
+    "date": "2026-06-13T23:00:00+02:00",
+    "files": 8,
+    "pr": 423
+  },
+  {
+    "sha": "d21fcd419b88",
+    "component": "infra",
+    "message": "infra: argo app for nbs-api blue/green",
+    "author": "nadia.orlando",
+    "date": "2026-06-14T15:00:00+02:00",
+    "files": 9,
+    "pr": 511
+  },
+  {
+    "sha": "fbe795275f21",
+    "component": "nbs-web",
+    "message": "nbs-web: checkout spinner timeout at 20 s",
+    "author": "roberto.mancuso",
+    "date": "2026-06-15T07:00:00+02:00",
+    "files": 7,
+    "pr": 445
+  },
+  {
+    "sha": "51f15fa58b6f",
+    "component": "sirius-bridge",
+    "message": "sirius-bridge: read-only guard on every endpoint",
+    "author": "nadia.orlando",
+    "date": "2026-06-16T13:00:00+02:00",
+    "files": 4,
+    "pr": 322
+  },
+  {
+    "sha": "bdc3928bab15",
+    "component": "nbs-worker",
+    "message": "nbs-worker: pause refunds behind flag",
+    "author": "davide.rinaldi",
+    "date": "2026-06-17T16:00:00+02:00",
+    "files": 4,
+    "pr": 453
+  },
+  {
+    "sha": "5a4a3a43badc",
+    "component": "nbs-api",
+    "message": "nbs-api: validate PNR format before lookup",
+    "author": "roberto.mancuso",
+    "date": "2026-06-17T23:00:00+02:00",
+    "files": 6,
+    "pr": 412
+  },
+  {
+    "sha": "ffbf14099c18",
+    "component": "infra",
+    "message": "infra: argo app for nbs-api blue/green",
+    "author": "roberto.mancuso",
+    "date": "2026-06-19T01:00:00+02:00",
+    "files": 7,
+    "pr": 394
+  },
+  {
+    "sha": "03fcd7f69a06",
+    "component": "nbs-api",
+    "message": "nbs-api: fix hold expiry off by one",
+    "author": "nadia.orlando",
+    "date": "2026-06-19T17:00:00+02:00",
+    "files": 6,
+    "pr": 477
+  },
+  {
+    "sha": "bd3d112da7a8",
+    "component": "nbs-worker",
+    "message": "nbs-worker: confirmation mail template for deferred checkout",
+    "author": "simone.pace",
+    "date": "2026-06-20T15:00:00+02:00",
+    "files": 2,
+    "pr": 367
+  },
+  {
+    "sha": "430f22bd333c",
+    "component": "nbs-worker",
+    "message": "nbs-worker: refund batch: commit every 50 rows",
+    "author": "davide.rinaldi",
+    "date": "2026-06-21T18:00:00+02:00",
+    "files": 4,
+    "pr": 481
+  },
+  {
+    "sha": "11b56800af41",
+    "component": "paygate-adapter",
+    "message": "paygate-adapter: retry authorize on 502 with backoff (ADR-007)",
+    "author": "davide.rinaldi",
+    "date": "2026-06-22T20:00:00+02:00",
+    "files": 8,
+    "pr": 493
+  },
+  {
+    "sha": "b5a1c7b05ac0",
+    "component": "nbs-api",
+    "message": "nbs-api: validate PNR format before lookup",
+    "author": "nadia.orlando",
+    "date": "2026-06-23T06:00:00+02:00",
+    "files": 7,
+    "pr": 418
+  },
+  {
+    "sha": "4003f23257ac",
+    "component": "nbs-web",
+    "message": "nbs-web: legacy toggle in booking search",
+    "author": "davide.rinaldi",
+    "date": "2026-06-24T10:00:00+02:00",
+    "files": 9,
+    "pr": 394
+  },
+  {
+    "sha": "891639c1c336",
+    "component": "paygate-adapter",
+    "message": "paygate-adapter: map provider 429 to PAY-502",
+    "author": "simone.pace",
+    "date": "2026-06-25T00:00:00+02:00",
+    "files": 8,
+    "pr": 458
+  },
+  {
+    "sha": "7449eb3ee795",
+    "component": "nbs-web",
+    "message": "nbs-web: resend boarding pass button",
+    "author": "davide.rinaldi",
+    "date": "2026-06-25T12:00:00+02:00",
+    "files": 1,
+    "pr": 471
+  },
+  {
+    "sha": "6fefc838fec3",
+    "component": "paygate-adapter",
+    "message": "paygate-adapter: handle 3DS callback timeout",
+    "author": "davide.rinaldi",
+    "date": "2026-06-26T15:00:00+02:00",
+    "files": 7,
+    "pr": 318
+  },
+  {
+    "sha": "ba2531ad8c83",
+    "component": "sirius-bridge",
+    "message": "sirius-bridge: read-only guard on every endpoint",
+    "author": "roberto.mancuso",
+    "date": "2026-06-27T12:00:00+02:00",
+    "files": 8,
+    "pr": 360
+  },
+  {
+    "sha": "41ab01ba65ba",
+    "component": "nbs-worker",
+    "message": "nbs-worker: manifest sync: resend on red clock",
+    "author": "elena.moretti",
+    "date": "2026-06-28T05:00:00+02:00",
+    "files": 2,
+    "pr": 348
+  },
+  {
+    "sha": "48912e6c1655",
+    "component": "paygate-adapter",
+    "message": "paygate-adapter: retry authorize on 502 with backoff (ADR-007)",
+    "author": "nadia.orlando",
+    "date": "2026-06-28T09:00:00+02:00",
+    "files": 4,
+    "pr": 517
+  },
+  {
+    "sha": "b9046504deb0",
+    "component": "nbs-worker",
+    "message": "nbs-worker: refund batch: commit every 50 rows",
+    "author": "simone.pace",
+    "date": "2026-06-29T09:00:00+02:00",
+    "files": 9,
+    "pr": 434
+  },
+  {
+    "sha": "975e390aea49",
+    "component": "infra",
+    "message": "infra: freeze window annotation",
+    "author": "davide.rinaldi",
+    "date": "2026-06-30T12:00:00+02:00",
+    "files": 5,
+    "pr": 416
+  },
+  {
+    "sha": "09a520e4a175",
+    "component": "paygate-adapter",
+    "message": "paygate-adapter: add metrics for authorize latency",
+    "author": "nadia.orlando",
+    "date": "2026-06-30T22:00:00+02:00",
+    "files": 6,
+    "pr": 411
+  },
+  {
+    "sha": "1255b6c70d29",
+    "component": "nbs-web",
+    "message": "nbs-web: resend boarding pass button",
+    "author": "roberto.mancuso",
+    "date": "2026-07-01T18:00:00+02:00",
+    "files": 8,
+    "pr": 355
+  },
+  {
+    "sha": "cc3f4ed1cf2e",
+    "component": "paygate-adapter",
+    "message": "paygate-adapter: handle 3DS callback timeout",
+    "author": "davide.rinaldi",
+    "date": "2026-07-01T23:00:00+02:00",
+    "files": 2,
+    "pr": 355
+  },
+  {
+    "sha": "130b7df89d0a",
+    "component": "nbs-api",
+    "message": "nbs-api: validate PNR format before lookup",
+    "author": "roberto.mancuso",
+    "date": "2026-07-02T07:00:00+02:00",
+    "files": 2,
+    "pr": 374
+  },
+  {
+    "sha": "1d6e2697282a",
+    "component": "nbs-web",
+    "message": "nbs-web: resend boarding pass button",
+    "author": "roberto.mancuso",
+    "date": "2026-07-02T21:00:00+02:00",
+    "files": 4,
+    "pr": 494
+  },
+  {
+    "sha": "ca74d0ef326c",
+    "component": "nbs-api",
+    "message": "nbs-api: add vehicle length to /api/quote response",
+    "author": "roberto.mancuso",
+    "date": "2026-07-03T22:00:00+02:00",
+    "files": 1,
+    "pr": 454
+  },
+  {
+    "sha": "1cf2e3d163f0",
+    "component": "nbs-web",
+    "message": "nbs-web: resend boarding pass button",
+    "author": "nadia.orlando",
+    "date": "2026-07-04T00:00:00+02:00",
+    "files": 4,
+    "pr": 454
+  },
+  {
+    "sha": "09952ef78bd0",
+    "component": "nbs-web",
+    "message": "nbs-web: checkout spinner timeout at 20 s",
+    "author": "roberto.mancuso",
+    "date": "2026-07-05T05:00:00+02:00",
+    "files": 5,
+    "pr": 453
+  },
+  {
+    "sha": "71b8426d2a1a",
+    "component": "paygate-adapter",
+    "message": "paygate-adapter: retry authorize on 502 with backoff (ADR-007)",
+    "author": "elena.moretti",
+    "date": "2026-07-05T18:00:00+02:00",
+    "files": 2,
+    "pr": 473
+  },
+  {
+    "sha": "1f5b9ceafdad",
+    "component": "sirius-bridge",
+    "message": "sirius-bridge: S- lookup by surname and date",
+    "author": "nadia.orlando",
+    "date": "2026-07-06T15:00:00+02:00",
+    "files": 7,
+    "pr": 504
+  },
+  {
+    "sha": "2c8826763bad",
+    "component": "nbs-worker",
+    "message": "nbs-worker: manifest sync: resend on red clock",
+    "author": "davide.rinaldi",
+    "date": "2026-07-06T23:00:00+02:00",
+    "files": 4,
+    "pr": 516
+  },
+  {
+    "sha": "285c250d2126",
+    "component": "sirius-bridge",
+    "message": "sirius-bridge: archive export for 2027-03",
+    "author": "elena.moretti",
+    "date": "2026-07-08T01:00:00+02:00",
+    "files": 1,
+    "pr": 395
+  },
+  {
+    "sha": "f216deda7dca",
+    "component": "sirius-bridge",
+    "message": "sirius-bridge: archive export for 2027-03",
+    "author": "davide.rinaldi",
+    "date": "2026-07-08T04:00:00+02:00",
+    "files": 5,
+    "pr": 432
+  },
+  {
+    "sha": "94647b24bd7c",
+    "component": "paygate-adapter",
+    "message": "paygate-adapter: verify webhook signature",
+    "author": "roberto.mancuso",
+    "date": "2026-07-09T03:00:00+02:00",
+    "files": 6,
+    "pr": 346
+  },
+  {
+    "sha": "61142e3ecdca",
+    "component": "paygate-adapter",
+    "message": "paygate-adapter: handle 3DS callback timeout",
+    "author": "davide.rinaldi",
+    "date": "2026-07-09T11:00:00+02:00",
+    "files": 1,
+    "pr": 337
+  },
+  {
+    "sha": "117f6a3cc389",
+    "component": "paygate-adapter",
+    "message": "paygate-adapter: map provider 429 to PAY-502",
+    "author": "nadia.orlando",
+    "date": "2026-07-10T08:00:00+02:00",
+    "files": 6,
+    "pr": 384
+  },
+  {
+    "sha": "4156f871c99d",
+    "component": "sirius-bridge",
+    "message": "sirius-bridge: archive export for 2027-03",
+    "author": "nadia.orlando",
+    "date": "2026-07-11T05:00:00+02:00",
+    "files": 6,
+    "pr": 417
+  },
+  {
+    "sha": "c8aab6b74f9c",
+    "component": "nbs-web",
+    "message": "nbs-web: show PAY-431 as a card problem, not an outage",
+    "author": "roberto.mancuso",
+    "date": "2026-07-11T08:00:00+02:00",
+    "files": 6,
+    "pr": 503
+  },
+  {
+    "sha": "4c1c12e7aa1a",
+    "component": "nbs-web",
+    "message": "nbs-web: legacy toggle in booking search",
+    "author": "simone.pace",
+    "date": "2026-07-12T13:00:00+02:00",
+    "files": 7,
+    "pr": 440
+  },
+  {
+    "sha": "9f7ecda7d781",
+    "component": "nbs-api",
+    "message": "nbs-api: fix hold expiry off by one",
+    "author": "elena.moretti",
+    "date": "2026-07-13T05:00:00+02:00",
+    "files": 2,
+    "pr": 416
+  },
+  {
+    "sha": "ce340278baaf",
+    "component": "infra",
+    "message": "infra: view ClusterRole for onboarding",
+    "author": "davide.rinaldi",
+    "date": "2026-07-14T06:00:00+02:00",
+    "files": 3,
+    "pr": 438
+  },
+  {
+    "sha": "b606184e7e76",
+    "component": "paygate-adapter",
+    "message": "paygate-adapter: retry authorize on 502 with backoff (ADR-007)",
+    "author": "roberto.mancuso",
+    "date": "2026-07-15T07:00:00+02:00",
+    "files": 6,
+    "pr": 351
+  },
+  {
+    "sha": "17fa69a3bd7c",
+    "component": "paygate-adapter",
+    "message": "paygate-adapter: add metrics for authorize latency",
+    "author": "elena.moretti",
+    "date": "2026-07-15T17:00:00+02:00",
+    "files": 4,
+    "pr": 489
+  },
+  {
+    "sha": "0067bcaf2e0a",
+    "component": "nbs-worker",
+    "message": "nbs-worker: refund batch: commit every 50 rows",
+    "author": "roberto.mancuso",
+    "date": "2026-07-16T15:00:00+02:00",
+    "files": 4,
+    "pr": 519
+  },
+  {
+    "sha": "4c104b8d38c7",
+    "component": "sirius-bridge",
+    "message": "sirius-bridge: S- lookup by surname and date",
+    "author": "roberto.mancuso",
+    "date": "2026-07-17T02:00:00+02:00",
+    "files": 9,
+    "pr": 357
+  },
+  {
+    "sha": "76cb2832fa17",
+    "component": "paygate-adapter",
+    "message": "paygate-adapter: idempotency key from booking id and attempt",
+    "author": "simone.pace",
+    "date": "2026-07-17T19:00:00+02:00",
+    "files": 5,
+    "pr": 381
+  },
+  {
+    "sha": "d38ca0576b61",
+    "component": "paygate-adapter",
+    "message": "paygate-adapter: rotate client on credential reload",
+    "author": "simone.pace",
+    "date": "2026-07-18T04:00:00+02:00",
+    "files": 1,
+    "pr": 443
+  },
+  {
+    "sha": "8639196f5906",
+    "component": "infra",
+    "message": "infra: view ClusterRole for onboarding",
+    "author": "roberto.mancuso",
+    "date": "2026-07-19T03:00:00+02:00",
+    "files": 7,
+    "pr": 419
+  },
+  {
+    "sha": "cc5bac53a9ce",
+    "component": "nbs-api",
+    "message": "nbs-api: add /health details for argo readiness",
+    "author": "simone.pace",
+    "date": "2026-07-20T01:00:00+02:00",
+    "files": 7,
+    "pr": 411
+  },
+  {
+    "sha": "4395fdf0e0ac",
+    "component": "nbs-worker",
+    "message": "nbs-worker: cap pool size at 8",
+    "author": "nadia.orlando",
+    "date": "2026-07-20T06:00:00+02:00",
+    "files": 4,
+    "pr": 447
+  },
+  {
+    "sha": "e5b95c441470",
+    "component": "sirius-bridge",
+    "message": "sirius-bridge: S- lookup by surname and date",
+    "author": "roberto.mancuso",
+    "date": "2026-07-21T12:00:00+02:00",
+    "files": 1,
+    "pr": 342
+  },
+  {
+    "sha": "5135c14966ab",
+    "component": "infra",
+    "message": "infra: view ClusterRole for onboarding",
+    "author": "nadia.orlando",
+    "date": "2026-07-22T00:00:00+02:00",
+    "files": 8,
+    "pr": 448
+  },
+  {
+    "sha": "6961fc26de1a",
+    "component": "nbs-worker",
+    "message": "nbs-worker: pause refunds behind flag",
+    "author": "elena.moretti",
+    "date": "2026-07-23T01:00:00+02:00",
+    "files": 7,
+    "pr": 310
+  },
+  {
+    "sha": "5a1096eca9e8",
+    "component": "paygate-adapter",
+    "message": "paygate-adapter: add metrics for authorize latency",
+    "author": "simone.pace",
+    "date": "2026-07-23T09:00:00+02:00",
+    "files": 8,
+    "pr": 397
+  },
+  {
+    "sha": "09029caa1d4a",
+    "component": "nbs-worker",
+    "message": "nbs-worker: manifest sync: resend on red clock",
+    "author": "davide.rinaldi",
+    "date": "2026-07-24T04:00:00+02:00",
+    "files": 2,
+    "pr": 500
+  },
+  {
+    "sha": "824f83f448f6",
+    "component": "sirius-bridge",
+    "message": "sirius-bridge: archive export for 2027-03",
+    "author": "simone.pace",
+    "date": "2026-07-24T10:00:00+02:00",
+    "files": 8,
+    "pr": 421
+  },
+  {
+    "sha": "ccc27be61e40",
+    "component": "nbs-web",
+    "message": "nbs-web: resend boarding pass button",
+    "author": "davide.rinaldi",
+    "date": "2026-07-25T10:00:00+02:00",
+    "files": 7,
+    "pr": 370
+  },
+  {
+    "sha": "f2166d276961",
+    "component": "paygate-adapter",
+    "message": "paygate-adapter: retry authorize on 502 with backoff (ADR-007)",
+    "author": "roberto.mancuso",
+    "date": "2026-07-25T16:00:00+02:00",
+    "files": 3,
+    "pr": 315
+  },
+  {
+    "sha": "c79b054ed25b",
+    "component": "paygate-adapter",
+    "message": "paygate-adapter: add metrics for authorize latency",
+    "author": "davide.rinaldi",
+    "date": "2026-07-25T23:00:00+02:00",
+    "files": 1,
+    "pr": 341
+  },
+  {
+    "sha": "866d56bd674a",
+    "component": "sirius-bridge",
+    "message": "sirius-bridge: read-only guard on every endpoint",
+    "author": "elena.moretti",
+    "date": "2026-07-26T14:00:00+02:00",
+    "files": 2,
+    "pr": 495
+  },
+  {
+    "sha": "c1aabdabb62d",
+    "component": "infra",
+    "message": "infra: view ClusterRole for onboarding",
+    "author": "elena.moretti",
+    "date": "2026-07-26T23:00:00+02:00",
+    "files": 5,
+    "pr": 504
+  },
+  {
+    "sha": "f6e8ffc6c6ad",
+    "component": "nbs-api",
+    "message": "nbs-api: handle BK-409 on late capture",
+    "author": "davide.rinaldi",
+    "date": "2026-07-27T05:00:00+02:00",
+    "files": 6,
+    "pr": 408
+  },
+  {
+    "sha": "61a56cd47d6d",
+    "component": "nbs-api",
+    "message": "nbs-api: log request_id on every 5xx",
+    "author": "elena.moretti",
+    "date": "2026-07-27T08:00:00+02:00",
+    "files": 1,
+    "pr": 328
+  },
+  {
+    "sha": "a79d88e47d27",
+    "component": "nbs-api",
+    "message": "nbs-api: add vehicle length to /api/quote response",
+    "author": "simone.pace",
+    "date": "2026-07-28T12:00:00+02:00",
+    "files": 8,
+    "pr": 411
+  },
+  {
+    "sha": "f69a68c7b7c8",
+    "component": "nbs-web",
+    "message": "nbs-web: legacy toggle in booking search",
+    "author": "simone.pace",
+    "date": "2026-07-29T15:00:00+02:00",
+    "files": 2,
+    "pr": 368
+  },
+  {
+    "sha": "e86e74253e20",
+    "component": "nbs-api",
+    "message": "nbs-api: log request_id on every 5xx",
+    "author": "roberto.mancuso",
+    "date": "2026-07-29T20:00:00+02:00",
+    "files": 8,
+    "pr": 390
+  },
+  {
+    "sha": "77b6e153d969",
+    "component": "sirius-bridge",
+    "message": "sirius-bridge: read-only guard on every endpoint",
+    "author": "elena.moretti",
+    "date": "2026-07-30T01:00:00+02:00",
+    "files": 7,
+    "pr": 407
+  },
+  {
+    "sha": "276b78fa3569",
+    "component": "nbs-worker",
+    "message": "nbs-worker: manifest sync: resend on red clock",
+    "author": "nadia.orlando",
+    "date": "2026-07-31T06:00:00+02:00",
+    "files": 6,
+    "pr": 455
+  },
+  {
+    "sha": "0407ee62914e",
+    "component": "paygate-adapter",
+    "message": "paygate-adapter: retry authorize on 502 with backoff (ADR-007)",
+    "author": "elena.moretti",
+    "date": "2026-08-01T03:00:00+02:00",
+    "files": 1,
+    "pr": 407
+  },
+  {
+    "sha": "88f5786a4236",
+    "component": "nbs-api",
+    "message": "nbs-api: add /health details for argo readiness",
+    "author": "roberto.mancuso",
+    "date": "2026-08-01T12:00:00+02:00",
+    "files": 9,
+    "pr": 413
+  },
+  {
+    "sha": "9b240cbee1b7",
+    "component": "nbs-api",
+    "message": "nbs-api: fix hold expiry off by one",
+    "author": "nadia.orlando",
+    "date": "2026-08-02T04:00:00+02:00",
+    "files": 1,
+    "pr": 363
+  },
+  {
+    "sha": "4d0681678659",
+    "component": "nbs-worker",
+    "message": "nbs-worker: pause refunds behind flag",
+    "author": "roberto.mancuso",
+    "date": "2026-08-03T08:00:00+02:00",
+    "files": 7,
+    "pr": 358
+  },
+  {
+    "sha": "12d00ef1d917",
+    "component": "nbs-api",
+    "message": "nbs-api: add /health details for argo readiness",
+    "author": "simone.pace",
+    "date": "2026-08-03T13:00:00+02:00",
+    "files": 7,
+    "pr": 366
+  },
+  {
+    "sha": "2bf49add34a1",
+    "component": "infra",
+    "message": "infra: alert route to ops-desk pager",
+    "author": "davide.rinaldi",
+    "date": "2026-08-03T22:00:00+02:00",
+    "files": 1,
+    "pr": 438
+  },
+  {
+    "sha": "db059a86c245",
+    "component": "nbs-api",
+    "message": "nbs-api: bump fastapi to 0.115.0",
+    "author": "nadia.orlando",
+    "date": "2026-08-04T13:00:00+02:00",
+    "files": 6,
+    "pr": 511
+  },
+  {
+    "sha": "70b29700eaad",
+    "component": "paygate-adapter",
+    "message": "paygate-adapter: map provider 429 to PAY-502",
+    "author": "elena.moretti",
+    "date": "2026-08-05T11:00:00+02:00",
+    "files": 4,
+    "pr": 403
+  },
+  {
+    "sha": "bdf80c7e9565",
+    "component": "infra",
+    "message": "infra: argo app for nbs-api blue/green",
+    "author": "simone.pace",
+    "date": "2026-08-06T12:00:00+02:00",
+    "files": 6,
+    "pr": 315
+  },
+  {
+    "sha": "eb452cdb5bb6",
+    "component": "nbs-worker",
+    "message": "nbs-worker: pause refunds behind flag",
+    "author": "simone.pace",
+    "date": "2026-08-07T04:00:00+02:00",
+    "files": 3,
+    "pr": 342
+  },
+  {
+    "sha": "4fbcd81937ed",
+    "component": "sirius-bridge",
+    "message": "sirius-bridge: read-only guard on every endpoint",
+    "author": "roberto.mancuso",
+    "date": "2026-08-08T04:00:00+02:00",
+    "files": 4,
+    "pr": 345
+  },
+  {
+    "sha": "043c564711c0",
+    "component": "sirius-bridge",
+    "message": "sirius-bridge: S- lookup by surname and date",
+    "author": "simone.pace",
+    "date": "2026-08-08T10:00:00+02:00",
+    "files": 9,
+    "pr": 335
+  },
+  {
+    "sha": "7ee343378e5c",
+    "component": "nbs-web",
+    "message": "nbs-web: show PAY-431 as a card problem, not an outage",
+    "author": "simone.pace",
+    "date": "2026-08-09T08:00:00+02:00",
+    "files": 8,
+    "pr": 397
+  },
+  {
+    "sha": "7b403cd985c3",
+    "component": "paygate-adapter",
+    "message": "paygate-adapter: retry authorize on 502 with backoff (ADR-007)",
+    "author": "simone.pace",
+    "date": "2026-08-10T07:00:00+02:00",
+    "files": 4,
+    "pr": 429
+  },
+  {
+    "sha": "b11fe64348e6",
+    "component": "sirius-bridge",
+    "message": "sirius-bridge: read-only guard on every endpoint",
+    "author": "elena.moretti",
+    "date": "2026-08-10T10:00:00+02:00",
+    "files": 8,
+    "pr": 344
+  },
+  {
+    "sha": "03f86e73a182",
+    "component": "paygate-adapter",
+    "message": "paygate-adapter: map provider 429 to PAY-502",
+    "author": "nadia.orlando",
+    "date": "2026-08-10T17:00:00+02:00",
+    "files": 4,
+    "pr": 405
+  },
+  {
+    "sha": "fda75d23e38e",
+    "component": "paygate-adapter",
+    "message": "paygate-adapter: rotate client on credential reload",
+    "author": "nadia.orlando",
+    "date": "2026-08-11T18:00:00+02:00",
+    "files": 9,
+    "pr": 469
+  },
+  {
+    "sha": "dd476887c481",
+    "component": "nbs-api",
+    "message": "nbs-api: handle BK-409 on late capture",
+    "author": "elena.moretti",
+    "date": "2026-08-11T20:00:00+02:00",
+    "files": 1,
+    "pr": 423
+  },
+  {
+    "sha": "fe4d6d30edbb",
+    "component": "paygate-adapter",
+    "message": "paygate-adapter: map provider 429 to PAY-502",
+    "author": "davide.rinaldi",
+    "date": "2026-08-13T02:00:00+02:00",
+    "files": 4,
+    "pr": 411
+  },
+  {
+    "sha": "a02828d20a7a",
+    "component": "infra",
+    "message": "infra: alert route to ops-desk pager",
+    "author": "elena.moretti",
+    "date": "2026-08-13T05:00:00+02:00",
+    "files": 6,
+    "pr": 422
+  },
+  {
+    "sha": "057be7c2f941",
+    "component": "infra",
+    "message": "infra: alert route to ops-desk pager",
+    "author": "nadia.orlando",
+    "date": "2026-08-14T03:00:00+02:00",
+    "files": 7,
+    "pr": 484
+  },
+  {
+    "sha": "a691d3cb0e3f",
+    "component": "sirius-bridge",
+    "message": "sirius-bridge: S- lookup by surname and date",
+    "author": "roberto.mancuso",
+    "date": "2026-08-15T09:00:00+02:00",
+    "files": 6,
+    "pr": 474
+  },
+  {
+    "sha": "7a50957698d0",
+    "component": "nbs-web",
+    "message": "nbs-web: legacy toggle in booking search",
+    "author": "roberto.mancuso",
+    "date": "2026-08-15T16:00:00+02:00",
+    "files": 4,
+    "pr": 480
+  },
+  {
+    "sha": "de08058ddc81",
+    "component": "nbs-api",
+    "message": "nbs-api: enable paygate retry by default",
+    "author": "davide.rinaldi",
+    "date": "2026-08-16T04:00:00+02:00",
+    "files": 3,
+    "pr": 439
+  },
+  {
+    "sha": "7449b2fd9f11",
+    "component": "infra",
+    "message": "infra: view ClusterRole for onboarding",
+    "author": "elena.moretti",
+    "date": "2026-08-16T18:00:00+02:00",
+    "files": 1,
+    "pr": 365
+  },
+  {
+    "sha": "22c5fd5eb43a",
+    "component": "nbs-worker",
+    "message": "nbs-worker: confirmation mail template for deferred checkout",
+    "author": "simone.pace",
+    "date": "2026-08-17T11:00:00+02:00",
+    "files": 7,
+    "pr": 452
+  },
+  {
+    "sha": "96f5140aea7d",
+    "component": "nbs-worker",
+    "message": "nbs-worker: refund batch: commit every 50 rows",
+    "author": "elena.moretti",
+    "date": "2026-08-18T08:00:00+02:00",
+    "files": 2,
+    "pr": 435
+  },
+  {
+    "sha": "71932ead19e1",
+    "component": "nbs-web",
+    "message": "nbs-web: checkout spinner timeout at 20 s",
+    "author": "davide.rinaldi",
+    "date": "2026-08-19T05:00:00+02:00",
+    "files": 7,
+    "pr": 305
+  },
+  {
+    "sha": "533815f5bac9",
+    "component": "sirius-bridge",
+    "message": "sirius-bridge: archive export for 2027-03",
+    "author": "simone.pace",
+    "date": "2026-08-19T16:00:00+02:00",
+    "files": 2,
+    "pr": 316
+  },
+  {
+    "sha": "90a9e007be53",
+    "component": "infra",
+    "message": "infra: view ClusterRole for onboarding",
+    "author": "nadia.orlando",
+    "date": "2026-08-20T20:00:00+02:00",
+    "files": 2,
+    "pr": 380
+  },
+  {
+    "sha": "c6a6f8a39e12",
+    "component": "nbs-web",
+    "message": "nbs-web: checkout spinner timeout at 20 s",
+    "author": "roberto.mancuso",
+    "date": "2026-08-21T01:00:00+02:00",
+    "files": 3,
+    "pr": 390
+  },
+  {
+    "sha": "cb822219a494",
+    "component": "infra",
+    "message": "infra: view ClusterRole for onboarding",
+    "author": "davide.rinaldi",
+    "date": "2026-08-21T19:00:00+02:00",
+    "files": 5,
+    "pr": 488
+  },
+  {
+    "sha": "d5c4af05bd62",
+    "component": "paygate-adapter",
+    "message": "paygate-adapter: idempotency key from booking id and attempt",
+    "author": "roberto.mancuso",
+    "date": "2026-08-22T02:00:00+02:00",
+    "files": 9,
+    "pr": 397
+  },
+  {
+    "sha": "0555b5fb51da",
+    "component": "sirius-bridge",
+    "message": "sirius-bridge: archive export for 2027-03",
+    "author": "davide.rinaldi",
+    "date": "2026-08-22T20:00:00+02:00",
+    "files": 6,
+    "pr": 416
+  },
+  {
+    "sha": "39c9f6fa8c9d",
+    "component": "nbs-api",
+    "message": "nbs-api: enable paygate retry by default",
+    "author": "simone.pace",
+    "date": "2026-08-23T19:00:00+02:00",
+    "files": 1,
+    "pr": 385
+  },
+  {
+    "sha": "fe81f18d984f",
+    "component": "sirius-bridge",
+    "message": "sirius-bridge: archive export for 2027-03",
+    "author": "simone.pace",
+    "date": "2026-08-24T20:00:00+02:00",
+    "files": 5,
+    "pr": 403
+  },
+  {
+    "sha": "8caf8b068400",
+    "component": "nbs-web",
+    "message": "nbs-web: checkout spinner timeout at 20 s",
+    "author": "roberto.mancuso",
+    "date": "2026-08-25T00:00:00+02:00",
+    "files": 1,
+    "pr": 330
+  },
+  {
+    "sha": "08c51b3caf01",
+    "component": "nbs-worker",
+    "message": "nbs-worker: refund batch: commit every 50 rows",
+    "author": "roberto.mancuso",
+    "date": "2026-08-25T04:00:00+02:00",
+    "files": 2,
+    "pr": 459
+  },
+  {
+    "sha": "3e634ca681e7",
+    "component": "paygate-adapter",
+    "message": "paygate-adapter: retry authorize on 502 with backoff (ADR-007)",
+    "author": "elena.moretti",
+    "date": "2026-08-26T07:00:00+02:00",
+    "files": 6,
+    "pr": 480
+  },
+  {
+    "sha": "6c0537443efb",
+    "component": "paygate-adapter",
+    "message": "paygate-adapter: retry authorize on 502 with backoff (ADR-007)",
+    "author": "elena.moretti",
+    "date": "2026-08-26T20:00:00+02:00",
+    "files": 2,
+    "pr": 510
+  },
+  {
+    "sha": "ca78c86d6e7d",
+    "component": "paygate-adapter",
+    "message": "paygate-adapter: rotate client on credential reload",
+    "author": "davide.rinaldi",
+    "date": "2026-08-27T14:00:00+02:00",
+    "files": 7,
+    "pr": 425
+  },
+  {
+    "sha": "b39c1279459d",
+    "component": "nbs-worker",
+    "message": "nbs-worker: refund batch: commit every 50 rows",
+    "author": "roberto.mancuso",
+    "date": "2026-08-27T16:00:00+02:00",
+    "files": 3,
+    "pr": 453
+  },
+  {
+    "sha": "48c6c2f6ddb7",
+    "component": "nbs-web",
+    "message": "nbs-web: show PAY-431 as a card problem, not an outage",
+    "author": "simone.pace",
+    "date": "2026-08-28T19:00:00+02:00",
+    "files": 8,
+    "pr": 318
+  },
+  {
+    "sha": "338dee4d2003",
+    "component": "nbs-api",
+    "message": "nbs-api: validate PNR format before lookup",
+    "author": "nadia.orlando",
+    "date": "2026-08-29T11:00:00+02:00",
+    "files": 1,
+    "pr": 387
+  },
+  {
+    "sha": "d8f5ce9c6376",
+    "component": "sirius-bridge",
+    "message": "sirius-bridge: archive export for 2027-03",
+    "author": "simone.pace",
+    "date": "2026-08-29T16:00:00+02:00",
+    "files": 9,
+    "pr": 304
+  },
+  {
+    "sha": "033e999d8eee",
+    "component": "infra",
+    "message": "infra: alert route to ops-desk pager",
+    "author": "davide.rinaldi",
+    "date": "2026-08-30T03:00:00+02:00",
+    "files": 8,
+    "pr": 326
+  },
+  {
+    "sha": "6431cadfc727",
+    "component": "infra",
+    "message": "infra: alert route to ops-desk pager",
+    "author": "simone.pace",
+    "date": "2026-08-31T09:00:00+02:00",
+    "files": 4,
+    "pr": 364
+  },
+  {
+    "sha": "be421e16fffd",
+    "component": "nbs-worker",
+    "message": "nbs-worker: cap pool size at 8",
+    "author": "elena.moretti",
+    "date": "2026-09-01T11:00:00+02:00",
+    "files": 8,
+    "pr": 360
+  },
+  {
+    "sha": "a934284b551e",
+    "component": "sirius-bridge",
+    "message": "sirius-bridge: read-only guard on every endpoint",
+    "author": "davide.rinaldi",
+    "date": "2026-09-02T05:00:00+02:00",
+    "files": 6,
+    "pr": 337
+  },
+  {
+    "sha": "318add699ade",
+    "component": "paygate-adapter",
+    "message": "paygate-adapter: handle 3DS callback timeout",
+    "author": "elena.moretti",
+    "date": "2026-09-02T16:00:00+02:00",
+    "files": 6,
+    "pr": 349
+  },
+  {
+    "sha": "dded2eb27fb9",
+    "component": "nbs-worker",
+    "message": "nbs-worker: cap pool size at 8",
+    "author": "davide.rinaldi",
+    "date": "2026-09-03T21:00:00+02:00",
+    "files": 6,
+    "pr": 444
+  },
+  {
+    "sha": "7400706a4b08",
+    "component": "nbs-web",
+    "message": "nbs-web: resend boarding pass button",
+    "author": "nadia.orlando",
+    "date": "2026-09-04T06:00:00+02:00",
+    "files": 3,
+    "pr": 350
+  },
+  {
+    "sha": "fed90ec0d16f",
+    "component": "sirius-bridge",
+    "message": "sirius-bridge: read-only guard on every endpoint",
+    "author": "elena.moretti",
+    "date": "2026-09-04T21:00:00+02:00",
+    "files": 1,
+    "pr": 461
+  },
+  {
+    "sha": "bdfb999ed89f",
+    "component": "infra",
+    "message": "infra: freeze window annotation",
+    "author": "elena.moretti",
+    "date": "2026-09-05T12:00:00+02:00",
+    "files": 9,
+    "pr": 505
+  },
+  {
+    "sha": "b5ec0bd18598",
+    "component": "nbs-api",
+    "message": "nbs-api: add /health details for argo readiness",
+    "author": "davide.rinaldi",
+    "date": "2026-09-06T15:00:00+02:00",
+    "files": 7,
+    "pr": 365
+  },
+  {
+    "sha": "bc0e0564981d",
+    "component": "paygate-adapter",
+    "message": "paygate-adapter: idempotency key from booking id and attempt",
+    "author": "nadia.orlando",
+    "date": "2026-09-07T11:00:00+02:00",
+    "files": 9,
+    "pr": 384
+  },
+  {
+    "sha": "619a13632172",
+    "component": "nbs-worker",
+    "message": "nbs-worker: refund batch: commit every 50 rows",
+    "author": "davide.rinaldi",
+    "date": "2026-09-08T14:00:00+02:00",
+    "files": 5,
+    "pr": 367
+  },
+  {
+    "sha": "b66cf2975148",
+    "component": "nbs-worker",
+    "message": "nbs-worker: confirmation mail template for deferred checkout",
+    "author": "nadia.orlando",
+    "date": "2026-09-08T23:00:00+02:00",
+    "files": 7,
+    "pr": 468
+  },
+  {
+    "sha": "e66ddd7aeef1",
+    "component": "nbs-worker",
+    "message": "nbs-worker: refund batch: commit every 50 rows",
+    "author": "nadia.orlando",
+    "date": "2026-09-09T14:00:00+02:00",
+    "files": 9,
+    "pr": 370
+  },
+  {
+    "sha": "2e3100ff4bd4",
+    "component": "paygate-adapter",
+    "message": "paygate-adapter: rotate client on credential reload",
+    "author": "elena.moretti",
+    "date": "2026-09-10T01:00:00+02:00",
+    "files": 1,
+    "pr": 458
+  },
+  {
+    "sha": "8c7e814f7fc4",
+    "component": "nbs-api",
+    "message": "nbs-api: handle BK-409 on late capture",
+    "author": "elena.moretti",
+    "date": "2026-09-10T23:00:00+02:00",
+    "files": 3,
+    "pr": 410
+  },
+  {
+    "sha": "59353fd72b8f",
+    "component": "infra",
+    "message": "infra: view ClusterRole for onboarding",
+    "author": "nadia.orlando",
+    "date": "2026-09-12T00:00:00+02:00",
+    "files": 7,
+    "pr": 397
+  },
+  {
+    "sha": "434018245258",
+    "component": "nbs-api",
+    "message": "nbs-api: log request_id on every 5xx",
+    "author": "simone.pace",
+    "date": "2026-09-12T22:00:00+02:00",
+    "files": 1,
+    "pr": 441
+  },
+  {
+    "sha": "21fe49e94aa4",
+    "component": "sirius-bridge",
+    "message": "sirius-bridge: read-only guard on every endpoint",
+    "author": "elena.moretti",
+    "date": "2026-09-14T03:00:00+02:00",
+    "files": 5,
+    "pr": 467
+  },
+  {
+    "sha": "cd61bcd57eef",
+    "component": "nbs-api",
+    "message": "nbs-api: enable paygate retry by default",
+    "author": "elena.moretti",
+    "date": "2026-09-15T11:20:00+02:00",
+    "files": 3,
+    "pr": 517
+  }
+]

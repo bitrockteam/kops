@@ -1,0 +1,17 @@
+principal,kind,name,unit,title,manager,groups
+giulia.ferrante,person,Giulia Ferrante,Customer Care,"Helpdesk operator L1, day shift",marta.esposito,CC-L1
+marco.belli,person,Marco Belli,Customer Care,"Helpdesk operator L1, night shift",marta.esposito,CC-L1
+marta.esposito,person,Marta Esposito,Customer Care,Customer Care lead,paolo.ricci,CC-L1;CC-LEAD
+sara.conti,person,Sara Conti,Platform Engineering,Operations engineer L2,roberto.mancuso,PLAT-OPS
+davide.rinaldi,person,Davide Rinaldi,Platform Engineering,Site reliability engineer L3,roberto.mancuso,PLAT-OPS;PLAT-DEV
+elena.moretti,person,Elena Moretti,Platform Engineering,"Backend developer, NBS",roberto.mancuso,PLAT-DEV
+nadia.orlando,person,Nadia Orlando,Platform Engineering,"Backend developer and QA, NBS",roberto.mancuso,PLAT-DEV
+simone.pace,person,Simone Pace,Platform Engineering,"Frontend developer, NBS",roberto.mancuso,PLAT-DEV
+tommaso.greco,person,Tommaso Greco,Product,Functional analyst,paolo.ricci,PROD
+paolo.ricci,person,Paolo Ricci,Product,"Product owner, NBS",roberto.mancuso,PROD
+federica.bruni,person,Federica Bruni,Fleet Operations,"Port operations coordinator, Genoa",roberto.mancuso,FLEET-PORT
+chiara.lombardi,person,Chiara Lombardi,Finance,Finance controller,roberto.mancuso,FIN-CTRL
+luca.santoro,person,Luca Santoro,People,HR business partner,roberto.mancuso,HR-BP
+anna.vitali,person,Anna Vitali,Security,Security monitor,roberto.mancuso,SEC-MON
+roberto.mancuso,person,Roberto Mancuso,Platform Engineering,Head of Platform,,PLAT-OPS;PLAT-DEV;PROD
+ops-agent,agent,Read-only ops agent,Platform Engineering,service account,roberto.mancuso,PLAT-OPS

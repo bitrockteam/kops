@@ -1,0 +1,51 @@
+[
+  {
+    "id": "Q1",
+    "question": "A customer on the phone gets PAY-502 at payment. What do I do?",
+    "returns": {
+      "helpdesk-l1": "A five line script: what to say, one check in the back office (is deferred checkout on), the condition to open a P2 in Platform. No system names. Under 120 words.",
+      "ops-desk": "The checkout failures runbook as a checklist with commands, plus the live panel: adapter pods, last 15 minutes of upstream errors, CardinalPay status. Last change: the retry flag default (commit, 15 September).",
+      "developer": "Code path pay -> paygate_adapter.client.authorize -> retry.py; ADR-007; the post-mortem of 12 September; the test that covers the backoff.",
+      "functional-analyst": "What the customer sees, how many holds expire per minute of outage (from the post-mortem: about 38), the deferred checkout decision (ADR-005) and its customer wording. No commands.",
+      "finance-controller": "No page in the finance wiki answers this. 404 with a pointer to the SLA credit clause in the supplier item.",
+      "hr-partner": "404."
+    }
+  },
+  {
+    "id": "Q2",
+    "question": "Is NBS checkout healthy right now?",
+    "returns": {
+      "ops-desk": "The ops agent's live view: web.health, web.metrics authorize error rate, db.recent_failures, adapter log tail, with Jev's anomaly score, as a candidate panel.",
+      "helpdesk-l1": "One line derived from the same live view: 'Payments are working normally' or 'Payments are degraded; use the deferred checkout script'. Nothing else.",
+      "roberto.mancuso": "Three bullets: status, risk, who is on it. Same role rights as ops-desk, a different return."
+    }
+  },
+  {
+    "id": "Q3",
+    "question": "What do we pay CardinalPay per transaction?",
+    "returns": {
+      "finance-controller": "The rate table and the 2026 volume line from the finance item split out of the supplier page.",
+      "ops-desk": "The supplier profile item: support hours, SLA, contact path. The rates are in another domain: not shown, not hinted.",
+      "helpdesk-l1": "404."
+    }
+  },
+  {
+    "id": "Q4",
+    "question": "Who is on call for NBS this weekend?",
+    "returns": {
+      "ops-desk": "The primary and secondary names for the week, derived from the roster. No phone numbers, no contract, no allowance, no medical note.",
+      "hr-partner": "The roster row, with the retention rule restated.",
+      "helpdesk-l1": "'Open a P1 in the Platform queue; the on-call is paged automatically.' Names are not needed to do the job.",
+      "security-monitor": "Not the roster: the lineage of the roster item, who could see it and who did."
+    }
+  },
+  {
+    "id": "Q5",
+    "question": "Why did we retire Sirius and what happens to old bookings?",
+    "returns": {
+      "functional-analyst": "ADR-001 reasoning, the retirement timeline, the customer-facing consequences.",
+      "helpdesk-l1": "The legacy toggle and the rebook-and-refund steps, from the Customer Care item split out of the retirement plan.",
+      "developer": "ADR-008, sirius-bridge read-only guard commit, the archive export task."
+    }
+  }
+]

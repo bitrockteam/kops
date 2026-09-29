@@ -1,0 +1,19 @@
+{
+  "name": "Meridian Ferries",
+  "legal": "Meridian Ferries S.p.A. (fictional)",
+  "hq": "Genoa, Italy (fictional)",
+  "employees": 900,
+  "routes": [
+    "Genoa-Olbia",
+    "Livorno-Bastia",
+    "Naples-Palermo",
+    "Civitavecchia-Cagliari"
+  ],
+  "systems": {
+    "nbs": "New Booking System: web and API for bookings, on Kubernetes since May 2026",
+    "paygate": "PayGate: the adapter towards the payment provider CardinalPay",
+    "sirius": "Sirius: the legacy booking system, read-only through sirius-bridge until March 2027",
+    "visionx": "Vision X: fleet telemetry and port operations dashboard",
+    "helphub": "HelpHub: the helpdesk ticketing tool used by Customer Care"
+  }
+}

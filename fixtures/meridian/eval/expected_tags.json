@@ -1,0 +1,232 @@
+{
+  "wiki/nbs-architecture.md": {
+    "tags": [
+      "service:nbs",
+      "service:paygate",
+      "service:sirius",
+      "topic:kubernetes",
+      "topic:database"
+    ],
+    "personal": false,
+    "mixed": false,
+    "sensitivity": "internal"
+  },
+  "wiki/nbs-runbook-checkout-failures.md": {
+    "tags": [
+      "service:nbs",
+      "service:paygate",
+      "kind:runbook",
+      "topic:checkout"
+    ],
+    "personal": false,
+    "mixed": false,
+    "sensitivity": "internal"
+  },
+  "wiki/nbs-runbook-deploy-rollback.md": {
+    "tags": [
+      "service:nbs",
+      "kind:runbook",
+      "topic:deploy",
+      "topic:kubernetes"
+    ],
+    "personal": false,
+    "mixed": false,
+    "sensitivity": "internal"
+  },
+  "wiki/nbs-runbook-db-connections.md": {
+    "tags": [
+      "service:nbs",
+      "kind:runbook",
+      "topic:database"
+    ],
+    "personal": false,
+    "mixed": false,
+    "sensitivity": "internal"
+  },
+  "wiki/paygate-integration.md": {
+    "tags": [
+      "service:paygate",
+      "topic:checkout"
+    ],
+    "personal": false,
+    "mixed": false,
+    "sensitivity": "internal"
+  },
+  "wiki/sirius-retirement-plan.md": {
+    "tags": [
+      "service:sirius",
+      "kind:script"
+    ],
+    "personal": false,
+    "mixed": true,
+    "sensitivity": "internal",
+    "split": {
+      "booking-platform": "timeline and bridge",
+      "customer-support": "what Customer Care needs to know"
+    }
+  },
+  "wiki/visionx-port-ops-guide.md": {
+    "tags": [
+      "service:visionx",
+      "topic:port",
+      "kind:guide"
+    ],
+    "personal": false,
+    "mixed": false,
+    "sensitivity": "internal"
+  },
+  "wiki/visionx-telemetry-alerts.md": {
+    "tags": [
+      "service:visionx",
+      "topic:telemetry",
+      "kind:guide"
+    ],
+    "personal": false,
+    "mixed": false,
+    "sensitivity": "internal"
+  },
+  "wiki/helpdesk-l1-refund-script.md": {
+    "tags": [
+      "kind:script",
+      "topic:refund",
+      "service:helphub"
+    ],
+    "personal": false,
+    "mixed": false,
+    "sensitivity": "internal"
+  },
+  "wiki/helpdesk-l1-checkin-script.md": {
+    "tags": [
+      "kind:script",
+      "topic:check-in"
+    ],
+    "personal": false,
+    "mixed": false,
+    "sensitivity": "internal"
+  },
+  "wiki/helpdesk-escalation-matrix.md": {
+    "tags": [
+      "kind:script",
+      "service:helphub"
+    ],
+    "personal": false,
+    "mixed": false,
+    "sensitivity": "internal"
+  },
+  "wiki/supplier-cardinalpay-rate-card.md": {
+    "tags": [
+      "topic:supplier",
+      "kind:contract",
+      "service:paygate"
+    ],
+    "personal": false,
+    "mixed": true,
+    "sensitivity": "confidential",
+    "split": {
+      "booking-platform": "profile, support, SLA",
+      "finance": "rates and volumes"
+    }
+  },
+  "wiki/hr-roster-ops-oncall-q4.md": {
+    "tags": [
+      "kind:roster",
+      "topic:on-call",
+      "personal:yes"
+    ],
+    "personal": true,
+    "mixed": false,
+    "sensitivity": "restricted",
+    "note": "Ingested with lineage. The on-call name for a week may be derived for ops-desk; phone, contract, allowance and the medical note may not."
+  },
+  "wiki/qa-environment-access.md": {
+    "quarantine": true,
+    "reason": "passwords, an access key and a card number",
+    "never_in_raw": true
+  },
+  "wiki/incident-2026-09-12-nbs-checkout-outage.md": {
+    "tags": [
+      "service:nbs",
+      "service:paygate",
+      "kind:incident",
+      "topic:checkout",
+      "severity:p1"
+    ],
+    "personal": false,
+    "mixed": false,
+    "sensitivity": "internal"
+  },
+  "wiki/onboarding-new-ops-engineer.md": {
+    "tags": [
+      "topic:onboarding",
+      "topic:access",
+      "topic:on-call"
+    ],
+    "personal": false,
+    "mixed": true,
+    "sensitivity": "internal",
+    "split": {
+      "people": "week 1 People, allowance",
+      "booking-platform": "access and shadowing"
+    }
+  },
+  "wiki/security-policy-credentials.md": {
+    "tags": [
+      "kind:policy",
+      "topic:credentials",
+      "topic:access"
+    ],
+    "personal": false,
+    "mixed": false,
+    "sensitivity": "internal"
+  },
+  "wiki/pricing-season-2027.md": {
+    "tags": [
+      "topic:pricing",
+      "kind:contract"
+    ],
+    "personal": false,
+    "mixed": false,
+    "sensitivity": "confidential"
+  },
+  "wiki/nbs-faq-back-office.md": {
+    "tags": [
+      "service:nbs",
+      "kind:guide",
+      "kind:script"
+    ],
+    "personal": false,
+    "mixed": false,
+    "sensitivity": "internal"
+  },
+  "tickets/HH-2026-0301": {
+    "tags": [
+      "kind:ticket",
+      "severity:p1",
+      "topic:checkout",
+      "service:paygate"
+    ],
+    "personal": false,
+    "mixed": false,
+    "sensitivity": "internal"
+  },
+  "tickets/HH-2026-0077": {
+    "quarantine": true,
+    "reason": "card number in the body",
+    "never_in_raw": true
+  },
+  "tickets/HH-2026-0119": {
+    "quarantine": true,
+    "reason": "password in the body",
+    "never_in_raw": true
+  },
+  "tickets/HH-2026-0140": {
+    "tags": [
+      "kind:ticket",
+      "personal:yes",
+      "topic:on-call"
+    ],
+    "personal": true,
+    "mixed": false,
+    "sensitivity": "restricted"
+  }
+}

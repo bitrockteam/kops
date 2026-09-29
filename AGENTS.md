@@ -5,7 +5,11 @@
 - Implement the workflow completely. Do not replace authorization, persistence, publication, provenance, review, revocation or audit with frontend-only simulations.
 - Keep project status, decisions, validation evidence and next steps in this repository. Do not put task state in shared personal memory.
 - Use one accountable writer per file or shared state. No subagent delegation is required by this repository.
-- Create an implementation branch, commit and push the completed work, and open a PR. Shared-branch integration requires independent review and Franco's approval; never merge automatically.
+- Two branches only: `dev` and `main`. No feature branches. Work is committed and pushed on `dev`; `main` receives it when Franco merges. Never merge automatically.
+- The product is the demo. The primary artifact is the Compose stack: it must run unchanged on Linux, Windows and macOS with Docker, with no host-specific assumption in code, scripts or documentation. The model is chosen at runtime through environment: provider (`ollama`, `anthropic`, `openai`), endpoint, model name, reasoning effort, classifier backend (`local`, `jev`); selectable per session without a rebuild, never hard-wired, and the evidence names the provider actually used.
+- `docs/lab.md` is the plan for the next stage: raw store and collectors, a classifier with `jev` and `local` backends, one wiki per audience, a return through three separate gates (rights, need, form), a read-only gateway and a bounded ops agent, lineage.
+- `scripts/generate_meridian.py` is the only source of `fixtures/meridian/`. Edit the generator, regenerate, commit both; never hand-edit the output. Generators, collectors and lint stay deterministic standard-library code with no model call.
+- Everything in `fixtures/meridian/` is invented, planted secrets are canonical fake values; keep it that way, because part of the corpus is sent to a hosted classifier.
 - Keep the Git remote on SSH. Preserve the configured Franco Geraci/Voloire/Voloirex identity and GitHub noreply address. Do not add coauthor or generation trailers.
 - Keep public-facing names and text focused on KnowledgeOps Platform and kops. Preserve any legally required third-party notices if code is reused; do not invent ownership claims.
 - Do not commit credentials, real company content, private briefs, runtime data or unreviewed generated artifacts. The repository is public.

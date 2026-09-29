@@ -1,0 +1,21 @@
+{
+  "seed": 20260929,
+  "generated": "2026-09-29",
+  "company": "Meridian Ferries",
+  "counts": {
+    "people": 15,
+    "agents": 1,
+    "roles": 8,
+    "domains": 6,
+    "tags": 35,
+    "wiki_pages": 19,
+    "adrs": 8,
+    "tickets": 120,
+    "commits": 201,
+    "web_log_lines": 1500,
+    "db_log_lines": 500,
+    "planted_quarantines": 3,
+    "mixed_items": 3,
+    "personal_items": 2
+  }
+}

@@ -1,0 +1,500 @@
+2026-09-12 13:00:09 UTC [1000] LOG:  duration: 30 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:00:32 UTC [1001] LOG:  checkpoint complete
+2026-09-12 13:00:50 UTC [1002] LOG:  duration: 16 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:00:59 UTC [1003] LOG:  duration: 13 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:01:26 UTC [1004] LOG:  duration: 9 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:01:42 UTC [1005] LOG:  duration: 28 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:02:08 UTC [1006] LOG:  duration: 5 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:02:21 UTC [1007] LOG:  duration: 60 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:02:36 UTC [1008] LOG:  duration: 10 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:02:43 UTC [1009] LOG:  duration: 11 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:03:06 UTC [1010] LOG:  duration: 54 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:03:15 UTC [1011] LOG:  checkpoint complete
+2026-09-12 13:03:31 UTC [1012] LOG:  duration: 18 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:03:49 UTC [1013] LOG:  duration: 28 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:04:08 UTC [1014] LOG:  duration: 50 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:04:29 UTC [1015] LOG:  checkpoint complete
+2026-09-12 13:04:59 UTC [1016] LOG:  duration: 60 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:05:04 UTC [1017] LOG:  duration: 42 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:05:21 UTC [1018] LOG:  checkpoint complete
+2026-09-12 13:05:49 UTC [1019] LOG:  duration: 37 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:05:54 UTC [1020] LOG:  duration: 31 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:06:19 UTC [1021] LOG:  duration: 9 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:06:44 UTC [1022] LOG:  checkpoint complete
+2026-09-12 13:07:03 UTC [1023] LOG:  duration: 49 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:07:31 UTC [1024] LOG:  checkpoint complete
+2026-09-12 13:07:49 UTC [1025] LOG:  duration: 3 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:07:54 UTC [1026] LOG:  checkpoint complete
+2026-09-12 13:08:21 UTC [1027] LOG:  duration: 18 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:08:27 UTC [1028] LOG:  duration: 39 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:08:32 UTC [1029] LOG:  duration: 16 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:09:01 UTC [1030] LOG:  duration: 27 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:09:19 UTC [1031] LOG:  duration: 57 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:09:38 UTC [1032] LOG:  duration: 14 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:10:05 UTC [1033] LOG:  duration: 31 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:10:14 UTC [1034] LOG:  checkpoint complete
+2026-09-12 13:10:30 UTC [1035] LOG:  duration: 54 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:10:52 UTC [1036] LOG:  duration: 28 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:11:12 UTC [1037] LOG:  duration: 20 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:11:26 UTC [1038] LOG:  duration: 20 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:11:56 UTC [1039] LOG:  duration: 32 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:12:08 UTC [1040] LOG:  checkpoint complete
+2026-09-12 13:12:18 UTC [1041] LOG:  duration: 31 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:12:37 UTC [1042] LOG:  duration: 13 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:12:45 UTC [1043] LOG:  duration: 17 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:13:07 UTC [1044] LOG:  duration: 22 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:13:17 UTC [1045] LOG:  duration: 41 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:13:25 UTC [1046] LOG:  duration: 32 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:13:55 UTC [1047] LOG:  duration: 11 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:14:11 UTC [1048] LOG:  duration: 55 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:14:28 UTC [1049] LOG:  duration: 10 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:14:34 UTC [1050] LOG:  duration: 57 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:15:01 UTC [1051] LOG:  duration: 17 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:15:31 UTC [1052] LOG:  duration: 36 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:15:55 UTC [1053] LOG:  duration: 38 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:16:12 UTC [1054] LOG:  checkpoint complete
+2026-09-12 13:16:18 UTC [1055] LOG:  checkpoint complete
+2026-09-12 13:16:42 UTC [1056] LOG:  duration: 25 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:17:01 UTC [1057] LOG:  duration: 16 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:17:06 UTC [1058] LOG:  duration: 34 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:17:15 UTC [1059] LOG:  duration: 34 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:17:21 UTC [1000] LOG:  duration: 57 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:17:51 UTC [1001] LOG:  duration: 19 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:17:59 UTC [1002] LOG:  duration: 57 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:18:11 UTC [1003] LOG:  duration: 12 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:18:20 UTC [1004] LOG:  checkpoint complete
+2026-09-12 13:18:50 UTC [1005] LOG:  checkpoint complete
+2026-09-12 13:19:09 UTC [1006] LOG:  duration: 20 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:19:20 UTC [1007] LOG:  duration: 26 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:19:42 UTC [1008] LOG:  duration: 56 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:20:10 UTC [1009] LOG:  duration: 36 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:20:28 UTC [1010] LOG:  duration: 3 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:20:50 UTC [1011] LOG:  duration: 2 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:21:20 UTC [1012] LOG:  duration: 43 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:21:33 UTC [1013] LOG:  duration: 57 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:21:58 UTC [1014] LOG:  duration: 16 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:22:05 UTC [1015] LOG:  duration: 26 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:22:27 UTC [1016] LOG:  duration: 42 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:22:54 UTC [1017] LOG:  duration: 46 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:23:10 UTC [1018] LOG:  duration: 37 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:23:31 UTC [1019] LOG:  duration: 49 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:23:44 UTC [1020] LOG:  duration: 53 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:23:54 UTC [1021] LOG:  duration: 46 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:24:21 UTC [1022] LOG:  duration: 44 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:24:48 UTC [1023] LOG:  duration: 54 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:25:04 UTC [1024] LOG:  duration: 50 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:25:22 UTC [1025] LOG:  checkpoint complete
+2026-09-12 13:25:31 UTC [1026] LOG:  duration: 51 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:25:37 UTC [1027] LOG:  duration: 24 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:26:00 UTC [1028] LOG:  duration: 4 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:26:12 UTC [1029] LOG:  duration: 53 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:26:24 UTC [1030] LOG:  duration: 56 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:26:45 UTC [1031] LOG:  duration: 26 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:26:54 UTC [1032] LOG:  duration: 16 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:27:13 UTC [1033] LOG:  checkpoint complete
+2026-09-12 13:27:36 UTC [1034] LOG:  duration: 53 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:27:45 UTC [1035] LOG:  duration: 4 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:28:04 UTC [1036] LOG:  duration: 57 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:28:33 UTC [1037] LOG:  duration: 52 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:28:54 UTC [1038] LOG:  duration: 20 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:29:14 UTC [1039] LOG:  duration: 26 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:29:24 UTC [1040] LOG:  duration: 10 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:29:29 UTC [1041] LOG:  duration: 45 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:29:44 UTC [1042] LOG:  duration: 39 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:30:03 UTC [1043] LOG:  duration: 48 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:30:16 UTC [1044] LOG:  duration: 59 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:30:43 UTC [1045] LOG:  duration: 56 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:30:56 UTC [1046] LOG:  duration: 9 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:31:12 UTC [1047] LOG:  duration: 40 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:31:37 UTC [1048] LOG:  duration: 33 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:32:04 UTC [1049] LOG:  duration: 30 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:32:31 UTC [1050] LOG:  duration: 14 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:32:36 UTC [1051] LOG:  duration: 55 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:33:02 UTC [1052] LOG:  duration: 56 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:33:10 UTC [1053] LOG:  duration: 39 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:33:37 UTC [1054] LOG:  duration: 3 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:34:02 UTC [1055] LOG:  duration: 50 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:34:21 UTC [1056] LOG:  duration: 20 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:34:29 UTC [1057] LOG:  duration: 23 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:34:46 UTC [1058] LOG:  checkpoint complete
+2026-09-12 13:35:07 UTC [1059] LOG:  duration: 34 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:35:20 UTC [1000] LOG:  duration: 19 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:35:36 UTC [1001] LOG:  duration: 45 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:35:54 UTC [1002] LOG:  duration: 58 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:36:24 UTC [1003] LOG:  duration: 59 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:36:38 UTC [1004] LOG:  duration: 34 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:36:49 UTC [1005] LOG:  duration: 5 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:37:09 UTC [1006] LOG:  duration: 22 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:37:30 UTC [1007] LOG:  duration: 42 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:37:51 UTC [1008] LOG:  duration: 55 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:38:01 UTC [1009] LOG:  duration: 6 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:38:22 UTC [1010] LOG:  checkpoint complete
+2026-09-12 13:38:52 UTC [1011] LOG:  checkpoint complete
+2026-09-12 13:39:01 UTC [1012] LOG:  checkpoint complete
+2026-09-12 13:39:24 UTC [1013] LOG:  duration: 39 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:39:52 UTC [1014] LOG:  duration: 34 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:40:15 UTC [1015] LOG:  checkpoint complete
+2026-09-12 13:40:20 UTC [1016] LOG:  duration: 57 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:40:39 UTC [1017] LOG:  duration: 51 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:41:04 UTC [1018] LOG:  duration: 51 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:41:19 UTC [1019] LOG:  checkpoint complete
+2026-09-12 13:41:43 UTC [1020] LOG:  duration: 32 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:41:48 UTC [1021] LOG:  duration: 22 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:42:17 UTC [1022] LOG:  duration: 15 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:42:44 UTC [1023] LOG:  duration: 25 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:43:14 UTC [1024] LOG:  duration: 55 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:43:27 UTC [1025] LOG:  duration: 31 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:43:57 UTC [1026] LOG:  duration: 51 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:44:25 UTC [1027] LOG:  duration: 33 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:44:34 UTC [1028] LOG:  duration: 54 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:44:58 UTC [1029] LOG:  duration: 16 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:45:12 UTC [1030] LOG:  checkpoint complete
+2026-09-12 13:45:40 UTC [1031] LOG:  duration: 2 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:46:06 UTC [1032] LOG:  duration: 4 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:46:19 UTC [1033] LOG:  duration: 48 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:46:47 UTC [1034] LOG:  duration: 54 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:47:00 UTC [1035] LOG:  duration: 53 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:47:10 UTC [1036] LOG:  duration: 22 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:47:32 UTC [1037] LOG:  duration: 8 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:47:42 UTC [1038] LOG:  duration: 40 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:47:55 UTC [1039] LOG:  duration: 40 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:48:08 UTC [1040] LOG:  duration: 29 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:48:32 UTC [1041] LOG:  duration: 5 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:48:57 UTC [1042] LOG:  duration: 8 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:49:06 UTC [1043] LOG:  duration: 30 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:49:27 UTC [1044] LOG:  checkpoint complete
+2026-09-12 13:49:41 UTC [1045] LOG:  duration: 8 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:49:53 UTC [1046] LOG:  duration: 6 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:50:14 UTC [1047] LOG:  duration: 51 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:50:28 UTC [1048] LOG:  duration: 32 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:50:55 UTC [1049] LOG:  duration: 44 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:51:04 UTC [1050] LOG:  duration: 36 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:51:12 UTC [1051] LOG:  checkpoint complete
+2026-09-12 13:51:19 UTC [1052] LOG:  duration: 34 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:51:35 UTC [1053] LOG:  duration: 54 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:51:54 UTC [1054] LOG:  duration: 16 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:52:08 UTC [1055] LOG:  duration: 15 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:52:38 UTC [1056] LOG:  checkpoint complete
+2026-09-12 13:52:48 UTC [1057] LOG:  duration: 4 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:53:12 UTC [1058] LOG:  duration: 59 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:53:23 UTC [1059] LOG:  duration: 29 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:53:32 UTC [1000] LOG:  duration: 34 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:53:41 UTC [1001] LOG:  duration: 42 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:53:47 UTC [1002] LOG:  duration: 59 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:54:05 UTC [1003] LOG:  duration: 40 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:54:15 UTC [1004] LOG:  duration: 3 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:54:35 UTC [1005] LOG:  duration: 46 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:54:45 UTC [1006] LOG:  duration: 4 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:55:00 UTC [1007] LOG:  duration: 4 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:55:10 UTC [1008] LOG:  duration: 38 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:55:22 UTC [1009] LOG:  duration: 3 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:55:43 UTC [1010] LOG:  duration: 58 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:55:56 UTC [1011] LOG:  duration: 44 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:56:01 UTC [1012] LOG:  duration: 7 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:56:12 UTC [1013] LOG:  checkpoint complete
+2026-09-12 13:56:23 UTC [1014] LOG:  checkpoint complete
+2026-09-12 13:56:43 UTC [1015] LOG:  duration: 13 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:57:09 UTC [1016] LOG:  duration: 35 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:57:37 UTC [1017] LOG:  duration: 55 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:57:56 UTC [1018] LOG:  duration: 30 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:58:20 UTC [1019] LOG:  duration: 42 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:58:48 UTC [1020] LOG:  duration: 14 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:59:01 UTC [1021] LOG:  checkpoint complete
+2026-09-12 13:59:18 UTC [1022] LOG:  duration: 8 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:59:29 UTC [1023] LOG:  duration: 4 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 13:59:42 UTC [1024] LOG:  duration: 7 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:00:07 UTC [1025] LOG:  duration: 12 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:00:14 UTC [1026] LOG:  duration: 53 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:00:27 UTC [1027] LOG:  duration: 49 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:00:40 UTC [1028] LOG:  duration: 37 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:01:09 UTC [1029] LOG:  duration: 31 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:01:24 UTC [1030] LOG:  checkpoint complete
+2026-09-12 14:01:36 UTC [1031] LOG:  duration: 46 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:01:57 UTC [1032] LOG:  duration: 59 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:02:03 UTC [1033] LOG:  duration: 51 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:02:27 UTC [1034] LOG:  duration: 7 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:02:54 UTC [1035] LOG:  duration: 47 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:03:20 UTC [1036] LOG:  duration: 24 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:03:45 UTC [1037] LOG:  duration: 33 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:04:08 UTC [1038] LOG:  duration: 34 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:04:25 UTC [1039] LOG:  duration: 21 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:04:47 UTC [1040] LOG:  duration: 9 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:04:56 UTC [1041] LOG:  duration: 37 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:05:03 UTC [1042] LOG:  duration: 38 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:05:26 UTC [1043] LOG:  duration: 55 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:05:46 UTC [1044] LOG:  duration: 12 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:06:02 UTC [1045] LOG:  duration: 57 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:06:17 UTC [1046] LOG:  duration: 9 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:06:34 UTC [1047] LOG:  duration: 37 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:06:51 UTC [1048] LOG:  duration: 52 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:07:03 UTC [1049] LOG:  duration: 53 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:07:24 UTC [1050] LOG:  duration: 12 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:07:32 UTC [1051] LOG:  duration: 48 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:07:38 UTC [1052] LOG:  checkpoint complete
+2026-09-12 14:07:48 UTC [1053] LOG:  duration: 34 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:07:54 UTC [1054] LOG:  duration: 26 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:08:01 UTC [1055] LOG:  duration: 13 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:08:08 UTC [1056] LOG:  duration: 9 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:08:35 UTC [1057] LOG:  checkpoint complete
+2026-09-12 14:08:48 UTC [1058] LOG:  duration: 37 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:09:00 UTC [1059] LOG:  duration: 8 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:09:21 UTC [1000] LOG:  checkpoint complete
+2026-09-12 14:09:32 UTC [1001] LOG:  checkpoint complete
+2026-09-12 14:09:47 UTC [1002] LOG:  duration: 42 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:10:04 UTC [1003] LOG:  duration: 42 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:10:29 UTC [1004] LOG:  duration: 9 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:10:35 UTC [1005] LOG:  duration: 44 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:10:47 UTC [1006] LOG:  checkpoint complete
+2026-09-12 14:11:12 UTC [1007] LOG:  duration: 57 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:11:20 UTC [1008] LOG:  checkpoint complete
+2026-09-12 14:11:49 UTC [1009] LOG:  duration: 40 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:12:18 UTC [1010] LOG:  duration: 24 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:12:45 UTC [1011] LOG:  duration: 37 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:12:58 UTC [1012] LOG:  duration: 55 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:13:07 UTC [1013] LOG:  duration: 41 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:13:34 UTC [1014] LOG:  duration: 16 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:13:50 UTC [1015] LOG:  duration: 57 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:14:07 UTC [1016] LOG:  duration: 29 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:14:15 UTC [1017] LOG:  duration: 48 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:14:26 UTC [1018] LOG:  duration: 53 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:14:41 UTC [1019] LOG:  duration: 20 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:15:03 UTC [1020] LOG:  duration: 37 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:15:13 UTC [1021] LOG:  duration: 34 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:15:43 UTC [1022] LOG:  duration: 47 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:16:13 UTC [1023] LOG:  duration: 49 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:16:37 UTC [1024] LOG:  duration: 22 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:16:53 UTC [1025] LOG:  duration: 59 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:17:12 UTC [1026] LOG:  checkpoint complete
+2026-09-12 14:17:40 UTC [1027] LOG:  duration: 43 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:17:49 UTC [1028] LOG:  duration: 18 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:18:12 UTC [1029] LOG:  duration: 33 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:18:39 UTC [1030] LOG:  duration: 3 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:19:02 UTC [1031] LOG:  duration: 55 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:19:30 UTC [1032] LOG:  duration: 28 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:19:49 UTC [1033] LOG:  duration: 47 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:20:00 UTC [1034] LOG:  duration: 43 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:20:07 UTC [1035] LOG:  duration: 8 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:20:14 UTC [1036] LOG:  duration: 27 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:20:33 UTC [1037] LOG:  duration: 16 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:20:40 UTC [1038] LOG:  checkpoint complete
+2026-09-12 14:20:55 UTC [1039] LOG:  duration: 11 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:21:01 UTC [1040] LOG:  duration: 25 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:21:10 UTC [1041] LOG:  duration: 45 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:21:38 UTC [1042] LOG:  duration: 28 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:21:48 UTC [1043] LOG:  checkpoint complete
+2026-09-12 14:22:14 UTC [1044] LOG:  duration: 21 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:22:21 UTC [1045] LOG:  duration: 27 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:22:47 UTC [1046] LOG:  checkpoint complete
+2026-09-12 14:23:10 UTC [1047] LOG:  duration: 43 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:23:36 UTC [1048] LOG:  duration: 35 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:23:44 UTC [1049] LOG:  checkpoint complete
+2026-09-12 14:23:55 UTC [1050] LOG:  checkpoint complete
+2026-09-12 14:24:02 UTC [1051] LOG:  checkpoint complete
+2026-09-12 14:24:26 UTC [1052] LOG:  checkpoint complete
+2026-09-12 14:24:51 UTC [1053] LOG:  duration: 33 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:24:56 UTC [1054] LOG:  duration: 42 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:25:25 UTC [1055] LOG:  duration: 26 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:25:53 UTC [1056] LOG:  checkpoint complete
+2026-09-12 14:26:10 UTC [1057] LOG:  duration: 20 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:26:26 UTC [1058] LOG:  checkpoint complete
+2026-09-12 14:26:54 UTC [1059] LOG:  duration: 18 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:27:08 UTC [1000] LOG:  duration: 42 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:27:20 UTC [1001] LOG:  duration: 3 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:27:45 UTC [1002] LOG:  duration: 41 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:27:52 UTC [1003] LOG:  duration: 23 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:28:04 UTC [1004] LOG:  duration: 18 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:28:25 UTC [1005] LOG:  duration: 13 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:28:47 UTC [1006] LOG:  duration: 24 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:29:16 UTC [1007] LOG:  checkpoint complete
+2026-09-12 14:29:28 UTC [1008] LOG:  duration: 59 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:29:41 UTC [1009] LOG:  duration: 2 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:30:03 UTC [1010] LOG:  duration: 9 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:30:22 UTC [1011] LOG:  duration: 20 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:30:29 UTC [1012] LOG:  duration: 7 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:30:58 UTC [1013] LOG:  duration: 34 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:31:16 UTC [1014] LOG:  duration: 18 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:31:37 UTC [1015] LOG:  duration: 5 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:31:57 UTC [1016] LOG:  duration: 55 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:32:20 UTC [1017] LOG:  duration: 51 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:32:44 UTC [1018] LOG:  duration: 20 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:32:49 UTC [1019] LOG:  duration: 34 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:33:16 UTC [1020] LOG:  duration: 25 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:33:31 UTC [1021] LOG:  duration: 39 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:33:54 UTC [1022] LOG:  duration: 59 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:34:20 UTC [1023] LOG:  duration: 39 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:34:45 UTC [1024] LOG:  duration: 39 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:35:09 UTC [1025] LOG:  checkpoint complete
+2026-09-12 14:35:19 UTC [1026] LOG:  duration: 11 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:35:26 UTC [1027] LOG:  duration: 31 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:35:49 UTC [1028] LOG:  duration: 23 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:36:04 UTC [1029] LOG:  duration: 5 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:36:22 UTC [1030] LOG:  duration: 4 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:36:27 UTC [1031] LOG:  checkpoint complete
+2026-09-12 14:36:43 UTC [1032] LOG:  duration: 51 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:37:02 UTC [1033] LOG:  duration: 29 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:37:20 UTC [1034] LOG:  checkpoint complete
+2026-09-12 14:37:33 UTC [1035] LOG:  duration: 48 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:37:54 UTC [1036] LOG:  duration: 50 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:38:12 UTC [1037] LOG:  duration: 47 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:38:31 UTC [1038] LOG:  checkpoint complete
+2026-09-12 14:39:01 UTC [1039] LOG:  duration: 11 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:39:23 UTC [1040] LOG:  duration: 41 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:39:30 UTC [1041] LOG:  duration: 8 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:39:35 UTC [1042] LOG:  duration: 54 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:39:44 UTC [1043] LOG:  duration: 42 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:40:03 UTC [1044] LOG:  duration: 59 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:40:11 UTC [1045] LOG:  duration: 45 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:40:39 UTC [1046] LOG:  duration: 46 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:40:46 UTC [1047] LOG:  duration: 7 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:40:56 UTC [1048] LOG:  checkpoint complete
+2026-09-12 14:41:21 UTC [1049] LOG:  duration: 23 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:41:26 UTC [1050] LOG:  duration: 33 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:41:31 UTC [1051] LOG:  duration: 2 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:41:47 UTC [1052] LOG:  duration: 50 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:42:05 UTC [1053] LOG:  duration: 37 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:42:14 UTC [1054] LOG:  checkpoint complete
+2026-09-12 14:42:23 UTC [1055] LOG:  duration: 14 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:42:39 UTC [1056] LOG:  duration: 34 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:43:03 UTC [1057] LOG:  checkpoint complete
+2026-09-12 14:43:24 UTC [1058] LOG:  duration: 37 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:43:35 UTC [1059] LOG:  duration: 3 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:43:47 UTC [1000] LOG:  duration: 43 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:44:12 UTC [1001] LOG:  checkpoint complete
+2026-09-12 14:44:27 UTC [1002] LOG:  duration: 55 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:44:35 UTC [1003] LOG:  duration: 23 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:44:46 UTC [1004] LOG:  duration: 42 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:44:52 UTC [1005] LOG:  duration: 33 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:44:58 UTC [1006] LOG:  duration: 30 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:45:27 UTC [1007] LOG:  duration: 24 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:45:37 UTC [1008] LOG:  duration: 5 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:46:05 UTC [1009] LOG:  duration: 19 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:46:25 UTC [1010] LOG:  duration: 14 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:46:44 UTC [1011] LOG:  duration: 49 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:47:14 UTC [1012] LOG:  duration: 58 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:47:26 UTC [1013] LOG:  duration: 29 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:47:56 UTC [1014] LOG:  duration: 49 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:48:05 UTC [1015] LOG:  duration: 45 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:48:17 UTC [1016] LOG:  duration: 30 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:48:43 UTC [1017] LOG:  duration: 19 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:49:05 UTC [1018] LOG:  duration: 20 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:49:14 UTC [1019] LOG:  duration: 48 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:49:38 UTC [1020] LOG:  checkpoint complete
+2026-09-12 14:49:54 UTC [1021] LOG:  duration: 49 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:50:12 UTC [1022] LOG:  duration: 19 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:50:28 UTC [1023] LOG:  duration: 21 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:50:55 UTC [1024] LOG:  checkpoint complete
+2026-09-12 14:51:16 UTC [1025] LOG:  duration: 57 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:51:25 UTC [1026] LOG:  duration: 45 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:51:41 UTC [1027] LOG:  duration: 58 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:51:54 UTC [1028] LOG:  duration: 31 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:52:22 UTC [1029] LOG:  duration: 6 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:52:45 UTC [1030] LOG:  checkpoint complete
+2026-09-12 14:53:11 UTC [1031] LOG:  duration: 26 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:53:18 UTC [1032] LOG:  duration: 29 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:53:33 UTC [1033] LOG:  duration: 22 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:53:54 UTC [1034] LOG:  duration: 4 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:54:11 UTC [1035] LOG:  duration: 39 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:54:33 UTC [1036] LOG:  duration: 7 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:54:59 UTC [1037] LOG:  duration: 39 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:55:13 UTC [1038] LOG:  duration: 47 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:55:36 UTC [1039] LOG:  duration: 45 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:56:03 UTC [1040] LOG:  duration: 5 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:56:27 UTC [1041] LOG:  duration: 38 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:56:53 UTC [1042] LOG:  duration: 24 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:57:20 UTC [1043] LOG:  duration: 2 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:57:30 UTC [1044] LOG:  duration: 41 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:57:57 UTC [1045] LOG:  duration: 60 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:58:21 UTC [1046] LOG:  duration: 8 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:58:45 UTC [1047] LOG:  duration: 5 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:59:10 UTC [1048] LOG:  duration: 59 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:59:25 UTC [1049] LOG:  checkpoint complete
+2026-09-12 14:59:30 UTC [1050] LOG:  duration: 14 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:59:44 UTC [1051] LOG:  duration: 21 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:59:49 UTC [1052] LOG:  duration: 51 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 14:59:58 UTC [1053] LOG:  duration: 14 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:00:15 UTC [1054] LOG:  duration: 34 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:00:44 UTC [1055] LOG:  duration: 35 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:01:12 UTC [1056] LOG:  duration: 51 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:01:21 UTC [1057] LOG:  checkpoint complete
+2026-09-12 15:01:51 UTC [1058] LOG:  duration: 7 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:02:16 UTC [1059] LOG:  duration: 3 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:02:24 UTC [1000] LOG:  checkpoint complete
+2026-09-12 15:02:46 UTC [1001] LOG:  duration: 48 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:03:14 UTC [1002] LOG:  duration: 19 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:03:19 UTC [1003] LOG:  checkpoint complete
+2026-09-12 15:03:44 UTC [1004] LOG:  checkpoint complete
+2026-09-12 15:03:49 UTC [1005] LOG:  checkpoint complete
+2026-09-12 15:04:06 UTC [1006] LOG:  duration: 24 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:04:19 UTC [1007] LOG:  checkpoint complete
+2026-09-12 15:04:42 UTC [1008] LOG:  duration: 29 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:04:47 UTC [1009] LOG:  checkpoint complete
+2026-09-12 15:05:17 UTC [1010] LOG:  duration: 19 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:05:30 UTC [1011] LOG:  duration: 28 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:05:45 UTC [1012] LOG:  duration: 52 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:05:50 UTC [1013] LOG:  duration: 43 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:05:58 UTC [1014] LOG:  duration: 32 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:06:16 UTC [1015] LOG:  duration: 40 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:06:23 UTC [1016] LOG:  duration: 44 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:06:46 UTC [1017] LOG:  duration: 56 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:07:13 UTC [1018] LOG:  duration: 5 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:07:42 UTC [1019] LOG:  duration: 27 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:07:50 UTC [1020] LOG:  duration: 46 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:08:15 UTC [1021] LOG:  duration: 3 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:08:30 UTC [1022] LOG:  duration: 3 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:08:54 UTC [1023] LOG:  duration: 7 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:09:21 UTC [1024] LOG:  checkpoint complete
+2026-09-12 15:09:42 UTC [1025] LOG:  checkpoint complete
+2026-09-12 15:09:55 UTC [1026] LOG:  duration: 37 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:10:05 UTC [1027] LOG:  duration: 24 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:10:24 UTC [1028] LOG:  duration: 59 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:10:30 UTC [1029] LOG:  duration: 11 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:10:38 UTC [1030] LOG:  duration: 20 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:10:45 UTC [1031] LOG:  checkpoint complete
+2026-09-12 15:11:00 UTC [1032] LOG:  duration: 11 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:11:23 UTC [1033] LOG:  duration: 38 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:11:32 UTC [1034] LOG:  duration: 37 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:11:57 UTC [1035] LOG:  checkpoint complete
+2026-09-12 15:12:20 UTC [1036] LOG:  duration: 49 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:12:32 UTC [1037] LOG:  duration: 14 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:12:38 UTC [1038] LOG:  duration: 9 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:13:07 UTC [1039] LOG:  duration: 49 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:13:19 UTC [1040] LOG:  duration: 4 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:13:43 UTC [1041] LOG:  checkpoint complete
+2026-09-12 15:14:04 UTC [1042] LOG:  duration: 51 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:14:16 UTC [1043] LOG:  duration: 36 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:14:31 UTC [1044] LOG:  duration: 41 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:14:50 UTC [1045] LOG:  checkpoint complete
+2026-09-12 15:14:59 UTC [1046] LOG:  duration: 22 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:15:08 UTC [1047] LOG:  duration: 11 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:15:28 UTC [1048] LOG:  checkpoint complete
+2026-09-12 15:15:43 UTC [1049] LOG:  duration: 60 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:16:10 UTC [1050] LOG:  duration: 12 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:16:38 UTC [1051] LOG:  duration: 59 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:16:43 UTC [1052] LOG:  checkpoint complete
+2026-09-12 15:17:06 UTC [1053] LOG:  duration: 39 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:17:14 UTC [1054] LOG:  duration: 49 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:17:21 UTC [1055] LOG:  duration: 4 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:17:47 UTC [1056] LOG:  duration: 11 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:18:12 UTC [1057] LOG:  duration: 11 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:18:23 UTC [1058] LOG:  checkpoint complete
+2026-09-12 15:18:51 UTC [1059] LOG:  checkpoint complete
+2026-09-12 15:19:09 UTC [1000] LOG:  duration: 30 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:19:21 UTC [1001] LOG:  duration: 44 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:19:34 UTC [1002] LOG:  duration: 56 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:19:52 UTC [1003] LOG:  duration: 27 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:20:18 UTC [1004] LOG:  duration: 19 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:20:48 UTC [1005] LOG:  checkpoint complete
+2026-09-12 15:21:03 UTC [1006] LOG:  duration: 30 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:21:22 UTC [1007] LOG:  duration: 7 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:21:52 UTC [1008] LOG:  duration: 38 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:22:05 UTC [1009] LOG:  checkpoint complete
+2026-09-12 15:22:35 UTC [1010] LOG:  duration: 53 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:22:42 UTC [1011] LOG:  duration: 45 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:23:11 UTC [1012] LOG:  checkpoint complete
+2026-09-12 15:23:34 UTC [1013] LOG:  checkpoint complete
+2026-09-12 15:23:52 UTC [1014] LOG:  duration: 11 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:24:01 UTC [1015] LOG:  duration: 24 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:24:10 UTC [1016] LOG:  duration: 14 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:24:37 UTC [1017] LOG:  duration: 11 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:25:07 UTC [1018] LOG:  duration: 29 ms  statement: select ... from bookings where pnr = $1
+2026-09-12 15:25:15 UTC [1019] LOG:  duration: 27 ms  statement: select ... from bookings where pnr = $1

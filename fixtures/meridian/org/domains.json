@@ -1,0 +1,109 @@
+{
+  "domains": {
+    "booking-platform": "NBS, PayGate, Sirius bridge: how the booking platform is built and run",
+    "customer-support": "Tickets, scripts, escalation: what Customer Care needs to answer customers",
+    "fleet-operations": "Vision X, ports, manifests, boarding",
+    "finance": "Pricing, supplier rates, invoicing",
+    "people": "Rosters, onboarding, on-call, working time: personal data",
+    "security": "Policies, credentials, access, quarantines"
+  },
+  "tags": {
+    "service:nbs": "New Booking System",
+    "service:paygate": "PayGate adapter and CardinalPay",
+    "service:sirius": "Legacy Sirius and sirius-bridge",
+    "service:visionx": "Vision X",
+    "service:helphub": "HelpHub ticketing",
+    "kind:runbook": "Operational procedure",
+    "kind:incident": "Incident or post-mortem",
+    "kind:ticket": "Helpdesk ticket",
+    "kind:script": "Customer-facing script",
+    "kind:adr": "Architecture decision record",
+    "kind:commit": "Commit message",
+    "kind:log": "Application log",
+    "kind:policy": "Policy",
+    "kind:contract": "Contract or supplier terms",
+    "kind:roster": "Staff roster",
+    "kind:guide": "User guide",
+    "severity:p1": "Service down or boarding blocked",
+    "severity:p2": "Degraded",
+    "severity:p3": "Single customer",
+    "topic:checkout": "Payment and confirmation step",
+    "topic:refund": "Refunds",
+    "topic:check-in": "Check-in and QR",
+    "topic:deploy": "Deploy and rollback",
+    "topic:database": "PostgreSQL and pooling",
+    "topic:kubernetes": "Cluster and pods",
+    "topic:telemetry": "Vessel telemetry",
+    "topic:port": "Port operations",
+    "topic:pricing": "Fares and pricing rules",
+    "topic:supplier": "Supplier relationship",
+    "topic:invoice": "Invoicing",
+    "topic:onboarding": "Onboarding",
+    "topic:on-call": "On-call rota",
+    "topic:credentials": "Credentials and secrets",
+    "topic:access": "Access rights",
+    "personal:yes": "Contains personal data"
+  },
+  "domain_tags": {
+    "booking-platform": [
+      "service:nbs",
+      "service:paygate",
+      "service:sirius",
+      "kind:runbook",
+      "kind:incident",
+      "kind:adr",
+      "kind:commit",
+      "kind:log",
+      "topic:checkout",
+      "topic:deploy",
+      "topic:database",
+      "topic:kubernetes"
+    ],
+    "customer-support": [
+      "service:helphub",
+      "kind:ticket",
+      "kind:script",
+      "topic:refund",
+      "topic:check-in",
+      "severity:p1",
+      "severity:p2",
+      "severity:p3"
+    ],
+    "fleet-operations": [
+      "service:visionx",
+      "topic:telemetry",
+      "topic:port",
+      "kind:guide",
+      "kind:runbook",
+      "kind:incident"
+    ],
+    "finance": [
+      "topic:pricing",
+      "topic:supplier",
+      "topic:invoice",
+      "kind:contract"
+    ],
+    "people": [
+      "kind:roster",
+      "topic:onboarding",
+      "topic:on-call",
+      "personal:yes"
+    ],
+    "security": [
+      "kind:policy",
+      "topic:credentials",
+      "topic:access"
+    ]
+  },
+  "role_mappings": {
+    "CC-L1": "helpdesk-l1",
+    "CC-LEAD": "functional-analyst",
+    "PLAT-OPS": "ops-desk",
+    "PLAT-DEV": "developer",
+    "PROD": "functional-analyst",
+    "FLEET-PORT": "fleet-ops",
+    "FIN-CTRL": "finance-controller",
+    "HR-BP": "hr-partner",
+    "SEC-MON": "security-monitor"
+  }
+}
