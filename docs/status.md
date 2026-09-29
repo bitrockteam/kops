@@ -53,8 +53,34 @@ Full detail, the baseline conformity block and limitations (no browser-screensho
 phase; a CRLF line-ending bug found and fixed on Windows checkouts) are in
 `docs/evidence/lab-p0.md`.
 
+## Lab stage: P1 closed
+
+Commit `e35acb8` on `dev`. A new `collector` service (deterministic Python, standard library
+only, no model call) reads `fixtures/meridian/` through four collectors declared in
+`collectors.yaml` (wiki, tickets, repo, logs), applies a rule pre-filter (cloud keys, Luhn-valid
+card numbers, IBANs, private-key headers, password lines, unknown spaces) and writes to a new
+content-addressed, immutable raw store (`raw_data` volume): admitted items under `raw/`,
+quarantined items under a structurally separate `quarantine/` subtree, one manifest per run under
+`runs/`. The three planted secrets (a credentials wiki page, two tickets) are quarantined and
+never reach `raw/`; the personal roster is admitted to `raw/` marked `restricted: true` (the
+People space is personal data, decided deterministically, not by a model); a collector name
+absent from the registry is refused; a new `notify` (ntfy) service rings on every quarantine hit.
+The API's new Collect screen runs one or all collectors, registers a collector's scope, and shows
+item counts, quarantine records with the rule that caught them, restricted items and run
+manifests with each admitted item's hash. `verifica` independently confirmed all four gate
+conditions against the live stack. Two real bugs were found and fixed by the first live run (a
+`KeyError` in the ntfy message builder, and `compose.yaml` pointing the collector's `KOPS_NOTIFY_URL`
+at ntfy's host-published port instead of its in-network port); both are covered by a new
+regression test. Full detail, the baseline conformity block and limitations (no isolated-project
+regression suite this phase — the tool-permission gate for a second Compose project could not be
+answered unattended; no browser-screenshot evidence, same reason as P0; the Collect nav entry is
+unnumbered pending a later full nav reconciliation) are in `docs/evidence/lab-p1.md`.
+
 ## Next action
 
-Phase P1 of `docs/lab.md` on `dev`: raw store tables and volume, collector registry, four
-collectors over `fixtures/meridian/`, rule pre-filter, quarantine records, ntfy notification,
-run manifests, and the Collect screen. No model calls in this phase.
+Phase P2 of `docs/lab.md` on `dev`: the classifier (schema call, self-consistency switch,
+batching, label gate, owner queue, eval report). Every raw item gets typed answers with
+confidence; the eval report scores precision and recall per tag against
+`fixtures/meridian/eval/expected_tags.json`; an item under the confidence threshold waits for the
+owner, and the owner's label is stored. This phase does call the model, through the same
+`scripts/model_bridge.py` bridge as P0.
