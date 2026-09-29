@@ -21,7 +21,7 @@ SECRET_NAMES = [
     "db_admin_password", "db_api_password", "db_worker_password", "db_publisher_password",
     "db_audit_password", "db_content_password", "session_secret",
     "internal_api_token", "internal_worker_token",
-    "audit_api_token", "audit_worker_token", "audit_publisher_token",
+    "audit_api_token", "audit_worker_token", "audit_publisher_token", "audit_collector_token",
 ]
 
 

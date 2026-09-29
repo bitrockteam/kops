@@ -35,7 +35,7 @@
       </form>
       <nav aria-label="Guided workflow">
         {% set navigation = [
-          ('model', '0', 'Model Setup'), ('sources', '1', 'Sources'), ('admission', '2', 'Admission'),
+          ('model', '0', 'Model Setup'), ('collect', 'L', 'Collect'), ('sources', '1', 'Sources'), ('admission', '2', 'Admission'),
           ('compile', '3', 'Compile'), ('review', '4', 'Review'), ('publish', '5', 'Publish'),
           ('read', '6', 'Read and Ask'), ('maintain', '7', 'Maintain'), ('access', '8', 'Access Changes'),
           ('audit', '9', 'Audit')
@@ -91,6 +91,72 @@
           <form action="/demo/model-availability" method="post"><input type="hidden" name="csrf" value="{{ csrf }}"><button name="enabled" value="true">Restore bridge</button></form>
         </div></div>
         {% else %}<p class="callout">Model bridge controls are hidden from ordinary personas.</p>{% endif %}
+      </section>
+      {% endif %}
+
+      {% if stage == 'collect' %}
+      <section class="panel">
+        <div class="panel-heading"><div><p class="step">Lab stage</p><h2>Collect</h2></div><span class="badge">{{ state.collect.raw_counts.values()|sum }} raw · {{ state.collect.quarantine|length }} quarantined</span></div>
+        <p>Four deterministic collectors read <code>fixtures/meridian/</code> into an immutable, content-addressed raw store. A collector not in <code>collectors.yaml</code> cannot write; a rule pre-filter quarantines secrets before anything is admitted; the People space is marked restricted on ingest, with no model call.</p>
+        <div class="cards">
+          {% for name, count in state.collect.raw_counts.items() %}
+          <article class="card"><h3>{{ name }}</h3><p><span class="badge">{{ count }} item(s) in raw</span></p></article>
+          {% else %}<p>No collector has written to the raw store yet.</p>{% endfor %}
+        </div>
+        {% if state.is_operator %}
+        <div class="split">
+          <form action="/collect/run" method="post" class="card form-stack">
+            <h3>Run a collector</h3><input type="hidden" name="csrf" value="{{ csrf }}">
+            <label>Collector<select name="collector">
+              <option value="all">all</option>
+              <option value="wiki">wiki</option><option value="tickets">tickets</option>
+              <option value="repo">repo</option><option value="logs">logs</option>
+            </select></label>
+            <button>Run</button>
+          </form>
+          <form action="/collect/run" method="post" class="card form-stack">
+            <h3>Try an unregistered collector</h3><input type="hidden" name="csrf" value="{{ csrf }}">
+            <input type="hidden" name="collector" value="shadow-crawler">
+            <p>Posts a name absent from <code>collectors.yaml</code>; the collector service must refuse the write.</p>
+            <button class="danger">Run 'shadow-crawler'</button>
+          </form>
+        </div>
+        <form action="/collect/register" method="post" class="card form-stack">
+          <h3>Register a collector's scope</h3><input type="hidden" name="csrf" value="{{ csrf }}">
+          <label>Collector<input name="collector" placeholder="wiki" required></label>
+          <button>Register as the owner</button>
+        </form>
+        {% else %}<p class="callout">Collector controls are hidden from ordinary personas.</p>{% endif %}
+        <h3>Recent runs</h3>
+        <div class="cards">
+          {% for run in state.collect.runs %}
+          <article class="card">
+            <h3 class="mono">{{ run.run_id }}</h3>
+            <p>requested <b>{{ run.requested }}</b> · {{ run.results|length }} collector(s) ran · {{ run.refused|length }} refused</p>
+            {% for result in run.results %}
+            <p>{{ result.collector }}: seen {{ result.seen }}, admitted {{ result.admitted|length }}, quarantined {{ result.quarantined|length }}</p>
+            {% for item in result.admitted %}<p class="mono">{{ item.item_id }} sha256:{{ item.sha256[:16] }}… {{ 'restricted' if item.restricted else '' }}</p>{% endfor %}
+            {% endfor %}
+            {% for refusal in run.refused %}<p class="notice error">{{ refusal.collector }} refused: {{ refusal.reason }}</p>{% endfor %}
+          </article>
+          {% else %}<p>No run manifest yet.</p>{% endfor %}
+        </div>
+        <h3>Quarantine</h3>
+        <div class="cards">
+          {% for record in state.collect.quarantine %}
+          <article class="card">
+            <h3 class="mono">{{ record.item_id }}</h3>
+            <p><span class="badge warn">{{ record.rules|join(', ') }}</span></p>
+            {% for hit in record.hits %}<p class="mono">{{ hit.snippet }}</p>{% endfor %}
+          </article>
+          {% else %}<p>Nothing is quarantined.</p>{% endfor %}
+        </div>
+        <h3>Restricted on ingest</h3>
+        <div class="cards">
+          {% for record in state.collect.restricted %}
+          <article class="card"><h3 class="mono">{{ record.item_id }}</h3><p><span class="badge">restricted</span> collector {{ record.collector }}</p></article>
+          {% else %}<p>Nothing is marked restricted yet.</p>{% endfor %}
+        </div>
       </section>
       {% endif %}
 

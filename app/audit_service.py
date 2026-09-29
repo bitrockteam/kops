@@ -18,6 +18,7 @@ AUDIT_ACTORS = {
     _read_secret("KOPS_AUDIT_API_TOKEN"): {"kops-api"},
     _read_secret("KOPS_AUDIT_WORKER_TOKEN"): {"compilation-worker"},
     _read_secret("KOPS_AUDIT_PUBLISHER_TOKEN"): {"bounded-publication-executor", "publication-service"},
+    _read_secret("KOPS_AUDIT_COLLECTOR_TOKEN"): {"raw-store-collector"},
 }
 
 

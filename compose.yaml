@@ -80,6 +80,7 @@ services:
       KOPS_AUDIT_API_TOKEN_FILE: /run/secrets/audit_api_token
       KOPS_AUDIT_WORKER_TOKEN_FILE: /run/secrets/audit_worker_token
       KOPS_AUDIT_PUBLISHER_TOKEN_FILE: /run/secrets/audit_publisher_token
+      KOPS_AUDIT_COLLECTOR_TOKEN_FILE: /run/secrets/audit_collector_token
     volumes:
       - runtime_secrets:/run/secrets:ro
     depends_on:
@@ -163,20 +164,25 @@ services:
       KOPS_SESSION_SECRET_FILE: /run/secrets/session_secret
       KOPS_AUDIT_URL: http://audit:8083
       KOPS_PUBLISHER_URL: http://publisher:8082
+      KOPS_COLLECTOR_URL: http://collector:8091
       KOPS_INTERNAL_TOKEN_FILE: /run/secrets/internal_api_token
       KOPS_AUDIT_TOKEN_FILE: /run/secrets/audit_api_token
+      KOPS_RAW_ROOT: /var/lib/kops/raw
     volumes:
       - runtime_secrets:/run/secrets:ro
       - source_data:/var/lib/kops/content/sources
       - candidate_data:/var/lib/kops/content/candidates:ro
       - page_data:/var/lib/kops/content/pages:ro
       - answer_data:/var/lib/kops/content/answers
+      - raw_data:/var/lib/kops/raw:ro
     depends_on:
       publisher:
         condition: service_started
       worker:
         condition: service_started
       content:
+        condition: service_started
+      collector:
         condition: service_started
     ports:
       - "127.0.0.1:${KOPS_PORT:-8080}:8080"
@@ -194,6 +200,55 @@ services:
     networks:
       - model-egress
 
+  collector:
+    build:
+      context: .
+      dockerfile: collector/Dockerfile
+    restart: unless-stopped
+    command: ["python", "-m", "collector.run", "--registry", "/etc/kops/collectors.yaml"]
+    environment:
+      KOPS_RAW_ROOT: /var/lib/kops/raw
+      KOPS_AUDIT_URL: http://audit:8083
+      KOPS_AUDIT_TOKEN_FILE: /run/secrets/audit_collector_token
+      KOPS_NOTIFY_URL: http://notify:80
+      KOPS_INTERNAL_TOKEN_FILE: /run/secrets/internal_api_token
+    volumes:
+      - runtime_secrets:/run/secrets:ro
+      - raw_data:/var/lib/kops/raw
+      - ./collectors.yaml:/etc/kops/collectors.yaml:ro
+      - ./fixtures/meridian:/srv/meridian:ro
+    depends_on:
+      audit:
+        condition: service_started
+      notify:
+        condition: service_started
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m,noexec,nosuid,nodev
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    networks:
+      - backend
+
+  notify:
+    image: binwiederhier/ntfy:v2.11.0
+    restart: unless-stopped
+    command: serve
+    networks:
+      - backend
+    ports:
+      - "127.0.0.1:8085:80"
+    read_only: true
+    tmpfs:
+      - /var/lib/ntfy:size=32m,noexec,nosuid,nodev
+      - /var/cache/ntfy:size=16m,noexec,nosuid,nodev
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
 volumes:
   postgres_data:
   runtime_secrets:
@@ -201,6 +256,7 @@ volumes:
   candidate_data:
   page_data:
   answer_data:
+  raw_data:
 
 networks:
   frontend:

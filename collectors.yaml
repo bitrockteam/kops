@@ -1,0 +1,8 @@
+# Raw-store collector registry. A collector not listed here cannot write raw. Flow style only
+# (see collector/registry.py): every value is a scalar, a {k: v} mapping or a [a, b] list.
+collectors:
+  - {name: wiki, kind: file, owner: franco, scope: {path: /srv/meridian/wiki/*.md, adr: /srv/meridian/adr/*.md}}
+  - {name: tickets, kind: file, owner: franco, scope: {path: /srv/meridian/tickets/tickets.json}}
+  - {name: repo, kind: file, owner: franco, scope: {path: /srv/meridian/repo/commits.json, batch: 20}}
+  - {name: logs, kind: file, owner: franco, scope: {path: /srv/meridian/logs/*, window: 15m}}
+prefilter: {version: 1, rules: [cloud-key, card-luhn, iban, private-key, password-line, unknown-space], on_hit: quarantine-and-notify}

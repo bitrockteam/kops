@@ -24,6 +24,7 @@ from app.content import LocalContentStore
 from app.db import PUBLICATION_POLICY_LOCK_KEY, Database
 from app.model import BridgeModelClient, ModelError
 from app.provenance import MixedSourceVersions, inherit_dependency
+from app.rawstore_reader import list_quarantine, list_runs, raw_counts, restricted_items
 from app.rendering import render_markdown
 from app.security import (
     AuthenticationError,
@@ -479,6 +480,12 @@ def _dashboard_state(principal: Principal, action: str = "dashboard.read") -> di
         "model": _active_model_config(),
         "model_endpoint": settings.model_endpoint,
         "is_operator": _is_operator(principal),
+        "collect": {
+            "raw_counts": raw_counts(settings.raw_root),
+            "runs": list_runs(settings.raw_root),
+            "quarantine": list_quarantine(settings.raw_root),
+            "restricted": restricted_items(settings.raw_root),
+        },
     }
 
 
@@ -683,6 +690,65 @@ def load_fixtures(
     loaded = load_synthetic_corpus(database, store, fixture_root, principal.subject_id)
     _event(principal, "fixtures.load", "synthetic_corpus", None, None, "allowed", "explicit_demo_action", "committed", details={"source_count": len(loaded)})
     return _redirect("sources", f"Synthetic corpus is ready with {len(loaded)} sources")
+
+
+def _call_collector(path: str, payload: dict[str, Any]) -> tuple[int, dict[str, Any]]:
+    try:
+        response = httpx.post(
+            f"{settings.collector_url}{path}",
+            headers={"Authorization": f"Bearer {settings.internal_token}"},
+            json=payload,
+            timeout=30.0,
+            follow_redirects=False,
+        )
+    except httpx.HTTPError as error:
+        raise HTTPException(status_code=503, detail="the raw-store collector is unreachable") from error
+    body = response.json() if response.headers.get("content-type", "").startswith("application/json") else {}
+    return response.status_code, body
+
+
+@app.post("/collect/run")
+def collect_run(
+    collector: str = Form(default="all"),
+    csrf: str = Form(),
+    kops_session: str | None = Cookie(default=None),
+) -> RedirectResponse:
+    principal = _principal(kops_session)
+    _require_csrf(principal, csrf)
+    if not _is_operator(principal):
+        raise HTTPException(status_code=403, detail="only the local operator can run a collector")
+    status_code, manifest = _call_collector("/run", {"collector": collector, "requested_by": principal.subject_id})
+    refused = manifest.get("refused", [])
+    quarantined = sum(len(result.get("quarantined", [])) for result in manifest.get("results", []))
+    _event(
+        principal, "collect.run", "collector_run", manifest.get("run_id"), None,
+        "allowed" if status_code == 200 else "denied",
+        "operator_triggered_run" if not refused else refused[0]["reason"],
+        "completed" if status_code == 200 else "refused",
+        details={"collector": collector, "quarantined": quarantined, "refused": refused},
+    )
+    if status_code != 200:
+        reason = refused[0]["reason"] if refused else "collector call failed"
+        return _redirect("collect", f"Collector '{collector}' refused to run: {reason}", "error")
+    message = f"Run {manifest.get('run_id')} complete: {quarantined} item(s) quarantined" if quarantined else f"Run {manifest.get('run_id')} complete: nothing quarantined"
+    return _redirect("collect", message)
+
+
+@app.post("/collect/register")
+def collect_register(
+    collector: str = Form(),
+    csrf: str = Form(),
+    kops_session: str | None = Cookie(default=None),
+) -> RedirectResponse:
+    principal = _principal(kops_session)
+    _require_csrf(principal, csrf)
+    if not _is_operator(principal):
+        raise HTTPException(status_code=403, detail="only the local operator can re-register a collector's scope")
+    status_code, result = _call_collector("/register", {"collector": collector})
+    if status_code >= 400:
+        return _redirect("collect", result.get("detail", "registration failed"), "error")
+    _event(principal, "collect.register", "collector_registration", collector, None, "allowed", "owner_registered_scope", "committed", details=result)
+    return _redirect("collect", f"Collector '{collector}' registered by its owner")
 
 
 @app.get("/sources/{source_id}", response_class=HTMLResponse)

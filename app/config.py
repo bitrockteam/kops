@@ -26,6 +26,8 @@ class Settings:
     audit_url: str
     publisher_url: str
     content_url: str
+    collector_url: str
+    raw_root: Path
     demo_mode: bool
     allowed_model_hosts: frozenset[str]
     model_endpoint: str
@@ -53,6 +55,8 @@ class Settings:
             audit_url=os.getenv("KOPS_AUDIT_URL", "http://audit:8083"),
             publisher_url=os.getenv("KOPS_PUBLISHER_URL", "http://publisher:8082"),
             content_url=os.getenv("KOPS_CONTENT_URL", "http://content:8084"),
+            collector_url=os.getenv("KOPS_COLLECTOR_URL", "http://collector:8091"),
+            raw_root=Path(os.getenv("KOPS_RAW_ROOT", "/var/lib/kops/raw")),
             demo_mode=os.getenv("KOPS_DEMO_MODE", "true").lower() == "true",
             allowed_model_hosts=frozenset(
                 item.strip().lower()
