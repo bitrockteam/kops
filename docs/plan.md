@@ -1,12 +1,12 @@
 # Final implementation plan: local kops demo
 
-**Status: ready for implementation. Local inference is selected by the operator at runtime.**
+**Status: implemented on `feat/local-demo` for local fixture-backed review. Live operator-selected inference and independent human approval remain open.**
 
 ## Objective and authority
 
 Build Governed Knowledge Compilation and Publishing as a local component of KnowledgeOps Platform. The deliverable is a working backend and GUI with synthetic data. The GUI must let Franco execute and inspect each stage from source intake through maintenance and revocation.
 
-The user explicitly requested the local `kops` repository and public `bitrockteam/kops` remote, followed by a final plan and handoff for another implementing session. This planning session prepares the repository; it does not implement the application. Implementation is authorized to commit and push completed work on a feature branch and prepare a PR. No automatic shared-branch merge or deployment is authorized.
+The user explicitly requested the local `kops` repository and public `bitrockteam/kops` remote, followed by a final plan and handoff for another implementing session. The original planning session prepared the repository and did not implement the application. Implementation was authorized to commit and push completed work on a feature branch and prepare a PR. No automatic shared-branch merge or deployment is authorized.
 
 ## Latest decisions and precedence
 

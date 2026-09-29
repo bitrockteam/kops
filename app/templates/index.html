@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>kops | KnowledgeOps Platform</title>
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body data-stage="{{ stage }}">
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">KnowledgeOps Platform</p>
+      <h1>kops</h1>
+    </div>
+    <div class="header-facts">
+      <span><b>Persona</b> {{ principal.display_name }}</span>
+      <span><b>Groups</b> {{ principal.groups|sort|join(' + ') or 'none' }}</span>
+      <span><b>Run</b> {{ state.run.run_id|string|truncate(13, True, '') if state.run else 'not started' }}</span>
+      <span><b>Model</b> {{ state.model.model_name if state.model else 'not configured' }}</span>
+    </div>
+    <div class="mock-banner">MOCKED IDENTITY · LOOPBACK DEMO</div>
+  </header>
+
+  <div class="shell">
+    <aside>
+      <form action="/session/persona" method="post" class="persona-form">
+        <input type="hidden" name="csrf" value="{{ csrf }}">
+        <label for="persona">Synthetic persona</label>
+        <select id="persona" name="subject_id">
+          {% for person in state.personas %}
+          <option value="{{ person.subject_id }}" {% if person.subject_id == principal.subject_id %}selected{% endif %}>{{ person.display_name }}</option>
+          {% endfor %}
+        </select>
+        <button>Switch persona</button>
+      </form>
+      <nav aria-label="Guided workflow">
+        {% set navigation = [
+          ('model', '0', 'Model Setup'), ('sources', '1', 'Sources'), ('admission', '2', 'Admission'),
+          ('compile', '3', 'Compile'), ('review', '4', 'Review'), ('publish', '5', 'Publish'),
+          ('read', '6', 'Read and Ask'), ('maintain', '7', 'Maintain'), ('access', '8', 'Access Changes'),
+          ('audit', '9', 'Audit')
+        ] %}
+        {% for key, number, label in navigation %}
+        <a href="/?stage={{ key }}" class="{% if stage == key %}active{% endif %}"><span>{{ number }}</span>{{ label }}</a>
+        {% endfor %}
+      </nav>
+      <section class="limits">
+        <h2>Demonstration limits</h2>
+        <p>Mock identity and one presenter do not prove real SSO or independent human review. The host administrator is trusted. Model quality and external integrations are not certified.</p>
+      </section>
+    </aside>
+
+    <main>
+      {% if message %}<div class="notice {{ level }}">{{ message }}</div>{% endif %}
+
+      {% if stage == 'model' %}
+      <section class="panel">
+        <div class="panel-heading"><div><p class="step">Stage 0</p><h2>Model Setup</h2></div><span class="badge {{ 'good' if state.model and state.model.connection_status == 'reachable' else 'warn' }}">{{ state.model.connection_status if state.model else 'required' }}</span></div>
+        <p>Only the local operator can choose a destination. No runtime, model weights, identity server, or hosted fallback is installed automatically.</p>
+        {% if state.model and state.is_operator %}
+        <dl class="evidence-grid">
+          <div><dt>Adapter</dt><dd>{{ state.model.adapter }}</dd></div>
+          <div><dt>Endpoint</dt><dd>{{ state.model.endpoint }}</dd></div>
+          <div><dt>Model</dt><dd>{{ state.model.model_name }}</dd></div>
+          <div><dt>Revision</dt><dd>{{ state.model.revision }}</dd></div>
+          <div><dt>Limits</dt><dd><code>{{ state.model.limits }}</code></dd></div>
+          <div><dt>Diagnostic</dt><dd>{{ state.model.diagnostic }}</dd></div>
+        </dl>
+        {% endif %}
+        {% if state.is_operator %}
+        <div class="split">
+          <form action="/model/test" method="post" class="card form-stack">
+            <h3>Test without saving</h3><input type="hidden" name="csrf" value="{{ csrf }}">
+            <label>Adapter<select name="adapter"><option value="ollama">Native Ollama</option><option value="openai">OpenAI-compatible local endpoint</option></select></label>
+            <label>Endpoint<input name="endpoint" value="http://host.docker.internal:11434" required></label>
+            <label>Model name<input name="model_name" placeholder="operator-selected model" required></label>
+            <button>Test local connection</button>
+          </form>
+          <form action="/model/save" method="post" class="card form-stack">
+            <h3>Save bounded configuration</h3><input type="hidden" name="csrf" value="{{ csrf }}">
+            <label>Adapter<select name="adapter"><option value="ollama">Native Ollama</option><option value="openai">OpenAI-compatible local endpoint</option></select></label>
+            <label>Endpoint<input name="endpoint" value="http://host.docker.internal:11434" required></label>
+            <label>Model name<input name="model_name" required></label>
+            <div class="form-grid">
+              <label>Input bytes<input type="number" name="max_input_bytes" value="60000" min="1024" max="250000"></label>
+              <label>Output bytes<input type="number" name="max_output_bytes" value="30000" min="1024" max="100000"></label>
+              <label>Output tokens<input type="number" name="max_output_tokens" value="1200" min="64" max="4096"></label>
+              <label>Wall seconds<input type="number" name="wall_time_seconds" value="90" min="5" max="300"></label>
+              <label>Retries<input type="number" name="max_retries" value="1" min="0" max="1"></label>
+            </div>
+            <button>Save and pin new revision</button>
+          </form>
+        </div>
+        {% else %}<p class="callout">Model destination controls are hidden from ordinary personas.</p>{% endif %}
+      </section>
+      {% endif %}
+
+      {% if stage == 'sources' %}
+      <section class="panel">
+        <div class="panel-heading"><div><p class="step">Stage 1</p><h2>Sources</h2></div><span class="badge">{{ state.sources|length }} permitted</span></div>
+        <p>Titles are shown only when the current persona can read the source policy. Bodies are immutable objects; policy and current revision are backend records.</p>
+        {% if state.is_operator %}<form action="/fixtures/load" method="post" class="inline"><input type="hidden" name="csrf" value="{{ csrf }}"><button>Load synthetic corpus</button></form>{% endif %}
+        <div class="cards">
+          {% for source in state.sources %}
+          <article class="card">
+            <h3>{{ source.title }}</h3><p><span class="badge">{{ source.audience_id }}</span> revision {{ source.current_revision }} · policy {{ source.policy_revision }}</p>
+            <p class="mono">sha256 {{ source.content_hash[:16] }}…</p><p>{{ source.origin }}</p><a href="/sources/{{ source.source_id }}">Inspect protected source</a>
+          </article>
+          {% else %}<p>No permitted sources are loaded.</p>{% endfor %}
+        </div>
+        {% if 'source_import' in principal.action_grants or '*' in principal.action_grants %}
+        <form action="/sources/import" method="post" class="card form-stack"><h3>Import local synthetic text</h3><input type="hidden" name="csrf" value="{{ csrf }}">
+          <label>Title<input name="title" required></label><label>Audience<select name="audience_id">{% for audience in state.audiences %}<option value="{{ audience.audience_id }}">{{ audience.display_name }}</option>{% endfor %}</select></label>
+          <label>Markdown or plain text<textarea name="content" rows="8" required></textarea></label><button>Import immutable revision</button>
+        </form>{% endif %}
+      </section>
+      {% endif %}
+
+      {% if stage in ['admission', 'compile'] %}
+      <section class="panel">
+        <div class="panel-heading"><div><p class="step">Stage {{ '2' if stage == 'admission' else '3' }}</p><h2>{{ 'Admission' if stage == 'admission' else 'Compile' }}</h2></div><span class="badge {{ 'good' if state.model and state.model.connection_status == 'reachable' else 'warn' }}">model {{ state.model.connection_status if state.model else 'missing' }}</span></div>
+        <p>The destination audience is a request, not authority. The server admits exact source revisions before the worker sees content.</p>
+        {% if stage == 'compile' and (not state.model or state.model.connection_status != 'reachable') %}<p class="callout">Compilation is blocked. Ask the local operator to save a reachable model in Model Setup.</p>{% endif %}
+        <form action="{{ '/admission/preview' if stage == 'admission' else '/jobs/create' }}" method="post" class="card form-stack">
+          <input type="hidden" name="csrf" value="{{ csrf }}">
+          <label>Target audience<select name="audience_id">{% for audience in state.audiences %}<option value="{{ audience.audience_id }}">{{ audience.display_name }} · groups {{ audience.required_groups|join(' AND ') }}</option>{% endfor %}</select></label>
+          <fieldset><legend>Requested sources</legend>{% for source in state.sources %}<label class="check"><input type="checkbox" name="source_ids" value="{{ source.source_id }}">{{ source.title }} <small>{{ source.audience_id }} r{{ source.current_revision }}</small></label>{% endfor %}</fieldset>
+          {% if stage == 'compile' %}<label>Compilation task<textarea name="task_text" rows="3">Compile maintained overview, concept, entity, and comparison pages. Preserve contradictions and versioned citations.</textarea></label>{% endif %}
+          <button {% if stage == 'compile' and (not state.model or state.model.connection_status != 'reachable') %}disabled{% endif %}>{{ 'Preview admission' if stage == 'admission' else 'Persist and start bounded job' }}</button>
+        </form>
+        {% if stage == 'compile' %}
+        <h3>Persisted jobs</h3><div id="job-list" class="cards">
+          {% for job in state.jobs %}<article class="card"><h4>{{ job.job_id }}</h4><p><span class="badge {{ 'good' if job.status == 'ready' else 'warn' if job.status in ['failed','blocked','cancelled'] else '' }}">{{ job.status }}</span> {{ job.audience_id }} · model revision {{ job.model_config_revision }}</p><p>Input {{ job.input_bytes }} B · output {{ job.output_bytes }} B · {{ job.model_latency_ms or 'not measured' }} ms</p>{% if job.error_sanitized %}<p class="error-text">{{ job.error_sanitized }}</p>{% endif %}{% if job.status in ['queued','running'] %}<form action="/jobs/{{ job.job_id }}/cancel" method="post"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="secondary">Stop job</button></form>{% endif %}{% if job.candidate_id %}<a href="/?stage=review&candidate={{ job.candidate_id }}">Open private candidate</a>{% endif %}</article>{% else %}<p>No jobs yet.</p>{% endfor %}
+        </div>
+        <h3>Server event timeline</h3><ol id="timeline" class="timeline">{% for item in state.job_events %}<li><b>{{ item.state }}</b> {{ item.detail }} <time>{{ item.created_at }}</time></li>{% else %}<li>No persisted events.</li>{% endfor %}</ol>
+        {% endif %}
+      </section>
+      {% endif %}
+
+      {% if stage == 'review' %}
+      <section class="panel">
+        <div class="panel-heading"><div><p class="step">Stage 4</p><h2>Independent Review</h2></div><span class="badge">exact candidate</span></div>
+        <p>The reviewer sees the complete permitted manifest, candidate hash, model snapshot, validations, contradictions, and page bodies. Persona switching is only a simulation.</p>
+        {% if candidate_detail %}
+        <dl class="evidence-grid"><div><dt>Candidate</dt><dd>{{ candidate_detail.candidate_id }}</dd></div><div><dt>Hash</dt><dd class="mono">{{ candidate_detail.candidate_hash }}</dd></div><div><dt>Manifest hash</dt><dd class="mono">{{ candidate_detail.manifest_hash }}</dd></div><div><dt>State</dt><dd>{{ candidate_detail.state }}</dd></div><div><dt>Model snapshot</dt><dd><code>{{ candidate_detail.model_config_snapshot }}</code></dd></div><div><dt>Findings</dt><dd><code>{{ candidate_detail.validation_findings }}</code></dd></div></dl>
+        <h3>Complete admitted manifest</h3><table><thead><tr><th>Source</th><th>Revision</th><th>Policy</th><th>Hash</th></tr></thead><tbody>{% for item in candidate_detail.inputs %}<tr><td>{{ item.title }}</td><td>{{ item.source_revision }}</td><td>{{ item.source_policy_revision }}</td><td class="mono">{{ item.content_hash[:16] }}…</td></tr>{% endfor %}</tbody></table>
+        {% for page in candidate_detail.rendered_pages %}<article class="candidate-page"><h3>{{ page.title }} <small>{{ page.slug }}</small></h3><div class="rendered">{{ page.rendered|safe }}</div><p><b>Citations</b> <code>{{ page.citations }}</code></p></article>{% endfor %}
+        <h3>Contradictions</h3><pre>{{ candidate_detail.payload.contradictions|tojson(indent=2) }}</pre>
+        {% if 'review' in principal.action_grants or '*' in principal.action_grants %}<form action="/candidates/{{ candidate_detail.candidate_id }}/verify" method="post" class="card form-stack"><input type="hidden" name="csrf" value="{{ csrf }}"><label>Findings<textarea name="findings">Reviewed the exact candidate, complete manifest, citations, contradictions, and acceptance criteria.</textarea></label><div class="inline"><button name="decision" value="verified">Record verification</button><button name="decision" value="rejected" class="danger">Reject candidate</button></div></form>{% endif %}
+        {% if 'authorize' in principal.action_grants or '*' in principal.action_grants %}<form action="/candidates/{{ candidate_detail.candidate_id }}/authorize" method="post" class="inline"><input type="hidden" name="csrf" value="{{ csrf }}"><button>Authorize exact publication effect</button></form>{% endif %}
+        {% else %}<div class="cards">{% for job in state.jobs if job.candidate_id %}<article class="card"><h3>Candidate {{ job.candidate_id }}</h3><p>{{ job.audience_id }} · <span class="badge">{{ job.candidate_state }}</span></p><a href="/?stage=review&candidate={{ job.candidate_id }}">Inspect evidence and pages</a></article>{% else %}<p>No candidate exists yet.</p>{% endfor %}</div>{% endif %}
+      </section>
+      {% endif %}
+
+      {% if stage == 'publish' %}
+      <section class="panel"><div class="panel-heading"><div><p class="step">Stage 5</p><h2>Bounded Publication</h2></div><span class="badge">sole writer</span></div>
+        <p>Verification and authorization are separate records. The publisher rechecks identity, policy, dependency revisions, stop state, expiry, expected versions, and idempotency before one atomic multi-page commit.</p>
+        <div class="cards">{% for operation in state.operations %}<article class="card"><h3>{{ operation.operation_id }}</h3><p><span class="badge {{ 'good' if operation.status == 'committed' else 'warn' }}">{{ operation.status }}</span> · {{ operation.audience_id }}</p><p>Candidate {{ operation.candidate_id }}<br>Authorized by {{ operation.authorized_by }}</p>{% if 'publish' in principal.action_grants or '*' in principal.action_grants %}<form action="/operations/{{ operation.operation_id }}/publish" method="post"><input type="hidden" name="csrf" value="{{ csrf }}"><button>{{ 'Reconcile same operation' if operation.status == 'uncertain' else 'Publish through bounded writer' }}</button></form>{% endif %}</article>{% else %}<p>No publication operation has been authorized.</p>{% endfor %}</div>
+        {% if state.is_operator %}<div class="scenario"><h3>Admin-only real failure paths</h3><div class="inline"><form action="/demo/stale-approval" method="post"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="secondary">Make latest approval stale</button></form><form action="/demo/conflicting-edit" method="post"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="secondary">Attempt conflicting edit</button></form><form action="/demo/replay-publication" method="post"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="secondary">Replay same operation</button></form></div></div>{% endif %}
+      </section>
+      {% endif %}
+
+      {% if stage == 'read' %}
+      <section class="panel"><div class="panel-heading"><div><p class="step">Stage 6</p><h2>Read and Ask</h2></div><span class="badge">authorized catalog</span></div>
+        <p>Current policy protects catalog titles, page bodies, history, citations, and questions. Reads fail closed when durable audit is unavailable.</p>
+        <div class="cards">{% for document in state.documents %}<article class="card"><h3>{{ document.title }}</h3><p>{{ document.audience_id }} · version {{ document.current_version }} · <span class="badge {{ 'warn' if document.publication_state != 'published' else 'good' }}">{{ document.publication_state }}</span></p><a href="/documents/{{ document.document_id }}">Read current page</a> · <a href="/documents/{{ document.document_id }}?version={{ document.current_version }}">Read exact history version</a></article>{% else %}<p>No authorized published pages.</p>{% endfor %}</div>
+        {% if 'query' in principal.action_grants or '*' in principal.action_grants %}{% if not state.model or state.model.connection_status != 'reachable' %}<p class="callout">Questions are blocked. Ask the local operator to save a reachable model in Model Setup.</p>{% endif %}<form action="/query" method="post" class="card form-stack"><h3>Ask from compiled pages</h3><input type="hidden" name="csrf" value="{{ csrf }}"><label>Audience<select name="audience_id">{% for audience in state.audiences %}<option value="{{ audience.audience_id }}">{{ audience.display_name }}</option>{% endfor %}</select></label><label>Question<textarea name="question" required>What schedule estimates conflict, and what evidence supports each?</textarea></label><button {% if not state.model or state.model.connection_status != 'reachable' %}disabled{% endif %}>Ask local model</button></form>{% endif %}
+        <h3>My recorded answers</h3><div class="cards">{% for response in state.responses %}<article class="card"><h4>{{ response.question }}</h4><p><span class="badge {{ 'good' if response.evaluation == 'supported' else 'warn' }}">{{ response.evaluation }}</span> · {{ response.citations|length }} citations</p><a href="/responses/{{ response.response_id }}">Inspect answer artifact</a>{% if response.evaluation != 'failed' and ('save_answer' in principal.action_grants or '*' in principal.action_grants) %}<form action="/responses/{{ response.response_id }}/save-candidate" method="post"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="secondary">Save as private candidate</button></form>{% endif %}</article>{% else %}<p>No answers recorded for this persona.</p>{% endfor %}</div>
+      </section>
+      {% endif %}
+
+      {% if stage == 'maintain' %}
+      <section class="panel"><div class="panel-heading"><div><p class="step">Stage 7</p><h2>Maintain</h2></div><span class="badge">explicit runs only</span></div>
+        <p>A source revision marks dependents stale and invalidates candidates and authorizations. Regeneration is a new compile, review, and authorization cycle.</p>
+        {% if 'maintain' in principal.action_grants or '*' in principal.action_grants %}<form action="/fixtures/revise-budget" method="post" class="inline"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="secondary">Apply synthetic revised Finance budget</button></form><form action="/sources/{{ state.sources[0].source_id if state.sources else '' }}/revise" method="post" class="card form-stack" id="revision-form"><input type="hidden" name="csrf" value="{{ csrf }}"><label>Source<select id="revision-source">{% for source in state.sources %}<option value="{{ source.source_id }}">{{ source.title }} · current r{{ source.current_revision }}</option>{% endfor %}</select></label><label>New complete source body<textarea name="content" rows="10" required></textarea></label><button>Commit source revision and find stale dependents</button></form>{% else %}<p class="callout">Switch to the dual-access compiler or operator to run maintenance.</p>{% endif %}
+        <h3>Page maintenance state</h3><div class="cards">{% for document in state.documents %}<article class="card"><h4>{{ document.title }}</h4><p><span class="badge {{ 'warn' if document.publication_state != 'published' else 'good' }}">{{ document.publication_state }}</span> · version {{ document.current_version }}</p></article>{% endfor %}</div>
+      </section>
+      {% endif %}
+
+      {% if stage == 'access' %}
+      <section class="panel"><div class="panel-heading"><div><p class="step">Stage 8</p><h2>Access Changes</h2></div><span class="badge">authoritative now</span></div>
+        <p>Role switching does not grant content access. Current PostgreSQL memberships and source policies are checked on every protected operation and before publication.</p>
+        {% if state.is_operator %}<div class="split">
+          <form action="/access/membership" method="post" class="card form-stack"><h3>Change fixture membership</h3><input type="hidden" name="csrf" value="{{ csrf }}"><label>Persona<select name="subject_id">{% for person in state.personas %}<option value="{{ person.subject_id }}">{{ person.display_name }}</option>{% endfor %}</select></label><label>Group<select name="group_id"><option value="engineering">Engineering</option><option value="finance">Finance</option></select></label><label class="check"><input type="checkbox" name="active" value="true"> Membership active</label><button>Apply authoritative membership</button></form>
+          <form action="/access/source-policy" method="post" class="card form-stack"><h3>Change source policy</h3><input type="hidden" name="csrf" value="{{ csrf }}"><label>Permitted source<select name="source_id">{% for source in state.sources %}<option value="{{ source.source_id }}">{{ source.title }}</option>{% endfor %}</select></label><label>New source audience<select name="audience_id"><option value="engineering">Engineering</option><option value="finance">Finance</option><option value="joint">Engineering AND Finance</option></select></label><button>Commit policy revision</button></form>
+        </div><form action="/demo/policy-change-during-job" method="post" class="inline"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="secondary">Change source policy during active job</button></form>{% else %}<p class="callout">Switch to the local operator for policy administration.</p>{% endif %}
+      </section>
+      {% endif %}
+
+      {% if stage == 'audit' %}
+      <section class="panel"><div class="panel-heading"><div><p class="step">Stage 9</p><h2>Protected Audit</h2></div><span class="badge">attempt ≠ effect</span></div>
+        <p>The collector account has insert-only authority. The worker and publisher cannot update or delete audit records. Audit data excludes source bodies, tokens, and private model reasoning.</p>
+        {% if state.is_operator %}<div class="scenario"><h3>Collector outage</h3><div class="inline"><form action="/demo/audit-availability" method="post"><input type="hidden" name="csrf" value="{{ csrf }}"><button name="enabled" value="false" class="danger">Disable durable audit</button></form><form action="/demo/audit-availability" method="post"><input type="hidden" name="csrf" value="{{ csrf }}"><button name="enabled" value="true">Restore durable audit</button></form></div></div>{% endif %}
+        {% if 'audit' in principal.action_grants or '*' in principal.action_grants %}<div class="table-wrap"><table><thead><tr><th>Time</th><th>Action</th><th>Actor</th><th>Decision</th><th>Outcome</th><th>Resource</th><th>Correlation</th></tr></thead><tbody>{% for event in state.audit_events %}<tr><td>{{ event.occurred_at }}</td><td>{{ event.action }}</td><td>{{ event.actor }}</td><td>{{ event.decision }} · {{ event.reason_code }}</td><td>{{ event.outcome }}</td><td>{{ event.resource_type }} {{ event.resource_id or '' }}</td><td class="mono">{{ event.correlation_id }}</td></tr>{% else %}<tr><td colspan="7">No events are visible.</td></tr>{% endfor %}</tbody></table></div>{% else %}<p class="callout">Audit detail requires the auditor or operator persona.</p>{% endif %}
+      </section>
+      {% endif %}
+    </main>
+
+    <aside class="evidence">
+      <h2>Evidence</h2>
+      <dl>
+        <dt>Identity</dt><dd>{{ principal.subject_id }} (mock fixture)</dd>
+        <dt>Action grants</dt><dd>{{ principal.action_grants|sort|join(', ') }}</dd>
+        <dt>Audiences visible</dt><dd>{{ state.audiences|map(attribute='audience_id')|join(', ') or 'none' }}</dd>
+        <dt>Model revision</dt><dd>{{ state.model.revision if state.model else 'none' }}</dd>
+        <dt>Published pages</dt><dd>{{ state.documents|length }}</dd>
+        <dt>Audit events visible</dt><dd>{{ state.audit_events|length }}</dd>
+      </dl>
+      <h3>Lifecycle records</h3>
+      <ul>{% for job in state.jobs[:8] %}<li><span class="dot {{ job.status }}"></span>{{ job.status }} · {{ job.job_id|string|truncate(11, True, '') }}</li>{% else %}<li>No jobs</li>{% endfor %}</ul>
+      <p class="small">Green records mean their recorded checks passed. They do not certify the whole platform or the factual quality of model output.</p>
+    </aside>
+  </div>
+  <script src="/static/app.js" defer></script>
+</body>
+</html>

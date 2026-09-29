@@ -1,25 +1,44 @@
 # Project status
 
-## Completed
+## Implemented
 
-- Local Git repository initialized for kops.
-- Public `bitrockteam/kops` repository created with an SSH Git remote.
-- Architecture v4 captured as the source requirements document.
-- Latest demo scope recorded: GUI, synthetic data, mocked Keycloak and real local inference.
-- Implementation plan, GUI contract, acceptance matrix and handoff prepared.
+- FastAPI component API and server-rendered guided GUI for all ten stages.
+- PostgreSQL lifecycle, policy, provenance, job, review, authorization, operation, publication and audit records.
+- Mock identity with server-issued signed sessions and stable synthetic personas; client-supplied roles are not accepted.
+- Engineering, Finance and Engineering AND Finance audiences with bounded conjunction semantics.
+- Immutable source, candidate, published-page and answer content volumes behind an adapter.
+- Separate API, admitted-content broker, restricted worker, bounded publisher and protected audit collector processes and database roles.
+- Operator-selected Ollama and local OpenAI-compatible model adapters with local destination validation, redirect refusal, finite limits and pinned job configuration.
+- Exact-candidate verification, expiring effect authorization, expected-version publication, idempotency, audit outbox and uncertain-result reconciliation.
+- Authorized catalog, current and historical reads, questions, answer promotion, source revision maintenance, membership revocation and source-policy invalidation.
+- Admin-only controls for stale approval, conflicting versions, duplicate publication, audit outage, mid-job policy change and cancellation.
+- Confirmed setup, up, down, reset, test, logs, backup and restore commands.
+- Pull-request acceptance workflow and `main` protection requiring its check and independent approval.
+- Actual Firefox screenshots of publication, authorized and revoked catalogs, access administration, audit, and a denied direct read.
+- Post-review hardening: PostgreSQL 18 mount and upgrade preflight, complete query input manifests, current dependency checks on candidate/page/answer/catalog delivery, audience-scoped audit views, bounded streaming model responses, serialized publication, and interrupted-worker recovery.
 
-## Documentation validation
+## Validation observed on 28–29 September 2026
 
-Checked all local Markdown links and fenced blocks, preserved the v4 architecture snapshot byte-for-byte, confirmed runtime model selection throughout the plan, and scanned the public files for private origin references and obvious credential material. No application or runtime test has been executed.
+- `make setup`: passed after Docker was started; no model or identity server was installed.
+- `make test` on the hardened worktree: 12 tests passed from fresh isolated volumes, followed by PostgreSQL privilege assertions, worker-interruption recovery, and successful PostgreSQL job and query-manifest reads after container recreation. The exact tested commit is recorded in the implementation evidence report after commit.
+- Full deterministic HTTP path: Engineering and joint compilation, review, authorization, atomic publication, idempotent replay, query, saved-answer candidate, maintenance staleness, membership revocation and audit outage recovery passed.
+- `make up`: all six normal services started; `GET /health` and the GUI returned successfully on `127.0.0.1:8080`.
+- `make backup` and confirmed `make restore`: all archive checksums passed; seven personas and one run were recovered; the API became healthy.
+- `make down` and confirmed `make demo-reset`: normal processes stopped and only `kops-local-demo` volumes were removed.
+- GitHub Actions `kops-test` passed on pull-request commit `289115f`; the feature branch was not merged into `main`.
+- Headless Firefox captured six actual GUI views from a disposable fixture-backed stack at `30ccfb0`; that stack and its synthetic volumes were removed after capture.
+- The PostgreSQL upgrade preflight refused a deliberately created empty named volume, instead of initializing a replacement database. The empty probe volume was removed immediately. This is not a migration test of real prior data.
+- The current backup/restore path was checked in disposable Compose project `kops-restorecheck` after a fixture-backed workflow. The first restore attempt exposed a content-permission failure. Commit `4f942dd` removed the root-user override, and `5277c46` added a bounded API readiness check. Fresh restores recovered 5 sources, 3 candidates, 4 page versions and 165 audit events, matched all four archived content-file counts, and returned a healthy API. A further fresh snapshot published an Engineering page before backup; after restore, an authorized persona read that page with an audit receipt and a Finance-only persona was refused with 404. All disposable volumes were removed. Migration from real prior PostgreSQL data remains unverified.
+- Pull request 1 was closed without merge or independent approval on 28 September 2026. Franco instructed that it remain closed. The feature branch remains pushed and separate from `main`.
+- `make test` passed again on exact head `5ac25db` on 29 September 2026: 12 tests, database privilege assertions, worker interruption recovery and state persistence after container recreation. The disposable test project and volumes were removed.
+- Pull request 2 is open against `main` for the current branch. Its required check and independent human review are tracked on the PR; no merge has occurred.
 
-## Not started
+The deterministic inference service is a test double and does not satisfy live-model acceptance. No local Ollama, llama.cpp server or LM Studio endpoint was available on this machine, so live compilation, live questions and model-quality assessment remain unverified.
 
-Application implementation, dependency installation, runtime startup, model calls and acceptance tests.
+## Baseline status
 
-## Runtime choice
-
-No local model endpoint is currently configured. The operator will choose the endpoint and model through the GUI at runtime. This is a product requirement, not a pending planning question. No hosted-provider fallback or automatic model download is authorized.
+Implementation and repeatable evidence verify covered local-demo behavior for C01, C02, C04, C06, C10, C11 and C12. C05 product separation is tested, while its shared-branch gate remains partial until independent human approval. C03 is partial for the same review gap. C07-C09 are partial because identity is mocked and the trusted local administrator remains outside the container boundary. MCP/A2A-specific C08 requirements are not applicable because those adapters are absent; mock session recipient checks and per-service internal tokens are implemented. Configuration and source review are not substitutes for runtime fault evidence. No enterprise or production assurance is claimed.
 
 ## Next action
 
-Read `HANDOFF.md`, create the implementation branch and begin M0. Implement Model Setup and inference adapters; a live-model acceptance run needs an operator-supplied endpoint. Update this file with actual evidence and remaining work as implementation proceeds.
+Run a user-selected local model through Model Setup and complete the live-model quality set. Obtain the required check and independent human approval on pull request 2 before shared-branch integration. Pull request 1 remains closed.

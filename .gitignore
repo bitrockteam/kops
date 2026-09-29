@@ -25,3 +25,7 @@ htmlcov/
 .idea/
 .vscode/
 .DS_Store
+
+# Reviewed GUI evidence is added deliberately
+screenshots/*.png
+!screenshots/README.md

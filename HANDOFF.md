@@ -1,8 +1,10 @@
 # Implementation handoff
 
+**Status:** The local implementation is on `feat/local-demo`. Pull request 1 was closed without merge and remains closed at Franco's direction; pull request 2 is open against `main`. This document records the original assignment; current validation and remaining gates are in [project status](docs/status.md) and [implementation evidence](docs/evidence/implementation.md). Live operator-selected inference and independent human pull-request approval remain outstanding.
+
 ## Assignment
 
-Implement a working local kops demo with synthetic data and a GUI that lets Franco follow every stage of governed knowledge compilation and publishing. The repository currently contains the plan, not a running demo.
+Implement a working local kops demo with synthetic data and a GUI that lets Franco follow every stage of governed knowledge compilation and publishing. At handoff, the repository contained the plan, not a running demo.
 
 Read `docs/plan.md` first, then `docs/gui-walkthrough.md`, `docs/acceptance.md` and `docs/architecture-v4.md`. The latest user instruction explicitly permits mocking Keycloak. All other in-scope phases must execute against real backend state. Real compilation and answers use local inference.
 

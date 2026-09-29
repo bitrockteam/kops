@@ -1,0 +1,6 @@
+[
+  {"key": "engineering-plan", "title": "Engineering expansion plan", "file": "engineering-expansion.md", "audience_id": "engineering"},
+  {"key": "finance-budget", "title": "Finance budget", "file": "finance-budget.md", "audience_id": "finance"},
+  {"key": "supplier-estimate", "title": "Supplier estimate", "file": "conflicting-estimate.md", "audience_id": "joint"},
+  {"key": "injection-test", "title": "Workshop note with untrusted instruction", "file": "injected-instruction.md", "audience_id": "engineering"}
+]
