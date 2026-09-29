@@ -1,7 +1,8 @@
 # Lab: the demo beyond the first delivery
 
 The demo is the product. This file is the plan for the next stage of it, worked on `dev` and
-merged to `main` by Franco. The full argument, diagram and tables are in the page "kops Lab
+merged to `main` by Franco. Solo exploration: Franco and the agent, no other committer, no
+reviewer, no branch protection. The full argument, diagram and tables are in the page "kops Lab
 Architecture" (Claude artifact, 29 September 2026); this file holds what a session needs to
 pick up the work.
 
@@ -35,7 +36,7 @@ regenerate, commit both; never hand-edit the output.
 
 | Phase | Work | Gate |
 |---|---|---|
-| P0 | Live model on the existing stack | one page compiled and published from Ollama |
+| P0 | Machine-independent bootstrap (no `make`, no Bash on the host), provider/model/reasoning from `.env`, live model on the existing stack | `git clone`, `.env`, `docker compose up` on a machine with only Docker; one page compiled and published from the configured provider, evidence naming it |
 | P1 | Raw store, collector registry, four collectors, pre-filter, ntfy | the three planted items are quarantined and ntfy rings; the roster is in raw; an unregistered collector cannot write; every run has a manifest |
 | P2 | Classifier with `jev` and `local` backends, label gate | every raw item has tags with probabilities from both backends; a 0.7 item waits for the owner |
 | P3 | Domain chain tables, directory import, split task, role wikis | supplier rates in Finance, supplier profile in Operations, neither elsewhere; adding a person to a role recompiles nothing |
@@ -46,6 +47,25 @@ regenerate, commit both; never hand-edit the output.
 
 Each phase ends with an entry in `docs/evidence/` naming the commit, the command and the
 observed result.
+
+## Run
+
+The target experience on any machine with Docker:
+
+```
+git clone git@github.com:bitrockteam/kops.git
+cd kops
+git checkout dev
+cp .env.example .env        # pick provider, model, reasoning, classifier backend
+docker compose up --build
+```
+
+Today the repository still needs `make setup` (Bash, `scripts/setup.sh`) to generate the
+per-service secrets under `.runtime/secrets`. That is the first gap of P0: replace it with a
+machine-independent bootstrap, either `python scripts/setup.py` (standard library) or an init
+service in Compose that generates missing secrets into a volume, so that the five lines above
+are the whole instruction set on Linux, Windows and macOS. `make` stays as a convenience,
+never as the only path.
 
 ## Runtime
 
