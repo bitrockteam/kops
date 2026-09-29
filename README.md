@@ -1,161 +1,236 @@
 # kops
 
-**Governed knowledge compilation and publishing for KnowledgeOps Platform.**
+**Governed knowledge compilation and publishing, as a local demo you can run on any machine
+with Docker.**
 
-kops is a working local demo that turns approved source material into maintained, linked knowledge pages. Its guided GUI shows how source permissions, evidence, review and publication govern each change, and how access changes affect previously generated knowledge.
+kops takes source material (wiki pages, tickets, repositories, logs), classifies it, compiles
+it into knowledge pages for a specific audience, and serves it back through a chat and a GUI
+under three separate gates: what the reader is entitled to, what the reader needs, and the
+form the reader works best with. Every step is governed: sources are immutable and traced,
+compilation goes through review and explicit authorization, publication has one writer, and
+every attempt and outcome is in a protected audit.
 
-> **Repository status: implemented for local review.** Mock identity and deterministic fixture-inference tests are verified. A live-model acceptance run and independent human review remain operator-owned gates; no fixture result is presented as live model evidence.
+This repository is a solo exploration by Franco Geraci. It is public so that the demo can be
+cloned and run anywhere, and so that the reasoning behind each design choice is on record.
+Everything in it is synthetic: the company, the people, the documents, the secrets planted on
+purpose. Nothing here is a product, a certification or a claim of enterprise security.
 
-## What the demo will let you do
+## What the demo is meant to show
 
-- Explore a synthetic Engineering and Finance corpus.
-- Select your local inference endpoint and model at runtime.
-- Compile sources into private Markdown page proposals with links and evidence.
-- Review the exact changes, then separately authorize their publication.
-- Read authorized pages, follow their history and ask questions with citations.
-- Update a source, inspect maintenance findings and regenerate affected pages.
-- Revoke access and inspect the actual resulting denials and audit events.
+1. **Knowledge compiled from an immutable raw store.** Deterministic collectors fill a raw
+   store; they never call a model and an unregistered collector cannot write. Every run leaves
+   a manifest.
+2. **Dangerous material never reaches a model or a wiki.** Deterministic rules quarantine
+   credentials, card numbers and personal data before any model call, and a notification
+   rings.
+3. **Every item is classified with typed answers and a probability, not prose.** A small
+   "System One" model answers a fixed question set per item (tags, domains, personal,
+   sensitivity) with a confidence; uncertain items wait for their owner; an evaluation set
+   scores every run.
+4. **One wiki per audience, compiled through a review gate.** Supplier rates end up in the
+   Finance wiki, the supplier profile in the Operations wiki, neither anywhere else.
+5. **The return passes three separate gates.** Rights (role, domain, tag) is the only gate
+   that refuses. Need (an audience brief per role) decides what is useful: a first-level
+   helpdesk operator entitled to the architecture still gets the phone script, not the
+   architecture. Form (a rendering profile per person) decides how it reads. Need and form never
+   widen what rights allowed.
+6. **The form adapts to the person without changing the substance.** The rendering profile is a
+   structured, visible, editable record: length, what to lead with, format, tone, words to
+   avoid, the person's own words. Two people with the same role get the same pages in different
+   form.
+7. **Live truth through a read-only gateway, and an agent inside its budget.** Typed
+   operations on a demo application, refusals at both ends, an operations agent that reports a
+   failing check within its call and time budget without trying to fix it.
+8. **Lineage.** For any raw item: who could have seen it and when, who did, where it could have
+   gone, including agents.
+9. **Machine independence and the model as a runtime choice.** The Compose stack runs unchanged
+   on Linux, Windows and macOS. Provider (Claude or OpenAI), model and reasoning effort are
+   chosen per session, never hard-wired, and recorded on every output.
 
-Keycloak is mocked. Source storage, audience checks, provenance, review records, publication, revocation and audit are backend-enforced and persisted. Compilation and questions require a real operator-selected local model in normal use. No OpenSearch, embeddings, corporate connectors, real SSO, unattended refresh, MCP/A2A or cloud deployment is included.
+The first delivery (points 4, part of 5, and the governance around review, publication,
+revocation and audit) is implemented and documented in [docs/evidence](docs/evidence/). The
+rest is the lab stage planned in [docs/lab.md](docs/lab.md) and assigned in
+[HANDOFF.md](HANDOFF.md). The status line of each document says which is which.
 
-## How it fits into KnowledgeOps Platform
-
-kops represents the governed knowledge compilation and publishing component. It is not the entire platform. Shared identity, policy, model, storage and audit responsibilities are exposed through replaceable interfaces. The demo supplies local implementations and an explicit identity mock.
+## Architecture
 
 ```mermaid
 flowchart TB
-    USER["Presenter / synthetic user"] --> GUI["Guided kops GUI"]
-    GUI --> API["Protected component API"]
-    ID["Mock Keycloak adapter"] --> API
-    API --> POLICY["Current audience and action policy"]
-    API --> SOURCES["Private versioned sources"]
-    API --> JOB["Admitted job and complete input manifest"]
+    SRC["Synthetic sources: wiki, tickets, repo, logs"] --> COLL["Registered deterministic collectors + rule pre-filter"]
+    COLL --> RAW["Immutable raw store with manifests"]
+    COLL -.->|quarantine| NTFY["Notification"]
+    RAW --> S1["System One classifier: schema call, confidence, owner queue"]
+    S1 --> LABELS["Tags, domains, personal, sensitivity"]
+    LABELS --> SPLIT["Split mixed items per domain"]
+    SPLIT --> JOB["Admitted job and complete input manifest"]
     JOB --> WORKER["Restricted compilation worker"]
-    WORKER --> BROKER["Typed local inference broker"]
-    CONFIG["Operator-selected endpoint and model"] --> BROKER
-    BROKER --> MODEL["Operator-supplied local inference runtime"]
-    WORKER --> DRAFT["Private candidate and proposed page changes"]
+    WORKER --> BROKER["Typed inference broker"]
+    CONFIG["Runtime choice: provider, model, reasoning"] --> BROKER
+    BROKER --> MODEL["Hosted model (Claude or OpenAI)"]
+    WORKER --> DRAFT["Private candidate per audience"]
     DRAFT --> REVIEW["Verification and effect authorization"]
     REVIEW --> EXEC["Bounded publication executor"]
     EXEC --> WRITE["Sole conditional writer"]
-    WRITE --> PAGES["Published page versions and provenance"]
-    PAGES --> READ["Authorized reading and questions"]
-    READ --> API
-    POLICY --> EXEC
-    API -.-> AUDIT["Protected audit records"]
+    WRITE --> WIKIS["One wiki per role, versioned, with provenance"]
+    WIKIS --> RIGHTS["Gate 1: rights"]
+    RIGHTS --> NEED["Gate 2: need (audience brief, request context)"]
+    NEED --> FORM["Gate 3: form (rendering profile per person)"]
+    FORM --> CHAT["Chat and GUI"]
+    GW["Read-only gateway on a demo app"] --> OPS["Bounded ops agent"]
+    OPS --> DRAFT
+    RAW -.-> LINEAGE["Lineage: could see, did see, could have gone"]
+    WIKIS -.-> LINEAGE
+    CHAT -.-> AUDIT["Protected audit"]
     EXEC -.-> AUDIT
     WRITE -.-> AUDIT
-    READ -.-> AUDIT
+    OPS -.-> AUDIT
 ```
 
-The worker proposes content. The application decides what may be read, who may authorize the result and whether publication can commit. A source document or generated page cannot grant permissions.
+The worker proposes content. The application decides what may be read, who may authorize the
+result and whether publication can commit. A source document, a generated page or a model
+answer cannot grant permissions.
 
-The implementation follows the C01-C12 governance rules defined in [The Agentic Pact](https://github.com/bitrockteam/the-agentic-pact). The [implementation evidence](docs/evidence/implementation.md) records which controls were verified in this local demo and which remain partial or outside its scope.
+Two models play different parts. **System One** is a small, cheap model called with a JSON
+schema and a fixed question set; it classifies and never writes prose. **System Two** is the
+model chosen for the session; it compiles pages and answers questions inside the review gate.
+Both are hosted providers selected at runtime; there is no local inference in this demo.
 
-## Local run interface
+The governance rules follow the C01 to C12 controls of
+[The Agentic Pact](https://github.com/bitrockteam/the-agentic-pact). The
+[implementation evidence](docs/evidence/implementation.md) records which controls were verified
+in the first delivery and which remain partial or outside its scope.
 
-Prerequisites for that delivery are Git, Make, Docker with Compose, and an operator-supplied local inference runtime for actual compilation and questions. Python is the application language; exact supported versions will be pinned and documented by the implementation. Model installation and weight downloads remain under operator control.
+## The synthetic world
+
+`scripts/generate_meridian.py` generates `fixtures/meridian/` deterministically from a fixed
+seed, with no model call: Meridian Ferries, a fictional ferry operator with five internal
+systems; 15 people with rendering profiles; 8 roles with audience briefs; 6 domains; 35 tags;
+19 wiki pages; 8 architecture decision records; 120 helpdesk tickets; 201 commits; 2,000 log
+lines around one incident. Planted on purpose: a page with fake credentials and two tickets
+with a fake card number and a password (must be quarantined), a personal on-call roster (must
+be ingested as restricted and traced), three mixed pages (must be split per domain). Ground
+truth for tags and for five demo questions lives in `fixtures/meridian/eval/`. Edit the
+generator, regenerate, commit both; never hand-edit the output. Planted secrets are canonical
+fake values.
+
+## How the demo works
+
+The GUI walks through the stages; each screen shows the selected persona, the intended
+audience, the run, the permitted inputs, the current state and the evidence behind it.
+
+```mermaid
+flowchart LR
+    SETUP["0. Model setup"] --> COLLECT["1. Collect and quarantine"]
+    COLLECT --> CLASSIFY["2. Classify and label"]
+    CLASSIFY --> ADMIT["3. Admission"]
+    ADMIT --> COMPILE["4. Compile per audience"]
+    COMPILE --> REVIEW["5. Review"]
+    REVIEW --> PUBLISH["6. Publish"]
+    PUBLISH --> ASK["7. Read and ask, three gates"]
+    ASK --> LIVE["8. Live truth via gateway"]
+    LIVE --> MAINTAIN["9. Maintain"]
+    MAINTAIN --> REVOKE["10. Access changes"]
+    REVOKE --> AUDIT["11. Audit and lineage"]
+    MAINTAIN -->|New candidate| REVIEW
+```
+
+The story the demo tells:
+
+1. Choose provider, model and reasoning. Nothing compiles without them.
+2. Run the collectors. Three planted items are quarantined before any model sees them; the
+   roster enters as restricted; every run has a manifest.
+3. Classify. Every item gets typed answers with a confidence; the evaluation report scores the
+   run; an uncertain item waits in the owner queue and the owner's decision becomes a label.
+4. Compile one wiki per role. Mixed pages are split first. The candidate carries the full
+   input manifest and the provider, model and reasoning that produced it.
+5. Verify the exact candidate, then separately authorize its publication.
+6. Publish through the sole writer, with expected versions and idempotency.
+7. Ask the same question as five different people. The L1 operator gets a phone script, the
+   ops desk a checklist, the developer a code path, the finance controller a 404. Two people
+   with the same role get the same pages in different form.
+8. Ask for the live state of the demo application. The gateway runs only typed read-only
+   operations; a mutating request is refused at both ends and both refusals are in the audit.
+9. Update a source, inspect stale dependencies and regenerate through the same gate.
+10. Revoke a membership and see the denials on pages, history and saved answers.
+11. Read the audit and the lineage of the roster: who could have seen it, who did, including
+    the agent.
+
+The persona selector is a presentation tool. One presenter switching roles does not establish
+independent human review or real sign-in.
+
+## Run it
+
+Target experience on any machine with Docker (Linux, Windows or macOS):
 
 ```sh
 git clone git@github.com:bitrockteam/kops.git
 cd kops
-make setup
-make up
+git checkout dev
+cp .env.example .env        # provider, model, reasoning, classifier model
+docker compose up --build
 ```
 
-The intended default GUI URL is **http://127.0.0.1:8080**. The implementation must print the actual URL and allow another port if it is occupied. The existing local checkout can be used directly; do not clone over it.
+Then put the provider API key in `.runtime/secrets/<provider>_api_key` (or paste it in the GUI
+settings panel, which writes the same file) and open **http://127.0.0.1:8080**. The port is
+`KOPS_PORT` in `.env`.
 
-| Command | Required behavior |
-| --- | --- |
-| `make setup` | Validate Docker and Compose, generate ignored per-service local secrets and validate configuration. It does not download models or install an identity provider. |
-| `make up` | Build and start PostgreSQL, the API, admitted-content broker, restricted worker, bounded publisher and protected audit collector; report the loopback GUI URL. |
-| `make logs` | Display useful local service/job diagnostics without secrets. |
-| `make test` | Run unit and full HTTP lifecycle tests in a separate disposable Compose project, then assert database privilege boundaries. The bundled inference double is test-only and is never a normal-runtime fallback. |
-| `make down` | Stop all demo-managed processes. Leave persisted demo state intact. |
-| `make demo-reset` | Ask for explicit confirmation, then remove only the synthetic demo's Compose volumes. Preserve independent acceptance evidence. |
+Until the lab phase P0 closes, the first delivery still uses `make setup` (Bash) to generate
+per-service secrets and accepts only local model endpoints. If you run the current `main`, the
+commands are `make setup`, `make up`, `make test`, `make down`, `make demo-reset`, `make
+backup` and `make restore`; see [docs/plan.md](docs/plan.md) for their contract.
 
-`make backup` creates checksummed database and private-content archives below ignored `.runtime/backups`. `make restore BACKUP=.runtime/backups/<timestamp>` verifies checksums, asks for explicit confirmation and restores only the demo-managed database and content volumes.
-
-PostgreSQL 18 now stores its database under the named volume mounted at `/var/lib/postgresql`. `make up` refuses to recreate an older container that mounted the named volume at `/var/lib/postgresql/data`, because the actual database may be in a separate anonymous volume. For an existing installation, keep the old container and code running long enough to run `make backup` and verify the archive checksums. Then, with that backup safely retained, use the confirmed `make demo-reset`, start the corrected stack with `make up`, and run the confirmed `make restore BACKUP=<backup-directory>`. Do not reset or remove the old container before obtaining a verified backup. The startup preflight also refuses a pre-existing named volume without the expected PostgreSQL 18 data directory, rather than silently initializing an empty database. Fresh installations need no migration.
-
-Before the first model-backed run, open **Model Setup**. The rest of the interface should remain usable for fixture inspection and deterministic lifecycle checks if a model is unavailable.
+`docker compose --profile test` runs the automated lifecycle tests against a fixture model that
+speaks the OpenAI-compatible shape. Fixture output is test-only and never counts as evidence.
 
 ## Configure the model at runtime
 
-No endpoint or model is currently selected. The GUI must let the local operator:
+| Variable | Meaning |
+|---|---|
+| `KOPS_MODEL_PROVIDER` | `anthropic` or `openai`. Empty means the GUI shows the settings panel and refuses to compile. |
+| `KOPS_MODEL_NAME` | The System Two model that compiles pages and answers questions. |
+| `KOPS_CLASSIFIER_MODEL` | The System One model that classifies raw items; defaults to the provider's small model. |
+| `KOPS_MODEL_REASONING` | `low`, `medium` or `high`, mapped to the provider's own parameter, ignored where a model has none. |
 
-1. Choose a local OpenAI-compatible or native Ollama adapter.
-2. Enter the endpoint and select or enter the model name.
-3. Test connectivity and supported behavior.
-4. Set finite input, output, time and retry limits.
-5. Save the configuration for subsequent jobs.
-
-The model configuration is pinned to each job so changing the selection does not silently alter an in-progress run. An unavailable model results in an explicit blocked/failed state, never a canned answer or automatic hosted-provider fallback.
-
-When the application runs in containers, `localhost` inside a container is not the host inference service. The delivered setup must provide and document an explicit container-to-host route, test it, and validate allowed destinations. Do not expose the inference service broadly just to make the demo work. No model credentials or local runtime configuration belong in Git.
-
-## Guided walkthrough
-
-```mermaid
-flowchart LR
-    SETUP["0. Model setup"] --> INGEST["1. Sources"]
-    INGEST --> ADMIT["2. Admission"]
-    ADMIT --> COMPILE["3. Compile"]
-    COMPILE --> REVIEW["4. Review"]
-    REVIEW --> PUBLISH["5. Publish"]
-    PUBLISH --> ASK["6. Read and ask"]
-    ASK --> MAINTAIN["7. Maintain"]
-    MAINTAIN --> REVOKE["8. Access changes"]
-    REVOKE --> AUDIT["9. Audit"]
-    MAINTAIN -->|New candidate| REVIEW
-```
-
-At every stage the GUI must show the selected persona, intended audience, run ID, permitted inputs, current state and relevant evidence. Progress comes from server events and persisted records. A green stage means its recorded checks passed; it does not certify the whole platform.
-
-The normal story is:
-
-1. Import an Engineering plan and compile pages for Engineering readers.
-2. Inspect the draft diff, evidence, complete input manifest and validation findings.
-3. Switch to the demo reviewer, verify the candidate, authorize the concrete effect and publish.
-4. Read the published pages and ask a question with versioned citations.
-5. Attempt to include a Finance budget in an Engineering-only compilation. Admission must refuse before Finance content reaches that generation context.
-6. Use a joint audience requiring Engineering AND Finance for a combined assessment.
-7. Introduce an updated budget and inspect stale dependencies and proposed regeneration.
-8. Revoke Finance membership and demonstrate denied joint-page, historical-version and saved-answer access.
-9. Inspect attributable attempts, decisions and actual outcomes in the audit view.
-
-The persona selector is an explicit presentation tool. One presenter switching roles does not establish independent human review or real company sign-in.
+The API key is read from a secret file, never from `.env`, never committed. The allowlist of
+model hosts holds exactly the two provider APIs; cloud metadata, link-local addresses and
+redirects are denied. The model configuration is pinned to each job, so changing it does not
+alter a run in progress. An unavailable model gives an explicit failed state, never a canned
+answer. Provider, model and reasoning are recorded on every compiled page, answer and
+classification, and the GUI shows them.
 
 ## Permissions and provenance
 
-Action roles and content audiences are separate. Being a publisher does not grant access to all sources. Being a member of both Engineering and Finance does not permit publishing Finance material to Engineering-only readers.
+Action roles and content audiences are separate. Being a publisher does not grant access to
+all sources. Being a member of two domains does not permit publishing one domain's material to
+readers of the other.
 
 | Layer | Authoritative content |
 | --- | --- |
+| Raw store | Immutable collected items, manifests, quarantine records. |
 | Private content storage | Immutable source snapshots and Markdown page bodies. |
-| PostgreSQL | Policies, memberships, revisions, jobs, manifests, approvals, dependencies and publication references. |
+| PostgreSQL | Policies, memberships, tags, domains, roles, principals, rendering profiles, revisions, jobs, manifests, approvals, dependencies, publication references, lineage. |
 | Publication service | The sole logical writer of visible page revisions, with expected versions and idempotency. |
-| Protected audit service | Attributable operation attempts, decisions and outcomes. |
-| GUI | A view of authorized backend state; never an authority source. |
+| Protected audit service | Attributable operation attempts, decisions and outcomes, append-only. |
+| GUI and chat | Views of authorized backend state; never an authority source. |
 
-Every generated revision retains all admitted input dependencies. A citation links a claim to evidence, while the full manifest records what could have influenced the generation. Policy changes affect dependent pages and saved answers. Current permissions apply to historical versions too.
+Every generated revision retains all admitted input dependencies. A citation links a claim to
+evidence; the full manifest records what could have influenced the generation. Policy changes
+affect dependent pages and saved answers. Current permissions apply to historical versions too.
 
-Git versions the application, trusted schemas, documentation and synthetic fixtures. Runtime data stays private and ignored. Git history is not the read audit log and does not enforce per-page permissions for someone who can clone a repository.
-
-## Failure scenarios and acceptance
-
-The GUI will include local admin-only controls to demonstrate stale approval, conflicting edits, duplicate publication, audit unavailability, policy changes during a job and cancellation. These controls must exercise real backend paths.
-
-Acceptance requires both successful flows and refusal tests. See the [acceptance matrix](docs/acceptance.md) and [GUI contract](docs/gui-walkthrough.md). Live local model checks must identify the actual model and configuration; deterministic fixture tests cannot be reported as live inference evidence.
-
-The demo must show real error states and remain unpublished after failed admission, review or authorization. A timeout after a possible commit is reconciled by operation ID before retrying. Stops and finite limits prevent further model calls and publication as specified.
+Git versions the application, schemas, documentation and synthetic fixtures. Runtime data,
+secrets and API keys stay private and ignored.
 
 ## Boundaries and limitations
 
-- All documents and personas are synthetic.
-- Identity is explicitly mocked; real SSO, MFA and directory synchronization are untested.
-- The local host administrator is trusted. Container and database-role tests do not prove isolation from that administrator.
-- A local model may still generate unsupported claims. Valid citations do not establish that the cited evidence supports a claim.
+- All documents, people, systems and secrets are synthetic.
+- Identity is mocked; real SSO, MFA and directory synchronization are untested.
+- The local host administrator is trusted. Container and database-role tests do not prove
+  isolation from that administrator.
+- A hosted model may still generate unsupported claims. Valid citations do not establish that
+  the cited evidence supports a claim. That is why the review gate stays.
+- The rendering profile is a structured record, not a learned model of a person.
+- Part of the synthetic corpus is sent to a hosted provider for classification and
+  compilation. Do not point this demo at data that must not leave your perimeter.
 - Content already delivered as plaintext cannot be recalled.
 - No production deployment, availability guarantee or enterprise certification is claimed.
 
@@ -163,14 +238,17 @@ The demo must show real error states and remain unpublished after failed admissi
 
 | File | Purpose |
 | --- | --- |
-| [Final plan](docs/plan.md) | Latest user-approved scope, runtime model choice, milestones and delivery gates. |
-| [Architecture v4](docs/architecture-v4.md) | Original architecture snapshot; the plan records the authorized identity-mock adaptation. |
-| [GUI walkthrough](docs/gui-walkthrough.md) | Required screens, actions and observable evidence. |
+| [Lab plan](docs/lab.md) | What the demo demonstrates, the classifier design, phases and gates, runtime contract. |
+| [Handoff](HANDOFF.md) | The assignment for the implementing session: read order, rules, first actions, deliverables. |
+| [First delivery plan](docs/plan.md) | Scope and milestones of the first delivery, merged at `4050225`. |
+| [Architecture v4](docs/architecture-v4.md) | Architecture snapshot of the governed compilation component. |
+| [GUI walkthrough](docs/gui-walkthrough.md) | Screens, actions and observable evidence of the first delivery. |
 | [Acceptance matrix](docs/acceptance.md) | Positive, negative, fault and live-model scenarios. |
-| [Implementation handoff](HANDOFF.md) | Concrete assignment and implementation workflow. |
 | [Status](docs/status.md) | Completed work, remaining work and the next action. |
 | [Decisions](docs/decisions.md) | Scope decisions and their reasons. |
+| [Evidence](docs/evidence/) | Tested commits, configurations and observed results, one file per delivery or phase. |
 | [GUI screenshots](screenshots/README.md) | Firefox evidence from publication and access revocation. |
-| [Project instructions](AGENTS.md) | Repository rules and publication boundaries. |
+| [Project instructions](AGENTS.md) | Repository rules for any agent working here. |
 
-Implementation uses `feat/local-demo` and a pull request for independent review and human merge. See [implementation evidence](docs/evidence/implementation.md) for exact tested revisions and remaining gates.
+Work happens on `dev` and moves to `main` when Franco says so. No feature branches, no pull
+requests, no branch protection: this is a one-person exploration and the history says so.
