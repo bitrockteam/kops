@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "Local governed knowledge compilation and publishing demo"
 requires-python = ">=3.12"
 dependencies = [
-  "bleach==6.2.0",
+  "bleach==6.4.0",
   "fastapi==0.118.0",
   "httpx==0.28.1",
   "itsdangerous==2.2.0",
