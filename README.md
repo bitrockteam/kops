@@ -23,8 +23,8 @@ purpose. Nothing here is a product, a certification or a claim of enterprise sec
 2. **Dangerous material never reaches a model or a wiki.** Deterministic rules quarantine
    credentials, card numbers and personal data before any model call, and a notification
    rings.
-3. **Every item is classified with typed answers and a probability, not prose.** A small
-   "System One" model answers a fixed question set per item (tags, domains, personal,
+3. **Every item is classified with typed answers and a probability, not prose.** A
+   "System One" schema call answers a fixed question set per item (tags, domains, personal,
    sensitivity) with a confidence; uncertain items wait for their owner; an evaluation set
    scores every run.
 4. **One wiki per audience, compiled through a review gate.** Supplier rates end up in the
@@ -43,9 +43,10 @@ purpose. Nothing here is a product, a certification or a claim of enterprise sec
    failing check within its call and time budget without trying to fix it.
 8. **Lineage.** For any raw item: who could have seen it and when, who did, where it could have
    gone, including agents.
-9. **Machine independence and the model as a runtime choice.** The Compose stack runs unchanged
-   on Linux, Windows and macOS. Provider (Claude or OpenAI), model and reasoning effort are
-   chosen per session, never hard-wired, and recorded on every output.
+9. **A clone runs the demo, and the model is the account's Claude.** The Compose stack runs
+   on Linux, Windows and macOS with Docker. The model is Claude Sonnet 5 at high effort,
+   reached through the signed-in Claude Code CLI on the host: no API key, nothing to choose,
+   and the model id and effort are recorded on every output.
 10. **Everything is driven from the GUI.** Configuring the model, running collectors, deciding
     an uncertain item as its owner, asking as a given person, watching the ops agent, reading a
     lineage: all in the browser. No terminal, no API calls by hand, no agent session as the
@@ -69,8 +70,8 @@ flowchart TB
     SPLIT --> JOB["Admitted job and complete input manifest"]
     JOB --> WORKER["Restricted compilation worker"]
     WORKER --> BROKER["Typed inference broker"]
-    CONFIG["Runtime choice: provider, model, reasoning"] --> BROKER
-    BROKER --> MODEL["Hosted model (Claude or OpenAI)"]
+    BROKER --> BRIDGE["Model bridge on the host: signed-in Claude Code CLI"]
+    BRIDGE --> MODEL["Claude Sonnet 5, high effort"]
     WORKER --> DRAFT["Private candidate per audience"]
     DRAFT --> REVIEW["Verification and effect authorization"]
     REVIEW --> EXEC["Bounded publication executor"]
@@ -94,10 +95,12 @@ The worker proposes content. The application decides what may be read, who may a
 result and whether publication can commit. A source document, a generated page or a model
 answer cannot grant permissions.
 
-Two models play different parts. **System One** is a small, cheap model called with a JSON
-schema and a fixed question set; it classifies and never writes prose. **System Two** is the
-model chosen for the session; it compiles pages and answers questions inside the review gate.
-Both are hosted providers selected at runtime; there is no local inference in this demo.
+One model plays two parts. As **System One** it is called with a JSON schema and a fixed
+question set; it classifies and never writes prose. As **System Two** it compiles pages and
+answers questions inside the review gate. The model is the Claude of the account that runs
+the demo, Sonnet 5 at high effort, reached through a small bridge on the host that runs the
+signed-in Claude Code CLI. There is no API key, no provider choice and no local inference in
+this demo.
 
 The governance rules follow the C01 to C12 controls of
 [The Agentic Pact](https://github.com/bitrockteam/the-agentic-pact). The
@@ -140,13 +143,13 @@ flowchart LR
 
 The story the demo tells:
 
-1. Choose provider, model and reasoning. Nothing compiles without them.
+1. Check the model bridge. Nothing compiles while it is unreachable.
 2. Run the collectors. Three planted items are quarantined before any model sees them; the
    roster enters as restricted; every run has a manifest.
 3. Classify. Every item gets typed answers with a confidence; the evaluation report scores the
    run; an uncertain item waits in the owner queue and the owner's decision becomes a label.
 4. Compile one wiki per role. Mixed pages are split first. The candidate carries the full
-   input manifest and the provider, model and reasoning that produced it.
+   input manifest and the model and effort that produced it.
 5. Verify the exact candidate, then separately authorize its publication.
 6. Publish through the sole writer, with expected versions and idempotency.
 7. Ask the same question as five different people. The L1 operator gets a phone script, the
@@ -164,43 +167,41 @@ independent human review or real sign-in.
 
 ## Run it
 
-Target experience on any machine with Docker (Linux, Windows or macOS):
+Target experience on a machine with Docker, Python 3 and a signed-in Claude Code (Linux,
+Windows or macOS):
 
 ```sh
 git clone git@github.com:bitrockteam/kops.git
 cd kops
 git checkout dev
-cp .env.example .env        # provider, model, reasoning, classifier model
+cp .env.example .env              # port only
 docker compose up --build
+python scripts/model_bridge.py    # in a second terminal, on the host
 ```
 
-Then put the provider API key in `.runtime/secrets/<provider>_api_key` (or paste it in the GUI
-settings panel, which writes the same file) and open **http://127.0.0.1:8080**. The port is
-`KOPS_PORT` in `.env`.
+Then open **http://127.0.0.1:8080**. The port is `KOPS_PORT` in `.env`. There is no API key
+to configure: the bridge runs the Claude Code CLI that is already signed in on the machine.
 
 Until the lab phase P0 closes, the first delivery still uses `make setup` (Bash) to generate
-per-service secrets and accepts only local model endpoints. If you run the current `main`, the
-commands are `make setup`, `make up`, `make test`, `make down`, `make demo-reset`, `make
-backup` and `make restore`; see [docs/plan.md](docs/plan.md) for their contract.
+per-service secrets and speaks only to local OpenAI-compatible endpoints. If you run the
+current `main`, the commands are `make setup`, `make up`, `make test`, `make down`, `make
+demo-reset`, `make backup` and `make restore`; see [docs/plan.md](docs/plan.md) for their
+contract.
 
 `docker compose --profile test` runs the automated lifecycle tests against a fixture model that
-speaks the OpenAI-compatible shape. Fixture output is test-only and never counts as evidence.
+speaks the bridge's request shape. Fixture output is test-only and never counts as evidence.
 
-## Configure the model at runtime
+## The model
 
-| Variable | Meaning |
-|---|---|
-| `KOPS_MODEL_PROVIDER` | `anthropic` or `openai`. Empty means the GUI shows the settings panel and refuses to compile. |
-| `KOPS_MODEL_NAME` | The System Two model that compiles pages and answers questions. |
-| `KOPS_CLASSIFIER_MODEL` | The System One model that classifies raw items; defaults to the provider's small model. |
-| `KOPS_MODEL_REASONING` | `low`, `medium` or `high`, mapped to the provider's own parameter, ignored where a model has none. |
-
-The API key is read from a secret file, never from `.env`, never committed. The allowlist of
-model hosts holds exactly the two provider APIs; cloud metadata, link-local addresses and
-redirects are denied. The model configuration is pinned to each job, so changing it does not
-alter a run in progress. An unavailable model gives an explicit failed state, never a canned
-answer. Provider, model and reasoning are recorded on every compiled page, answer and
-classification, and the GUI shows them.
+The demo uses one model, Claude Sonnet 5 at high effort, and nobody selects it: there is no
+model variable in `.env` and no model panel in the GUI. A small Python script on the host,
+`scripts/model_bridge.py`, listens on the loopback interface and turns each request from the
+stack into one invocation of the signed-in Claude Code CLI, with JSON schema output for the
+classifier. The containers reach it as `host.docker.internal`, the only host the model
+allowlist admits; cloud metadata, link-local addresses and redirects are denied. The model id
+and effort that the CLI reports are pinned to each job and recorded on every compiled page,
+answer and classification, and the GUI shows them. An unreachable bridge gives an explicit
+failed state, never a canned answer.
 
 ## Permissions and provenance
 
@@ -222,7 +223,7 @@ evidence; the full manifest records what could have influenced the generation. P
 affect dependent pages and saved answers. Current permissions apply to historical versions too.
 
 Git versions the application, schemas, documentation and synthetic fixtures. Runtime data,
-secrets and API keys stay private and ignored.
+secrets stay private and ignored.
 
 ## Boundaries and limitations
 
@@ -230,11 +231,10 @@ secrets and API keys stay private and ignored.
 - Identity is mocked; real SSO, MFA and directory synchronization are untested.
 - The local host administrator is trusted. Container and database-role tests do not prove
   isolation from that administrator.
-- A hosted model may still generate unsupported claims. Valid citations do not establish that
+- The model may still generate unsupported claims. Valid citations do not establish that
   the cited evidence supports a claim. That is why the review gate stays.
 - The rendering profile is a structured record, not a learned model of a person.
-- Part of the synthetic corpus is sent to a hosted provider for classification and
-  compilation. Do not point this demo at data that must not leave your perimeter.
+- Part of the synthetic corpus is sent to Claude for classification and compilation. Do not point this demo at data that must not leave your perimeter.
 - Content already delivered as plaintext cannot be recalled.
 - No production deployment, availability guarantee or enterprise certification is claimed.
 

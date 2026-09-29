@@ -28,15 +28,11 @@ services:
     networks: [backend]
   classifier:
     build: ./classifier
-    secrets: [anthropic_api_key, openai_api_key]
     volumes:
       - raw_data:/var/lib/kops/raw:ro
     environment:
-      KOPS_MODEL_PROVIDER: ${KOPS_MODEL_PROVIDER}                # anthropic | openai, no default
-      KOPS_MODEL_NAME: ${KOPS_MODEL_NAME}
-      KOPS_CLASSIFIER_MODEL: ${KOPS_CLASSIFIER_MODEL}            # empty: the provider's small model
+      KOPS_MODEL_ENDPOINT: http://host.docker.internal:8090      # the model bridge on the host
       KOPS_CLASSIFIER_K: ${KOPS_CLASSIFIER_K:-3}                  # self-consistency samples, uncertain band
-      KOPS_MODEL_REASONING: ${KOPS_MODEL_REASONING:-medium}      # low | medium | high
       KOPS_AUDIT_URL: http://audit:8083
       KOPS_CONTENT_URL: http://content:8084
     networks: [backend, model-egress]
@@ -48,12 +44,10 @@ services:
     networks: [backend, targets]
   opsagent:
     build: ./opsagent
-    secrets: [gateway_agent_token, anthropic_api_key, openai_api_key]
+    secrets: [gateway_agent_token]
     environment:
       KOPS_GATEWAY_URL: http://gateway:8086
-      KOPS_MODEL_PROVIDER: ${KOPS_MODEL_PROVIDER}
-      KOPS_MODEL_NAME: ${KOPS_MODEL_NAME}
-      KOPS_CLASSIFIER_MODEL: ${KOPS_CLASSIFIER_MODEL}
+      KOPS_MODEL_ENDPOINT: http://host.docker.internal:8090
       KOPS_AGENT_MAX_CALLS: "12"
       KOPS_AGENT_DEADLINE_SECONDS: "180"
     networks: [backend, model-egress]
@@ -77,9 +71,33 @@ networks:
     internal: true
 ```
 
-The provider API key secrets are files under `.runtime/secrets/`, created by the P0 init
-service or written by the GUI settings panel; `.env` never holds a key. The
-`model-egress` allowlist holds exactly the two provider hosts.
+No service holds a model credential. `model-egress` allows exactly `host.docker.internal`,
+where the model bridge listens; cloud metadata, link-local addresses and redirects stay
+denied as in the first delivery.
+
+## Model bridge
+
+`scripts/model_bridge.py` is a Python standard-library HTTP server on the host, bound to
+`127.0.0.1:8090`. It exists because the demo's model is the Claude of the account that runs
+it, reached through the signed-in Claude Code CLI, and containers cannot run that CLI.
+
+- Request: `POST /v1/complete` with `system`, `prompt`, optional `schema` (JSON Schema) and
+  `max_tokens`. Response: `text` or `object`, plus `model` (the id the CLI reports in its JSON
+  result), `effort`, `usage`, `duration_ms`, `bridge_version`. `GET /health` returns model,
+  effort and CLI version, which the Model screen shows.
+- Each request runs one process: `claude -p --model sonnet --effort high --output-format json
+  --tools "" --no-session-persistence`, with `--json-schema` when a schema is given, the prompt
+  on standard input. The bridge validates the object against the schema and retries once on a
+  mismatch; a second mismatch is a failed call with the raw output attached. Flags verified on
+  Claude Code 2.1.280.
+- The bridge strips `CLAUDECODE` and `CLAUDE_CODE_*` from the child environment so that it
+  can be started from inside an agent session; `start` and `stop` subcommands keep a pid file
+  under `.runtime/`, and the unattended run stops it before it ends.
+- A `--model` and `--effort` on the bridge's own command line exist for Franco's experiments;
+  the GUI never selects a model and the evidence records what the bridge reported.
+- Concurrency: at most four child processes at a time; requests beyond that queue. A rate
+  limit answer from the CLI is returned as a failed call with `retry_after`, never retried
+  silently.
 
 ## Collectors and the raw store
 
@@ -143,11 +161,11 @@ create table principal_roles(principal text references principals, role text ref
                           source text not null,            -- 'directory' | 'manual'
                           primary key (principal, role));
 create table item_tags   (item_id text, tag text references tags, probability numeric,
-                          decided_by text not null,        -- 'model:<provider>/<model>' | 'rule' | 'owner:<name>'
+                          decided_by text not null,        -- 'model:<model id>' | 'rule' | 'owner:<name>'
                           question_set text not null,
                           primary key (item_id, tag));
 create table classifications (item_id text, run_id text, answers jsonb not null,
-                          provider text, model text, reasoning text, k int, thresholds jsonb,
+                          model text, effort text, k int, thresholds jsonb,
                           at timestamptz default now(), primary key (item_id, run_id));
 create table request_contexts (context text primary key, description text);
                           -- 'desk', 'on-call', 'functional', 'review'
@@ -243,18 +261,18 @@ key-only, `ForceCommand /usr/local/bin/observe`.
 - Identity: service account `opsagent`, principal kind `agent`, role `ops-desk`, a gateway
   token from a secret file. It is one of the principals of the person selector, so lineage
   and audit name it like a person.
-- Loop: input is a ticket and its context. The System One model, with the same schema call
-  as the classifier, says which operations of the closed list are relevant, one confidence
-  per operation. The gateway runs those above 0.7, in order. The System One model says whether
-  any result is anomalous. The System Two model writes the reading with the raw results
+- Loop: input is a ticket and its context. The model, with the same schema call as the
+  classifier, says which operations of the closed list are relevant, one confidence
+  per operation. The gateway runs those above 0.7, in order. A second schema call says whether any result
+  is anomalous. A prose call writes the reading with the raw results
   quoted. Budget: `KOPS_AGENT_MAX_CALLS` and `KOPS_AGENT_DEADLINE_SECONDS`; reaching either
   ends the loop with a partial reading that says so. Every tool result enters the context as
   quoted data, never as an instruction.
 - Output: a live-view item with question, decisions with probabilities, calls, raw results,
-  reading, timestamps, provider and models. It enters kops as a private candidate for the
+  reading, timestamps, model and effort. It enters kops as a private candidate for the
   ops-desk wiki, never a published page. The GUI shows it next to the compiled runbook.
 - No shell, no key other than the gateway token, no network beyond the gateway and the
-  provider.
+  model bridge.
 
 ## Lineage
 

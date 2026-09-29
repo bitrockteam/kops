@@ -1,6 +1,6 @@
 # Final implementation plan: local kops demo
 
-**Status: first delivery, merged on `main` at `4050225`. This document is kept as the record of that scope. The next stage is `docs/lab.md`, assigned in `HANDOFF.md`; where the two differ (hosted providers instead of local inference, `dev` and `main` only instead of feature branches and pull requests), the lab plan wins.**
+**Status: first delivery, merged on `main` at `4050225`. This document is kept as the record of that scope. The next stage is `docs/lab.md`, assigned in `HANDOFF.md`; where the two differ (the account's Claude through a host bridge instead of local inference, `dev` and `main` only instead of feature branches and pull requests), the lab plan wins.**
 
 ## Objective and authority
 

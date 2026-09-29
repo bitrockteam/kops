@@ -2,21 +2,21 @@
 
 The first delivery's GUI contract is `docs/gui-walkthrough.md`: ten stages, a persona
 selector, an evidence panel, a status timeline, admin-only failure scenarios. That contract
-stays. This file says what the lab stage adds or changes, so that Franco can configure the
+stays. This file says what the lab stage adds or changes, so that Franco can check the
 model and follow every step of the demo from the browser without a terminal. Every screen shows
 backend state; every action goes through the protected API; nothing here is a frontend-only
 simulation.
 
 ## Layout changes
 
-- Persistent header adds: provider, System Two model, System One model, reasoning effort, and
-  the run in progress. Empty provider shows a red "no model configured" chip and a link to
-  Settings.
+- Persistent header adds: the model id and effort reported by the model bridge, the bridge
+  status, and the run in progress. An unreachable bridge shows a red "model bridge down" chip
+  and a link to Model.
 - Persona selector becomes a person selector: the 15 people of Meridian Ferries plus the
   `ops-agent` service account, each with their roles from the directory import. Picking a person
   sets rights (roles), need (audience briefs of those roles) and form (that person's rendering
   profile). A separate "operator" toggle keeps the admin-only controls of the first delivery.
-- Left navigation, in demo order: Settings, Collect, Classify, Admission, Compile, Review,
+- Left navigation, in demo order: Model, Collect, Classify, Admission, Compile, Review,
   Publish, Ask, Live, Maintain, Access, Audit, Lineage.
 - Evidence panel adds, where relevant: run manifest, quarantine record, classification record
   (answers, confidences, `k`, thresholds, model), gate trace of an answer, gateway call records.
@@ -25,11 +25,11 @@ simulation.
 
 | Stage | Actions | Visible proof |
 |---|---|---|
-| 0. Settings | Choose provider (`anthropic`, `openai`), System Two model, System One model, reasoning; paste the API key (written to the secret file, never echoed); test the connection; save. Same variables as `.env`; the panel shows which source set each value. | Sanitized connectivity result naming provider and model; saved configuration pinned to later jobs; refusal to compile while empty. |
+| 0. Model | Test the connection to the model bridge; read the model id, effort and CLI version it reports. Nothing to choose and nothing to paste: the demo runs on the account's Claude, Sonnet 5 at high effort, through the signed-in Claude Code CLI on the host. | Connectivity result naming model, effort and bridge version; the same values pinned to every later job; refusal to compile while the bridge is unreachable. |
 | 1. Collect | Run one or all four collectors over `fixtures/meridian/`; open a run manifest; open a quarantine record; try to run an unregistered collector (operator only). | Item counts per source, the three quarantined items with the rule that caught them, the ntfy event, the roster marked restricted, the refusal of the unregistered collector, the manifest with hashes. |
 | 2. Classify | Run the classifier on a run; open an item to see answers and confidences; open the owner queue and decide an item as its owner; open the eval report; change a threshold (operator) and see which items move. | Per-item typed answers with confidence and `decided_by`; the uncertain band and its self-consistency samples; the owner's label stored; precision and recall per tag against `expected_tags.json`; model, reasoning, `k` and thresholds on every record. |
 | 3. Admission | As in the first delivery, plus: the split of a mixed item into one item per domain, shown as a tree; the domain and tag rule refusing an item for a role. | Included items per role, the split tree, refusals with the rule name, no title leakage across roles. |
-| 4. Compile | Start compilation of one role wiki or all; the audience brief of the role is shown next to the job. | Job events, provider and model, budget, candidate per role with its full manifest. |
+| 4. Compile | Start compilation of one role wiki or all; the audience brief of the role is shown next to the job. | Job events, model and effort, budget, candidate per role with its full manifest. |
 | 5. Review | As in the first delivery, per role wiki. | Candidate hash, manifest, findings, reviewer decision. |
 | 6. Publish | As in the first delivery, per role wiki. | Authorization record, expected versions, committed pages, audit receipt. |
 | 7. Ask | Pick a person, pick a request context (desk, on-call, functional, review), ask one of the five questions or a free one; open the gate trace of the answer; edit the person's rendering profile and ask again. | The answer as rendered for that person; the trace with three rows: rights (pages allowed and refused, with the rule), need (audience brief applied, pages selected inside the allowed set), form (profile applied); a 404 for a person without rights; the same question for two people of the same role side by side. |
@@ -63,6 +63,6 @@ is available through the API for the evidence files.
 ## Acceptance
 
 The whole demo story of `README.md` is completable from the browser, in order, without a
-terminal, with a fresh `.env` and a key. Screenshots come from the running application and
-name the commit, provider and model. A failure states what happened and what remains
+terminal, with a fresh `.env` and the bridge running. Screenshots come from the running application and
+name the commit, model and effort. A failure states what happened and what remains
 unpublished. Refreshing the browser preserves the run state.

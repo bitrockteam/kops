@@ -41,4 +41,4 @@ Implementation and repeatable evidence verify covered local-demo behavior for C0
 
 ## Next action
 
-The first delivery is merged on `main` at `4050225`. The next action is phase P0 of `docs/lab.md` on `dev`, as assigned in `HANDOFF.md`: machine-independent bootstrap and hosted provider adapters chosen at runtime, with one page compiled and published from the configured provider as the gate.
+The first delivery is merged on `main` at `4050225`. The next action is phase P0 of `docs/lab.md` on `dev`, as assigned in `HANDOFF.md`: bootstrap without `make` or Bash, and the model bridge to the account's Claude (Sonnet 5, high effort), with one page compiled and published through it as the gate.
