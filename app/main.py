@@ -22,7 +22,7 @@ from app.audit import AuditClient, AuditUnavailable
 from app.config import Settings
 from app.content import LocalContentStore
 from app.db import PUBLICATION_POLICY_LOCK_KEY, Database
-from app.model import LocalModelClient, ModelError
+from app.model import BridgeModelClient, ModelError
 from app.provenance import MixedSourceVersions, inherit_dependency
 from app.rendering import render_markdown
 from app.security import (
@@ -44,7 +44,7 @@ store = LocalContentStore(settings.content_root)
 identity = MockIdentityProvider(database, settings.session_secret)
 policy = PostgresPolicyService(database)
 audit = AuditClient(settings)
-model_client = LocalModelClient(settings.allowed_model_hosts)
+model_client = BridgeModelClient(settings.allowed_model_hosts)
 csrf_signer = URLSafeTimedSerializer(settings.session_secret, salt="kops-csrf-v1")
 fixture_root = Path(os.getenv("KOPS_FIXTURE_ROOT", "/opt/kops/fixtures"))
 if not fixture_root.exists():
@@ -372,9 +372,11 @@ def _active_model_config() -> dict[str, Any] | None:
     return {
         "config_id": str(row["config_id"]),
         "revision": row["revision"],
-        "adapter": row["adapter"],
-        "endpoint": row["endpoint"],
-        "model_name": row["model_name"],
+        "endpoint": settings.model_endpoint,
+        "model_id": row["model_id"],
+        "effort": row["effort"],
+        "bridge_version": row["bridge_version"],
+        "cli_version": row["cli_version"],
         "limits": row["limits"],
         "connection_status": row["connection_status"],
         "diagnostic": row["diagnostic"],
@@ -475,6 +477,7 @@ def _dashboard_state(principal: Principal, action: str = "dashboard.read") -> di
         "job_events": [dict(row) for row in job_events if row["job_id"] in visible_job_ids],
         "audit_events": [dict(row) for row in audit_events if row["audience_id"] in visible_audiences],
         "model": _active_model_config(),
+        "model_endpoint": settings.model_endpoint,
         "is_operator": _is_operator(principal),
     }
 
@@ -553,26 +556,21 @@ def switch_persona(
 
 @app.post("/model/test")
 def test_model(
-    adapter: str = Form(),
-    endpoint: str = Form(),
-    model_name: str = Form(),
     csrf: str = Form(),
     kops_session: str | None = Cookie(default=None),
 ) -> RedirectResponse:
     principal = _principal(kops_session)
     _require_csrf(principal, csrf)
     if not _is_operator(principal):
-        raise HTTPException(status_code=403, detail="only the local operator can choose model destinations")
+        raise HTTPException(status_code=403, detail="only the local operator can test the model bridge")
     config = {
-        "adapter": adapter,
-        "endpoint": validate_model_endpoint(endpoint, settings.allowed_model_hosts),
-        "model_name": model_name.strip(),
-        "limits": {"max_output_tokens": 800, "wall_time_seconds": 60},
+        "endpoint": validate_model_endpoint(settings.model_endpoint, settings.allowed_model_hosts),
+        "limits": {"max_output_bytes": 100000, "wall_time_seconds": 60},
     }
     try:
         result = model_client.test_connection(config)
-        _event(principal, "model.test", "model_configuration", None, None, "allowed", "local_destination_validated", "completed", details=result)
-        return _redirect("model", f"Connection succeeded in {result['latency_ms']} ms")
+        _event(principal, "model.test", "model_configuration", None, None, "allowed", "bridge_reachable", "completed", details=result)
+        return _redirect("model", f"Bridge reachable in {result['latency_ms']} ms: {result['model']} at {result['effort']} effort")
     except (ModelError, ValueError) as error:
         _event(principal, "model.test", "model_configuration", None, None, "allowed", "connection_failed", "failed", details={"error": str(error)})
         return _redirect("model", str(error), "error")
@@ -580,9 +578,6 @@ def test_model(
 
 @app.post("/model/save")
 def save_model(
-    adapter: str = Form(),
-    endpoint: str = Form(),
-    model_name: str = Form(),
     max_input_bytes: int = Form(default=60000),
     max_output_bytes: int = Form(default=30000),
     max_output_tokens: int = Form(default=1200),
@@ -594,10 +589,8 @@ def save_model(
     principal = _principal(kops_session)
     _require_csrf(principal, csrf)
     if not _is_operator(principal):
-        raise HTTPException(status_code=403, detail="only the local operator can choose model destinations")
-    normalized = validate_model_endpoint(endpoint, settings.allowed_model_hosts)
-    if adapter not in {"openai", "ollama"} or not model_name.strip():
-        raise HTTPException(status_code=400, detail="adapter and model name are required")
+        raise HTTPException(status_code=403, detail="only the local operator can pin the model bridge")
+    normalized = validate_model_endpoint(settings.model_endpoint, settings.allowed_model_hosts)
     limits = {
         "max_input_bytes": min(max(max_input_bytes, 1024), 250000),
         "max_output_bytes": min(max(max_output_bytes, 1024), 100000),
@@ -607,13 +600,19 @@ def save_model(
         "max_repairs": 1,
         "concurrency": 1,
     }
-    config = {"adapter": adapter, "endpoint": normalized, "model_name": model_name.strip(), "limits": limits}
+    config = {"endpoint": normalized, "limits": limits}
     connection_status = "untested"
     diagnostic = "Saved; run the connection test before compilation"
+    model_id = None
+    effort = None
+    bridge_version = None
+    cli_version = None
     try:
         result = model_client.test_connection(config)
         connection_status = "reachable"
         diagnostic = f"Reachable in {result['latency_ms']} ms"
+        model_id, effort = result["model"], result["effort"]
+        bridge_version, cli_version = result["bridge_version"], result["cli_version"]
     except ModelError as error:
         connection_status = "failed"
         diagnostic = str(error)
@@ -622,10 +621,11 @@ def save_model(
         row = connection.execute(
             """
             INSERT INTO kops.model_configs(
-                adapter, endpoint, model_name, limits, connection_status, diagnostic, created_by
-            ) VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING revision
+                model_id, effort, bridge_version, cli_version, limits,
+                connection_status, diagnostic, created_by
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING revision
             """,
-            (adapter, normalized, model_name.strip(), json.dumps(limits), connection_status, diagnostic, principal.subject_id),
+            (model_id, effort, bridge_version, cli_version, json.dumps(limits), connection_status, diagnostic, principal.subject_id),
         ).fetchone()
         connection.execute(
             """
@@ -639,8 +639,36 @@ def save_model(
             "UPDATE kops.publication_authorizations SET status = 'invalidated' WHERE status = 'active'"
         )
         connection.commit()
-    _event(principal, "model.configure", "model_configuration", str(row["revision"]), None, "allowed", "operator_configuration", "committed", details={"adapter": adapter, "model": model_name.strip(), "status": connection_status})
+    _event(principal, "model.configure", "model_configuration", str(row["revision"]), None, "allowed", "operator_configuration", "committed", details={"model_id": model_id, "status": connection_status})
     return _redirect("model", f"Model configuration revision {row['revision']} saved: {diagnostic}", "ok" if connection_status == "reachable" else "error")
+
+
+@app.post("/demo/model-availability")
+def model_availability(
+    enabled: bool = Form(default=False),
+    csrf: str = Form(),
+    kops_session: str | None = Cookie(default=None),
+) -> RedirectResponse:
+    principal = _principal(kops_session)
+    _require_csrf(principal, csrf)
+    if not settings.demo_mode or not _is_operator(principal):
+        raise HTTPException(status_code=404, detail="demo failure controls are unavailable")
+    with database.connection() as connection:
+        updated = connection.execute(
+            """
+            UPDATE kops.model_configs SET connection_status = %s, diagnostic = %s WHERE active
+            RETURNING revision
+            """,
+            (
+                "reachable" if enabled else "failed",
+                "Pinned bridge connection restored by the operator" if enabled else "Deliberately marked unreachable by the operator",
+            ),
+        ).fetchone()
+        connection.commit()
+    if not updated:
+        raise HTTPException(status_code=409, detail="no pinned model configuration to toggle")
+    _event(principal, "demo.model_availability", "model_configuration", str(updated["revision"]), None, "allowed", "operator_failure_injection", "committed", details={"enabled": enabled})
+    return _redirect("model", f"Model bridge marked {'reachable' if enabled else 'deliberately unreachable'}", "ok" if enabled else "error")
 
 
 @app.post("/fixtures/load")
@@ -760,7 +788,7 @@ def create_job(
             raise HTTPException(status_code=409, detail="the single compilation slot is already in use")
         run = connection.execute("SELECT run_id FROM kops.runs ORDER BY created_at DESC LIMIT 1").fetchone()
         job_id = str(uuid.uuid4())
-        snapshot = {key: model[key] for key in ("adapter", "endpoint", "model_name", "limits", "revision")}
+        snapshot = {key: model[key] for key in ("endpoint", "model_id", "effort", "bridge_version", "limits", "revision")}
         connection.execute(
             """
             INSERT INTO kops.jobs(
@@ -1189,7 +1217,7 @@ def save_answer_candidate(
         model = _active_model_config()
         job_id = str(uuid.uuid4())
         limits = model["limits"] if model else {"max_input_bytes": 0, "max_output_bytes": 0, "max_retries": 0}
-        snapshot = {key: model[key] for key in ("adapter", "endpoint", "model_name", "limits", "revision")} if model else None
+        snapshot = {key: model[key] for key in ("endpoint", "model_id", "effort", "bridge_version", "limits", "revision")} if model else None
         connection.execute(
             """
             INSERT INTO kops.jobs(

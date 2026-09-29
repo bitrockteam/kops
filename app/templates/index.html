@@ -16,7 +16,7 @@
       <span><b>Persona</b> {{ principal.display_name }}</span>
       <span><b>Groups</b> {{ principal.groups|sort|join(' + ') or 'none' }}</span>
       <span><b>Run</b> {{ state.run.run_id|string|truncate(13, True, '') if state.run else 'not started' }}</span>
-      <span><b>Model</b> {{ state.model.model_name if state.model else 'not configured' }}</span>
+      <span><b>Model</b> {{ state.model.model_id if state.model else 'not configured' }}</span>
     </div>
     <div class="mock-banner">MOCKED IDENTITY · LOOPBACK DEMO</div>
   </header>
@@ -56,12 +56,13 @@
       {% if stage == 'model' %}
       <section class="panel">
         <div class="panel-heading"><div><p class="step">Stage 0</p><h2>Model Setup</h2></div><span class="badge {{ 'good' if state.model and state.model.connection_status == 'reachable' else 'warn' }}">{{ state.model.connection_status if state.model else 'required' }}</span></div>
-        <p>Only the local operator can choose a destination. No runtime, model weights, identity server, or hosted fallback is installed automatically.</p>
+        <p>Nothing to choose here: the model is the account's Claude, reached through the host bridge at <code>{{ state.model_endpoint }}</code>. Only the local operator can test the bridge or pin a new revision.</p>
         {% if state.model and state.is_operator %}
         <dl class="evidence-grid">
-          <div><dt>Adapter</dt><dd>{{ state.model.adapter }}</dd></div>
-          <div><dt>Endpoint</dt><dd>{{ state.model.endpoint }}</dd></div>
-          <div><dt>Model</dt><dd>{{ state.model.model_name }}</dd></div>
+          <div><dt>Model</dt><dd>{{ state.model.model_id or 'unreported' }}</dd></div>
+          <div><dt>Effort</dt><dd>{{ state.model.effort or 'unreported' }}</dd></div>
+          <div><dt>Bridge version</dt><dd>{{ state.model.bridge_version or 'unreported' }}</dd></div>
+          <div><dt>CLI version</dt><dd>{{ state.model.cli_version or 'unreported' }}</dd></div>
           <div><dt>Revision</dt><dd>{{ state.model.revision }}</dd></div>
           <div><dt>Limits</dt><dd><code>{{ state.model.limits }}</code></dd></div>
           <div><dt>Diagnostic</dt><dd>{{ state.model.diagnostic }}</dd></div>
@@ -71,16 +72,10 @@
         <div class="split">
           <form action="/model/test" method="post" class="card form-stack">
             <h3>Test without saving</h3><input type="hidden" name="csrf" value="{{ csrf }}">
-            <label>Adapter<select name="adapter"><option value="ollama">Native Ollama</option><option value="openai">OpenAI-compatible local endpoint</option></select></label>
-            <label>Endpoint<input name="endpoint" value="http://host.docker.internal:11434" required></label>
-            <label>Model name<input name="model_name" placeholder="operator-selected model" required></label>
-            <button>Test local connection</button>
+            <button>Test bridge connection</button>
           </form>
           <form action="/model/save" method="post" class="card form-stack">
             <h3>Save bounded configuration</h3><input type="hidden" name="csrf" value="{{ csrf }}">
-            <label>Adapter<select name="adapter"><option value="ollama">Native Ollama</option><option value="openai">OpenAI-compatible local endpoint</option></select></label>
-            <label>Endpoint<input name="endpoint" value="http://host.docker.internal:11434" required></label>
-            <label>Model name<input name="model_name" required></label>
             <div class="form-grid">
               <label>Input bytes<input type="number" name="max_input_bytes" value="60000" min="1024" max="250000"></label>
               <label>Output bytes<input type="number" name="max_output_bytes" value="30000" min="1024" max="100000"></label>
@@ -91,7 +86,11 @@
             <button>Save and pin new revision</button>
           </form>
         </div>
-        {% else %}<p class="callout">Model destination controls are hidden from ordinary personas.</p>{% endif %}
+        <div class="scenario"><h3>Bridge outage</h3><div class="inline">
+          <form action="/demo/model-availability" method="post"><input type="hidden" name="csrf" value="{{ csrf }}"><button name="enabled" value="false" class="danger">Mark bridge unreachable</button></form>
+          <form action="/demo/model-availability" method="post"><input type="hidden" name="csrf" value="{{ csrf }}"><button name="enabled" value="true">Restore bridge</button></form>
+        </div></div>
+        {% else %}<p class="callout">Model bridge controls are hidden from ordinary personas.</p>{% endif %}
       </section>
       {% endif %}
 

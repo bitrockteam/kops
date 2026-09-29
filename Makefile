@@ -3,7 +3,7 @@
 KOPS_PORT ?= 8080
 
 setup:
-	@sh scripts/setup.sh
+	@python3 scripts/setup.py preflight
 
 up:
 	@sh scripts/check-postgres-mount.sh
@@ -25,7 +25,7 @@ status:
 test:
 	@set -eu; \
 	trap 'docker compose -p kops-test --profile test down --volumes --remove-orphans >/dev/null 2>&1 || true' EXIT INT TERM; \
-	KOPS_PORT=18080 KOPS_BUILD_TARGET=test KOPS_ALLOWED_MODEL_HOSTS=host.docker.internal,fixture-model docker compose -p kops-test --profile test up -d --build; \
+	KOPS_PORT=18080 KOPS_BUILD_TARGET=test KOPS_ALLOWED_MODEL_HOSTS=host.docker.internal,fixture-model KOPS_MODEL_ENDPOINT=http://fixture-model:8090 docker compose -p kops-test --profile test up -d --build; \
 	docker compose -p kops-test exec -T -e PYTHONDONTWRITEBYTECODE=1 api pytest -p no:cacheprovider -m "not live_model"; \
 	docker compose -p kops-test exec -T db psql -v ON_ERROR_STOP=1 -U postgres -d kops -f /checks/verify_privileges.sql; \
 	sh scripts/verify-restart.sh

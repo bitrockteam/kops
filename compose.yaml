@@ -11,6 +11,7 @@ x-app-base: &app-base
     KOPS_CONTENT_ROOT: /var/lib/kops/content
     KOPS_DEMO_MODE: "true"
     KOPS_ALLOWED_MODEL_HOSTS: ${KOPS_ALLOWED_MODEL_HOSTS:-host.docker.internal}
+    KOPS_MODEL_ENDPOINT: ${KOPS_MODEL_ENDPOINT:-http://host.docker.internal:8090}
   extra_hosts:
     - "host.docker.internal:host-gateway"
   networks:
@@ -25,6 +26,23 @@ x-app-base: &app-base
     - ALL
 
 services:
+  init:
+    build:
+      context: .
+      target: ${KOPS_BUILD_TARGET:-runtime}
+    command: ["python", "scripts/setup.py", "generate-secrets", "--dir", "/run/secrets"]
+    user: "0:0"
+    volumes:
+      - runtime_secrets:/run/secrets
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m,noexec,nosuid,nodev
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    restart: "no"
+
   db:
     image: postgres:18.0-alpine
     restart: unless-stopped
@@ -32,18 +50,15 @@ services:
       POSTGRES_DB: kops
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD_FILE: /run/secrets/db_admin_password
-    secrets:
-      - db_admin_password
-      - db_api_password
-      - db_worker_password
-      - db_publisher_password
-      - db_audit_password
-      - db_content_password
     volumes:
       - postgres_data:/var/lib/postgresql
+      - runtime_secrets:/run/secrets:ro
       - ./docker/db/init.sh:/docker-entrypoint-initdb.d/00-init.sh:ro
       - ./db/schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
       - ./db:/checks:ro
+    depends_on:
+      init:
+        condition: service_completed_successfully
     networks:
       - backend
     healthcheck:
@@ -65,11 +80,8 @@ services:
       KOPS_AUDIT_API_TOKEN_FILE: /run/secrets/audit_api_token
       KOPS_AUDIT_WORKER_TOKEN_FILE: /run/secrets/audit_worker_token
       KOPS_AUDIT_PUBLISHER_TOKEN_FILE: /run/secrets/audit_publisher_token
-    secrets:
-      - db_audit_password
-      - audit_api_token
-      - audit_worker_token
-      - audit_publisher_token
+    volumes:
+      - runtime_secrets:/run/secrets:ro
     depends_on:
       db:
         condition: service_healthy
@@ -85,10 +97,8 @@ services:
       KOPS_DB_ROLE: kops_content
       KOPS_DB_PASSWORD_FILE: /run/secrets/db_content_password
       KOPS_INTERNAL_TOKEN_FILE: /run/secrets/internal_worker_token
-    secrets:
-      - db_content_password
-      - internal_worker_token
     volumes:
+      - runtime_secrets:/run/secrets:ro
       - source_data:/var/lib/kops/content/sources:ro
     depends_on:
       db:
@@ -107,11 +117,8 @@ services:
       KOPS_AUDIT_URL: http://audit:8083
       KOPS_INTERNAL_TOKEN_FILE: /run/secrets/internal_api_token
       KOPS_AUDIT_TOKEN_FILE: /run/secrets/audit_publisher_token
-    secrets:
-      - db_publisher_password
-      - internal_api_token
-      - audit_publisher_token
     volumes:
+      - runtime_secrets:/run/secrets:ro
       - candidate_data:/var/lib/kops/content/candidates:ro
       - page_data:/var/lib/kops/content/pages
       - answer_data:/var/lib/kops/content/answers:ro
@@ -133,11 +140,8 @@ services:
       KOPS_CONTENT_URL: http://content:8084
       KOPS_INTERNAL_TOKEN_FILE: /run/secrets/internal_worker_token
       KOPS_AUDIT_TOKEN_FILE: /run/secrets/audit_worker_token
-    secrets:
-      - db_worker_password
-      - internal_worker_token
-      - audit_worker_token
     volumes:
+      - runtime_secrets:/run/secrets:ro
       - candidate_data:/var/lib/kops/content/candidates
     depends_on:
       audit:
@@ -161,12 +165,8 @@ services:
       KOPS_PUBLISHER_URL: http://publisher:8082
       KOPS_INTERNAL_TOKEN_FILE: /run/secrets/internal_api_token
       KOPS_AUDIT_TOKEN_FILE: /run/secrets/audit_api_token
-    secrets:
-      - db_api_password
-      - session_secret
-      - internal_api_token
-      - audit_api_token
     volumes:
+      - runtime_secrets:/run/secrets:ro
       - source_data:/var/lib/kops/content/sources
       - candidate_data:/var/lib/kops/content/candidates:ro
       - page_data:/var/lib/kops/content/pages:ro
@@ -196,6 +196,7 @@ services:
 
 volumes:
   postgres_data:
+  runtime_secrets:
   source_data:
   candidate_data:
   page_data:
@@ -206,29 +207,3 @@ networks:
   backend:
     internal: true
   model-egress:
-
-secrets:
-  db_admin_password:
-    file: .runtime/secrets/db_admin_password
-  db_api_password:
-    file: .runtime/secrets/db_api_password
-  db_worker_password:
-    file: .runtime/secrets/db_worker_password
-  db_publisher_password:
-    file: .runtime/secrets/db_publisher_password
-  db_audit_password:
-    file: .runtime/secrets/db_audit_password
-  db_content_password:
-    file: .runtime/secrets/db_content_password
-  session_secret:
-    file: .runtime/secrets/session_secret
-  internal_api_token:
-    file: .runtime/secrets/internal_api_token
-  internal_worker_token:
-    file: .runtime/secrets/internal_worker_token
-  audit_api_token:
-    file: .runtime/secrets/audit_api_token
-  audit_worker_token:
-    file: .runtime/secrets/audit_worker_token
-  audit_publisher_token:
-    file: .runtime/secrets/audit_publisher_token

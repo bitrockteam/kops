@@ -15,6 +15,7 @@ RUN python -m pip install --no-cache-dir \
     jinja2==3.1.6 markdown-it-py==4.0.0 "psycopg[binary,pool]==3.2.10" \
     pydantic==2.11.9 python-multipart==0.0.20 uvicorn==0.37.0
 COPY app ./app
+COPY scripts ./scripts
 COPY fixtures ./fixtures
 RUN python -m pip install --no-cache-dir --no-build-isolation --no-deps .
 USER 10001:10001

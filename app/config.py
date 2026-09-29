@@ -28,6 +28,7 @@ class Settings:
     content_url: str
     demo_mode: bool
     allowed_model_hosts: frozenset[str]
+    model_endpoint: str
     audit_timeout_seconds: float
 
     @classmethod
@@ -58,5 +59,6 @@ class Settings:
                 for item in os.getenv("KOPS_ALLOWED_MODEL_HOSTS", "host.docker.internal").split(",")
                 if item.strip()
             ),
+            model_endpoint=os.getenv("KOPS_MODEL_ENDPOINT", "http://host.docker.internal:8090"),
             audit_timeout_seconds=float(os.getenv("KOPS_AUDIT_TIMEOUT_SECONDS", "2")),
         )

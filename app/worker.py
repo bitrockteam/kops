@@ -14,7 +14,7 @@ from app.audit import AuditClient, AuditUnavailable
 from app.config import Settings
 from app.content import LocalContentStore
 from app.db import Database
-from app.model import LocalModelClient, ModelError
+from app.model import BridgeModelClient, ModelError
 from app.security import canonical_json
 
 
@@ -235,7 +235,7 @@ def _finish_failure(database: Database, job_id: str, status: str, code: str, det
         connection.commit()
 
 
-def process_job(database: Database, store: LocalContentStore, model: LocalModelClient, audit: AuditClient, settings: Settings, job: dict[str, Any]) -> None:
+def process_job(database: Database, store: LocalContentStore, model: BridgeModelClient, audit: AuditClient, settings: Settings, job: dict[str, Any]) -> None:
     job_id = str(job["job_id"])
     correlation_id = f"job:{job_id}"
     deadline = time.monotonic() + int(job["limits"]["wall_time_seconds"])
@@ -378,7 +378,7 @@ def main() -> None:
     settings = Settings.load("worker")
     database = Database(settings, min_size=1, max_size=2)
     store = LocalContentStore(settings.content_root)
-    model = LocalModelClient(settings.allowed_model_hosts)
+    model = BridgeModelClient(settings.allowed_model_hosts)
     audit = AuditClient(settings)
     signal.signal(signal.SIGTERM, _stop)
     signal.signal(signal.SIGINT, _stop)

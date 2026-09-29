@@ -9,7 +9,7 @@ import psycopg
 import pytest
 
 from app.config import Settings
-from app.model import LocalModelClient, ModelError
+from app.model import BridgeModelClient, ModelError
 
 
 BASE_URL = os.getenv("KOPS_TEST_BASE_URL", "http://127.0.0.1:8080")
@@ -87,11 +87,10 @@ def _authorize_and_publish(client: httpx.Client, candidate_id: str) -> str:
 
 @pytest.mark.integration
 def test_local_model_receive_is_deadline_and_byte_bounded():
-    model = LocalModelClient(frozenset({"fixture-model"}))
+    model = BridgeModelClient(frozenset({"fixture-model"}))
     config = {
-        "adapter": "ollama",
         "endpoint": "http://fixture-model:8090",
-        "model_name": "fixture-trickle",
+        "test_variant": "fixture-trickle",
         "limits": {"wall_time_seconds": 1, "max_output_bytes": 1024, "max_output_tokens": 100},
     }
     started = time.monotonic()
@@ -99,11 +98,11 @@ def test_local_model_receive_is_deadline_and_byte_bounded():
         model.answer(config, "test")
     assert time.monotonic() - started < 3
 
-    config["model_name"] = "fixture-oversize"
+    config["test_variant"] = "fixture-oversize"
     with pytest.raises(ModelError, match="output byte limit"):
         model.answer(config, "test")
 
-    config["model_name"] = "fixture-trickle"
+    config["test_variant"] = "fixture-trickle"
     config["limits"]["wall_time_seconds"] = 10
     started = time.monotonic()
     with pytest.raises(ModelError, match="cancelled"):
@@ -133,9 +132,6 @@ def test_governed_workflow_is_persistent_authorized_and_revocable():
             client,
             "/model/save",
             {
-                "adapter": "ollama",
-                "endpoint": "http://fixture-model:8090",
-                "model_name": "fixture-governed-model",
                 "max_input_bytes": "60000",
                 "max_output_bytes": "30000",
                 "max_output_tokens": "1000",
@@ -297,21 +293,8 @@ def test_governed_workflow_is_persistent_authorized_and_revocable():
         assert "available" in restored.text
         assert client.get(f"/documents/{engineering_document}").status_code == 200
 
-        unreachable = _post(
-            client,
-            "/model/save",
-            {
-                "adapter": "ollama",
-                "endpoint": "http://127.0.0.1:9",
-                "model_name": "missing-local-model",
-                "max_input_bytes": "60000",
-                "max_output_bytes": "30000",
-                "max_output_tokens": "1000",
-                "wall_time_seconds": "5",
-                "max_retries": "0",
-            },
-        )
-        assert "local model connection failed" in unreachable.text
+        unreachable = _post(client, "/demo/model-availability", {"enabled": "false"})
+        assert "deliberately unreachable" in unreachable.text
         blocked_read = client.get("/?stage=read")
         assert "Questions are blocked" in blocked_read.text
         assert "<button disabled>Ask local model</button>" in blocked_read.text

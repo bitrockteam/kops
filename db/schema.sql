@@ -34,9 +34,10 @@ CREATE TABLE IF NOT EXISTS audiences (
 CREATE TABLE IF NOT EXISTS model_configs (
     config_id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     revision bigint GENERATED ALWAYS AS IDENTITY UNIQUE,
-    adapter text NOT NULL CHECK (adapter IN ('openai', 'ollama')),
-    endpoint text NOT NULL,
-    model_name text NOT NULL,
+    model_id text,
+    effort text,
+    bridge_version text,
+    cli_version text,
     limits jsonb NOT NULL,
     connection_status text NOT NULL CHECK (connection_status IN ('untested', 'reachable', 'failed')),
     diagnostic text,

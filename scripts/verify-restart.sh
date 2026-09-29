@@ -30,7 +30,7 @@ test "$status" = blocked
 test "$(query "SELECT error_code FROM kops.jobs WHERE job_id = '$job_id'")" = worker_interrupted
 
 compose down >/dev/null
-KOPS_PORT=18080 KOPS_BUILD_TARGET=test KOPS_ALLOWED_MODEL_HOSTS=host.docker.internal,fixture-model compose up -d >/dev/null
+KOPS_PORT=18080 KOPS_BUILD_TARGET=test KOPS_ALLOWED_MODEL_HOSTS=host.docker.internal,fixture-model KOPS_MODEL_ENDPOINT=http://fixture-model:8090 compose up -d >/dev/null
 after=$(query 'SELECT count(*) FROM kops.jobs')
 test "$after" = "$before"
 test "$(query 'SELECT count(*) FROM kops.query_response_inputs')" -gt 0
