@@ -30,6 +30,9 @@ DEFAULT_MAX_CONCURRENCY = 4
 REPO_ROOT = Path(__file__).resolve().parent.parent
 RUNTIME_DIR = REPO_ROOT / ".runtime"
 PID_FILE = RUNTIME_DIR / "model_bridge.pid"
+# The serving process runs detached from any console. Without this flag every
+# `claude -p` child would allocate a new visible console window on Windows.
+CHILD_CREATIONFLAGS = subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0
 
 _CHILD_ENV_PREFIXES = ("CLAUDE_CODE_", "CLAUDECODE")
 
@@ -64,7 +67,7 @@ def cli_version() -> str:
     try:
         result = subprocess.run(
             ["claude", "--version"], capture_output=True, text=True, timeout=15,
-            env=_child_environment(),
+            env=_child_environment(), creationflags=CHILD_CREATIONFLAGS,
         )
     except (OSError, subprocess.TimeoutExpired) as error:
         return f"unavailable: {type(error).__name__}"
@@ -119,6 +122,7 @@ class ModelBridge:
             result = subprocess.run(
                 argv, input=prompt, capture_output=True, text=True, timeout=280,
                 cwd=str(REPO_ROOT), env=_child_environment(),
+                creationflags=CHILD_CREATIONFLAGS,
             )
         except subprocess.TimeoutExpired as error:
             raise BridgeError("claude -p exceeded the bridge's wall-time budget") from error
